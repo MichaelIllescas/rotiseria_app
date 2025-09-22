@@ -59,10 +59,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Mostrar mensaje de error si viene desde el backend (ej: ?error en la URL)
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("error") && errorDiv) {
-        errorDiv.textContent = "Credenciales inválidas, intenta nuevamente.";
-        errorDiv.classList.add("show");
-    }
+   const params = new URLSearchParams(window.location.search);
+
+   // Si viene error del backend
+   if (params.has("error")) {
+       if (errorDiv) {
+           errorDiv.textContent = "Credenciales inválidas, intenta nuevamente.";
+           errorDiv.classList.add("show");
+       }
+       // Mostrar el formulario automáticamente
+       loginForm.classList.remove("hidden");
+       loginForm.classList.add("fade-in");
+   }
+
+   // Si viene logout
+   if (params.has("logout")) {
+       if (errorDiv) {
+           errorDiv.textContent = "Sesión cerrada correctamente.";
+           errorDiv.classList.add("show");
+       }
+       loginForm.classList.remove("hidden");
+       loginForm.classList.add("fade-in");
+   }
+
 });
