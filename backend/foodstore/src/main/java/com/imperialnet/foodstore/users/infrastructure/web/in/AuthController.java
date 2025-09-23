@@ -1,4 +1,4 @@
-package com.imperialnet.foodstore.users.infrastructure.web;
+package com.imperialnet.foodstore.users.infrastructure.web.in;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

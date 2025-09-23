@@ -1,15 +1,9 @@
-package com.imperialnet.foodstore.users.infrastructure.web;
+package com.imperialnet.foodstore.users.infrastructure.web.in;
 
 
-import com.imperialnet.foodstore.users.application.ports.in.CreateUserUsecase;
-import com.imperialnet.foodstore.users.application.ports.in.GetAllUsersUsecase;
-import com.imperialnet.foodstore.users.application.ports.in.GetUserByIdUsecase;
-import com.imperialnet.foodstore.users.application.ports.in.UpdateUserUsecase;
+import com.imperialnet.foodstore.users.application.ports.in.*;
 import com.imperialnet.foodstore.users.infrastructure.security.CustomUserDetails;
-import com.imperialnet.foodstore.users.infrastructure.web.dto.CreateUserRequest;
-import com.imperialnet.foodstore.users.infrastructure.web.dto.CreateUserResponse;
-import com.imperialnet.foodstore.users.infrastructure.web.dto.UpdateUserRequest;
-import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
+import com.imperialnet.foodstore.users.infrastructure.web.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,6 +29,7 @@ public class UserController {
     private final GetAllUsersUsecase getAllUsersUsecase;
     private final GetUserByIdUsecase getUserByIdUsecase;
     private final UpdateUserUsecase updateUserUsecase;
+    private final DeleteUserUseCase deleteUserUseCase;
 
     // --- Endpoint para crear usuario ---
     @ResponseStatus(HttpStatus.CREATED)
@@ -74,6 +69,7 @@ public class UserController {
     public List<UserResponse> getAllUsers() {
         return getAllUsersUsecase.execute();
     }
+
     // --- Endpoint para obtener por id ---
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/getUser/{id}")
@@ -90,7 +86,7 @@ public class UserController {
         return getUserByIdUsecase.execute(id);
     }
 
-    // --- Endpoint para actualizar ---
+    // --- Endpoint para actualizar usuario ---
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(
@@ -114,6 +110,89 @@ public class UserController {
         return updateUserUsecase.execute(id, request, updatedBy);
     }
 
+    // --- Endpoint para obtener los datos del usuario en sesion ---
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/me")
+    @Operation(
+            summary = "Obtener datos del usuario en sesión",
+            description = "Obtiene los detalles del usuario actualmente autenticado."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Datos del usuario obtenidos exitosamente",
+            content = @Content(schema = @Schema(implementation = UserResponse.class))
+    )
+    public UserResponse getCurrentUser(Authentication auth) {
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        Long userId = userDetails.getId();
+        return getUserByIdUsecase.execute(userId);
+    }
+
+    // --- Endpoint para eliminar a un usuario del sistema ---
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/delete/{id}")
+    @Operation(
+            summary = "Eliminar usuario",
+            description = "Elimina un usuario del sistema mediante su ID. Requiere autenticación."
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Usuario eliminado exitosamente"
+    )
+    public void deleteUser(@PathVariable Long id) {
+        deleteUserUseCase.execute(id);
+    }
+
+    // --- Endpoint para desactivar a un usuario del sistema ---
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/deactivate/{id}")
+    @Operation(
+            summary = "Desactivar usuario",
+            description = "Desactiva un usuario del sistema mediante su ID. Requiere autenticación."
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Usuario desactivado exitosamente"
+    )
+    public void deactivateUser(@PathVariable Long id, Authentication auth) {
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        String updatedBy = userDetails.getFullName();
+        updateUserUsecase.desactivate(id, updatedBy);
+    }
+
+    // --- Endpoint para activar a un usuario del sistema ---
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/activate/{id}")
+    @Operation(
+            summary = "Activar usuario",
+            description = "Activa un usuario del sistema mediante su ID. Requiere autenticación."
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Usuario Actuvado exitosamente"
+    )
+    public void activateUser(@PathVariable Long id, Authentication auth) {
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        String updatedBy = userDetails.getFullName();
+        updateUserUsecase.activate(id, updatedBy);
+    }
+
+    // --- Endpoint cambiar contraseña ---
+    @Operation (
+            summary = "Cambiar la contraseña de un usuario",
+            description = "Permite cambiar la contraseña de un usuario existente. Requiere autenticación."
+    )
+    @ApiResponse (
+            responseCode = "204",
+            description = "Contraseña cambiada exitosamente"
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/changePassword/{id}")
+    public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest newPassword, Authentication auth) {
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        String updatedBy = userDetails.getFullName();
+        updateUserUsecase.changePassword(id, newPassword.getNewPassword(), updatedBy);
+    }
 
 
 }

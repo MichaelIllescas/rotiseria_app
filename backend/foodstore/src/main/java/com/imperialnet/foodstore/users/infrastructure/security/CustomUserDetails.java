@@ -1,7 +1,7 @@
 package com.imperialnet.foodstore.users.infrastructure.security;
 
 import com.imperialnet.foodstore.users.domain.model.Role;
-import com.imperialnet.foodstore.users.infrastructure.persistence.UserEntity;
+import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

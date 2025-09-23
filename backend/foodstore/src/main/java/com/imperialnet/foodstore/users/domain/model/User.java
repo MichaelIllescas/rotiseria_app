@@ -140,4 +140,32 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getCreatedBy() { return createdBy; }
     public String getUpdatedBy() { return updatedBy; }
+
+    /**
+     * Valida los requisitos mínimos de complejidad de una contraseña.
+     *
+     * @param rawPassword contraseña en texto plano
+     * @throws IllegalArgumentException si no cumple complejidad
+     */
+    public void validatePasswordComplexity(String rawPassword) {
+        Objects.requireNonNull(rawPassword, "La contraseña no puede ser nula");
+
+        String passwordPattern =
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$";
+
+        if (!rawPassword.matches(passwordPattern)) {
+            throw new IllegalArgumentException(
+                    "La contraseña debe tener al menos 8 caracteres, una mayúscula, " +
+                            "una minúscula, un número y un caracter especial"
+            );
+        }
+    }
+
+    /**
+     * Cambia la contraseña del usuario asignando directamente el hash.
+     */
+    public void changePasswordHash(String encodedPassword, String updatedBy) {
+        this.passwordHash = Objects.requireNonNull(encodedPassword, "El hash no puede ser nulo");
+        touch(updatedBy);
+    }
 }

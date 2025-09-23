@@ -1,11 +1,12 @@
-package com.imperialnet.foodstore.users.infrastructure.persistence;
+package com.imperialnet.foodstore.users.infrastructure.persistence.adapter;
 
 import com.imperialnet.foodstore.users.application.ports.out.UserRepositoryPort;
 import com.imperialnet.foodstore.users.domain.model.User;
 import com.imperialnet.foodstore.users.infrastructure.mapper.UserMapper;
+import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;
+import com.imperialnet.foodstore.users.infrastructure.persistence.repository.UserJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
-    private final UserRepository jpaUserRepository;
+    private final UserJPARepository jpaUserRepository;
     private final UserMapper userMapper;
 
     @Override

@@ -1,4 +1,4 @@
-package com.imperialnet.foodstore.users.infrastructure.persistence;
+package com.imperialnet.foodstore.users.infrastructure.persistence.entity;
 
 import com.imperialnet.foodstore.users.domain.model.Role;
 import jakarta.persistence.*;

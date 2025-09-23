@@ -2,7 +2,7 @@ package com.imperialnet.foodstore.users.infrastructure.mapper;
 
 import com.imperialnet.foodstore.users.domain.model.Role;
 import com.imperialnet.foodstore.users.domain.model.User;
-import com.imperialnet.foodstore.users.infrastructure.persistence.UserEntity;
+import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
 import org.springframework.stereotype.Component;
 

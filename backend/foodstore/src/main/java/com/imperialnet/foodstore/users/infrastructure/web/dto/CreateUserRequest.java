@@ -3,6 +3,7 @@ package com.imperialnet.foodstore.users.infrastructure.web.dto;
 import com.imperialnet.foodstore.users.domain.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -27,5 +28,5 @@ public record CreateUserRequest(
         @Size(min = 6, max = 100, message = "La contraseña debe tener entre 6 y 100 caracteres")
         String password,
 
-        @NotBlank(message = "El rol es obligatorio")
+        @NotNull(message = "El rol es obligatorio")
         Role role) {}

@@ -53,9 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // registro y demás públicos
                         .requestMatchers("/login").permitAll()   // tu login personalizado
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // recursos estáticos
-                        .requestMatchers("/api/admin/**").hasRole("DUENO")
-                        .requestMatchers("/api/manager/**").hasAnyRole("DUENO", "ENCARGADO")
-                        .requestMatchers("/api/att/**").hasAnyRole("DUENO", "ENCARGADO", "ATENCION")
+                        .requestMatchers("/auth/reset-password", "/auth/forgot-password").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

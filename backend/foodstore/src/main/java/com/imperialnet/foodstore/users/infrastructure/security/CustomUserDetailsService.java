@@ -1,7 +1,7 @@
 package com.imperialnet.foodstore.users.infrastructure.security;
 
-import com.imperialnet.foodstore.users.infrastructure.persistence.UserEntity;
-import com.imperialnet.foodstore.users.infrastructure.persistence.UserRepository;
+import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;
+import com.imperialnet.foodstore.users.infrastructure.persistence.repository.UserJPARepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserJPARepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserJPARepository userRepository) {
         this.userRepository = userRepository;
     }
 

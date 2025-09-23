@@ -9,6 +9,7 @@ import com.imperialnet.foodstore.users.infrastructure.mapper.UserMapper;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UpdateUserRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UpdateUser implements UpdateUserUsecase {
 
     private final UserRepositoryPort userRepositoryPort;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse execute(Long id, UpdateUserRequest request, String updatedBy) {
@@ -46,4 +48,42 @@ public class UpdateUser implements UpdateUserUsecase {
         return UserMapper.toResponse(updated);
 
     }
+
+    @Override
+    public void desactivate(Long id, String updatedBy) {
+        // 1. Buscar el usuario actual
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        user.deactivate(updatedBy);
+        userRepositoryPort.save(user);
+    }
+
+    @Override
+    public void activate(Long id, String updatedBy) {
+        // 1. Buscar el usuario actual
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        user.activate(updatedBy);
+        userRepositoryPort.save(user);
+    }
+
+    @Override
+    public void changePassword(Long id, String newPassword, String updatedBy) {
+        // 1. Buscar el usuario actual
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        user.validatePasswordComplexity(newPassword);
+        // 2. Validación de reglas de negocio (dominio)
+        user.validatePasswordComplexity(newPassword);
+
+        // 3. Hash en infraestructura
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        // 4. Cambio efectivo en el dominio
+        user.changePasswordHash(encodedPassword, updatedBy);
+
+        userRepositoryPort.save(user);
+    }
+
+
 }
