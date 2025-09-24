@@ -23,6 +23,7 @@ public class CreateUser implements CreateUserUsecase {
         userRepository.findByEmail(req.email()).ifPresent(user -> {
             throw new IllegalArgumentException("El email ya está en uso");
         });
+        User.validatePasswordComplexity(req.password());
 
         User user = UserDtoMapper.toDomain(req, createdBy , passwordEncoder.encode(req.password()));
         var savedUser = userRepository.save(user);

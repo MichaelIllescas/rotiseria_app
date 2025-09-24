@@ -10,7 +10,6 @@ public class User {
 
     // Identidad: puede ser null mientras el agregado está "transitorio"
     private Long id;
-
     private String name;
     private String lastname;
     private String email;
@@ -36,7 +35,7 @@ public class User {
                  LocalDateTime updatedAt,
                  String createdBy,
                  String updatedBy) {
-
+        validateEmail(email);
         this.id = id; // puede venir null si es "nuevo"
         this.name = Objects.requireNonNull(name);
         this.lastname = Objects.requireNonNull(lastname);
@@ -56,6 +55,7 @@ public class User {
      */
     public static User createNew(String name, String lastname, String email, String passwordHash, Role role, String createdBy) {
         LocalDateTime now = LocalDateTime.now();
+        validateEmail(email);
         return new User(
                 null,                     // id aún no asignado
                 name, lastname, email, passwordHash,
@@ -79,6 +79,7 @@ public class User {
                                  LocalDateTime updatedAt,
                                  String createdBy,
                                  String updatedBy) {
+
         return new User(id, name, lastname, email, passwordHash, role, active, createdAt, updatedAt, createdBy, updatedBy);
     }
 
@@ -104,6 +105,9 @@ public class User {
         if (newEmail == null || !newEmail.contains("@")) throw new IllegalArgumentException("Invalid email");
         this.email = newEmail;
         touch(updater);
+    }
+    public static void validateEmail(String email) {
+        if (email == null || !email.contains("@")) throw new IllegalArgumentException("Invalid email");
     }
 
     public void changeName(String newName, String updater) {
@@ -147,7 +151,7 @@ public class User {
      * @param rawPassword contraseña en texto plano
      * @throws IllegalArgumentException si no cumple complejidad
      */
-    public void validatePasswordComplexity(String rawPassword) {
+    public static void validatePasswordComplexity(String rawPassword) {
         Objects.requireNonNull(rawPassword, "La contraseña no puede ser nula");
 
         String passwordPattern =
@@ -168,4 +172,6 @@ public class User {
         this.passwordHash = Objects.requireNonNull(encodedPassword, "El hash no puede ser nulo");
         touch(updatedBy);
     }
+
+
 }

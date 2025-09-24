@@ -35,11 +35,14 @@ public class UpdateUser implements UpdateUserUsecase {
         user.changeLastname(request.getLastname(), updatedBy);
         user.changeEmail(request.getEmail(), updatedBy);
         user.changeRole(request.getRole(), updatedBy);
-        if (request.isActive()) {
-            user.activate(updatedBy);
-        } else {
-            user.deactivate(updatedBy);
+        if (request.isActive() != user.isActive()) {
+            if (request.isActive()) {
+                user.activate(updatedBy);
+            } else {
+                user.deactivate(updatedBy);
+            }
         }
+
 
         // 4. Persistir cambios
         User updated = userRepositoryPort.save(user);
