@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido a FoodStore</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f8f8f8; color: #333;">
+<div style="max-width: 600px; margin: auto; padding: 20px; background: #fff;
+            border-radius: 8px; border: 1px solid #eee;">
+    <h2 style="color: #4CAF50; text-align: center;">¡Bienvenido a FoodStore!</h2>
+    <p>Hola <span th:text="${username}">Usuario</span>,</p>
+    <p>Nos alegra mucho que te hayas registrado en nuestra plataforma.
+        A partir de ahora podrás explorar todos nuestros productos y realizar tus pedidos en línea.</p>
+    <p style="text-align: center; margin: 20px 0;">
+        <a th:href="${loginLink}" style="display: inline-block; padding: 10px 20px;
+            background-color: #4CAF50; color: #fff; text-decoration: none;
+            border-radius: 5px; font-weight: bold;">
+            Ir al Login
+        </a>
+    </p>
+    <p>Si tienes alguna pregunta, no dudes en responder a este correo.</p>
+    <hr/>
+    <p style="font-size: 12px; color: #777; text-align: center;">
+        © 2025 ImperialNet - Plataforma FoodStore
+    </p>
+</div>
+</body>
+</html>
