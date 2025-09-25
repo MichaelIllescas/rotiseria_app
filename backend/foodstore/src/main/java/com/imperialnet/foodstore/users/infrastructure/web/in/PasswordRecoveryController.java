@@ -10,9 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -39,11 +42,23 @@ public class PasswordRecoveryController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/forgot-password")
-    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        forgotPasswordUseCase.execute(request.email());
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest request)
+    {
+        MDC.put("action", "FORGOT_PASSWORD");
+        log.info("Solicitud recibida de recuperación de contraseña para el email: {}", request.email());
+        try {
+            forgotPasswordUseCase.execute(request.email());
+            log.info("Instrucciones de recuperación enviadas al correo electrónico: {}", request.email());
+        } catch (Exception e)
+        {
+            log.warn("Error al procesar la solicitud de recuperación de contraseña para el email {}: {}", request.email(), e.getMessage());
+            // No se lanza la excepción para evitar revelar si el email existe o no
+        }
+        finally {
+            MDC.remove("action");
+        }
     }
 
-    //documentacion para swagger
     @Operation (
             summary = "Restablecer la contraseña del usuario",
             description = "Permite a un usuario restablecer su contraseña utilizando un token de restablecimiento válido."
@@ -59,7 +74,20 @@ public class PasswordRecoveryController {
     )
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/reset-password")
-    public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        resetPasswordUseCase.execute(request.token(), request.newPassword());
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest request)
+    {
+        String tokenPreview = request.token().substring(0, Math.min(6, request.token().length())) + "...";
+        MDC.put("action", "RESET_PASSWORD");
+        log.info("Solicitud recibida para restablecer la contraseña con el token: {}", tokenPreview);
+        try {
+            resetPasswordUseCase.execute(request.token(), request.newPassword());
+            log.info("Contraseña restablecida exitosamente para el token: {}", tokenPreview);
+        } catch (Exception e)
+        {
+            log.error("Error al restablecer la contraseña con el token {}: . Causa: {}", tokenPreview, e.getMessage());
+            throw e;
+        } finally {
+            MDC.remove("action");
+        }
     }
 }

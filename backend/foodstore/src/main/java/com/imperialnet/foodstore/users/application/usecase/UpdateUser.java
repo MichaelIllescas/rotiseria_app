@@ -9,9 +9,12 @@ import com.imperialnet.foodstore.users.infrastructure.mapper.UserMapper;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UpdateUserRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UpdateUser implements UpdateUserUsecase {
@@ -21,72 +24,102 @@ public class UpdateUser implements UpdateUserUsecase {
 
     @Override
     public UserResponse execute(Long id, UpdateUserRequest request, String updatedBy) {
-        // 1. Buscar el usuario actual
-        User user = userRepositoryPort.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        // 2. Validar que el email no pertenezca a otro usuario
-        userRepositoryPort.findByEmail(request.getEmail())
-                .filter(existing -> !existing.getId().equals(id)) // 👈 si es otro usuario con el mismo email
-                .ifPresent(existing -> {
-                    throw new BusinessException("El email ya está registrado en otro usuario");
-                });
-        // 3. Actualizar los campos del usuario
-        user.changeName(request.getName(), updatedBy);
-        user.changeLastname(request.getLastname(), updatedBy);
-        user.changeEmail(request.getEmail(), updatedBy);
-        user.changeRole(request.getRole(), updatedBy);
-        if (request.isActive() != user.isActive()) {
-            if (request.isActive()) {
-                user.activate(updatedBy);
-            } else {
-                user.deactivate(updatedBy);
+        MDC.put("action", "UPDATE_USER");
+        try {
+            User user = userRepositoryPort.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("Intento de actualizar usuario inexistente id={}", id);
+                        return new UserNotFoundException("Usuario no encontrado");
+                    });
+
+            userRepositoryPort.findByEmail(request.getEmail())
+                    .filter(existing -> !existing.getId().equals(id))
+                    .ifPresent(existing -> {
+                        log.warn("Email {} ya registrado en otro usuario (id={})", request.getEmail(), existing.getId());
+                        throw new BusinessException("El email ya está registrado en otro usuario");
+                    });
+
+            user.changeName(request.getName(), updatedBy);
+            user.changeLastname(request.getLastname(), updatedBy);
+            user.changeEmail(request.getEmail(), updatedBy);
+            user.changeRole(request.getRole(), updatedBy);
+
+            if (request.isActive() != user.isActive()) {
+                if (request.isActive()) {
+                    user.activate(updatedBy);
+                } else {
+                    user.deactivate(updatedBy);
+                }
             }
+
+            User updated = userRepositoryPort.save(user);
+            return UserMapper.toResponse(updated);
+
+        } catch (UserNotFoundException | BusinessException ex) {
+            throw ex; // lo captura el ControllerAdvice → 404 o 400
+        } catch (Exception ex) {
+            log.error("Error inesperado al actualizar usuario id={}", id, ex);
+            throw ex;
+        } finally {
+            MDC.clear();
         }
-
-
-        // 4. Persistir cambios
-        User updated = userRepositoryPort.save(user);
-
-        // 5. Retornar DTO
-        return UserMapper.toResponse(updated);
-
     }
 
     @Override
     public void desactivate(Long id, String updatedBy) {
-        // 1. Buscar el usuario actual
-        User user = userRepositoryPort.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        user.deactivate(updatedBy);
-        userRepositoryPort.save(user);
+        MDC.put("action", "DEACTIVATE_USER");
+        try {
+            User user = userRepositoryPort.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("Intento de desactivar usuario inexistente id={}", id);
+                        return new UserNotFoundException("Usuario no encontrado");
+                    });
+            user.deactivate(updatedBy);
+            userRepositoryPort.save(user);
+        } finally {
+            MDC.clear();
+        }
     }
 
     @Override
     public void activate(Long id, String updatedBy) {
-        // 1. Buscar el usuario actual
-        User user = userRepositoryPort.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        user.activate(updatedBy);
-        userRepositoryPort.save(user);
+        MDC.put("action", "ACTIVATE_USER");
+        try {
+            User user = userRepositoryPort.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("Intento de activar usuario inexistente id={}", id);
+                        return new UserNotFoundException("Usuario no encontrado");
+                    });
+            user.activate(updatedBy);
+            userRepositoryPort.save(user);
+        } finally {
+            MDC.clear();
+        }
     }
 
     @Override
     public void changePassword(Long id, String newPassword, String updatedBy) {
-        // 1. Buscar el usuario actual
-        User user = userRepositoryPort.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        user.validatePasswordComplexity(newPassword);
-        // 2. Validación de reglas de negocio (dominio)
-        user.validatePasswordComplexity(newPassword);
+        MDC.put("action", "CHANGE_PASSWORD");
+        try {
+            User user = userRepositoryPort.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("Intento de cambiar contraseña de usuario inexistente id={}", id);
+                        return new UserNotFoundException("Usuario no encontrado");
+                    });
 
-        // 3. Hash en infraestructura
-        String encodedPassword = passwordEncoder.encode(newPassword);
+            try {
+                user.validatePasswordComplexity(newPassword);
+            } catch (IllegalArgumentException ex) {
+                log.warn("Password inválida para usuario id={}: {}", id, ex.getMessage());
+                throw ex;
+            }
 
-        // 4. Cambio efectivo en el dominio
-        user.changePasswordHash(encodedPassword, updatedBy);
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            user.changePasswordHash(encodedPassword, updatedBy);
 
-        userRepositoryPort.save(user);
+            userRepositoryPort.save(user);
+        } finally {
+            MDC.clear();
+        }
     }
-
-
 }

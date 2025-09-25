@@ -1,4 +1,4 @@
-package com.imperialnet.foodstore.users.infrastructure.security;
+package com.imperialnet.foodstore.config.security;
 
 import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;
 import com.imperialnet.foodstore.users.infrastructure.persistence.repository.UserJPARepository;

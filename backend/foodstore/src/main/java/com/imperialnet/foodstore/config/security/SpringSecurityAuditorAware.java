@@ -1,4 +1,4 @@
-package com.imperialnet.foodstore.users.infrastructure.security;
+package com.imperialnet.foodstore.config.security;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

@@ -1,13 +1,21 @@
-package com.imperialnet.foodstore.users.infrastructure.web.in;
+    package com.imperialnet.foodstore.users.infrastructure.web.in;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+    import jakarta.servlet.http.HttpServletRequest;
+    import lombok.extern.slf4j.Slf4j;
+    import org.slf4j.MDC;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
-public class AuthController {
+    @Slf4j
+    @Controller
+    public class AuthController {
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
+        @GetMapping("/login")
+        public String loginPage(HttpServletRequest request) {
+            String clientIp = request.getRemoteAddr();
+            MDC.put("action", "LOGIN_PAGE");
+            log.debug("Renderizando pagina de login para IP: {}", clientIp);
+            MDC.remove("action");
+            return "login";
+        }
     }
-}

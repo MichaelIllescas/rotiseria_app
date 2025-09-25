@@ -2,7 +2,7 @@ package com.imperialnet.foodstore.users.infrastructure.web.in;
 
 
 import com.imperialnet.foodstore.users.application.ports.in.*;
-import com.imperialnet.foodstore.users.infrastructure.security.CustomUserDetails;
+import com.imperialnet.foodstore.config.security.CustomUserDetails;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -47,11 +49,22 @@ public class UserController {
                                                       description = "Datos necesarios para crear un usuario",
                                                       required = true,
                                                       content = @Content(schema = @Schema(implementation = CreateUserRequest.class))
-                                              ) @Valid @RequestBody CreateUserRequest req,
-                                         Authentication auth) {
+                                              ) @Valid @RequestBody CreateUserRequest req,Authentication auth)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String fullName = userDetails.getFullName();
-        return createUserUsecase.execute(req, fullName);
+        MDC.put("action", "CREATE_USER");
+        log.info("Usuario: {} está creando un nuevo usuario con email: {}", fullName, req.email());
+        try {
+             CreateUserResponse newUser= createUserUsecase.execute(req, fullName);
+             log.info("Usuario: {} ha creado un nuevo usuario con ID: {} y email: {}", fullName, newUser.id(), newUser.email());
+            return newUser;
+        } catch (Exception e) {
+            log.error("Error al crear usuario con email: {} por parte de: {} . Causa: {}",req.email(), fullName, e.getMessage());
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint para obtener todos ---
@@ -66,11 +79,24 @@ public class UserController {
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("getAll")
-    public List<UserResponse> getAllUsers() {
-        return getAllUsersUsecase.execute();
+    public List<UserResponse> getAllUsers()
+    {
+        MDC.put("action", "GET_ALL_USERS");
+        log.debug("Obteniendo todos los usuarios del sistema");
+        try{
+            List<UserResponse>usersList = getAllUsersUsecase.execute();
+            log.debug("Se han obtenido: {} usuarios del sistema", usersList.size());
+            return usersList;
+        }
+        catch (Exception e){
+            log.error("Error al obtener todos los usuarios. Causa: {}", e.getMessage(), e);
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
-    // --- Endpoint para obtener por id ---
+    // --- Endpoint para obtener por ID ---
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/getUser/{id}")
     @Operation(
@@ -82,8 +108,20 @@ public class UserController {
             description = "Usuario obtenido exitosamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
-    public UserResponse getUserById(@PathVariable Long id) {
-        return getUserByIdUsecase.execute(id);
+    public UserResponse getUserById(@PathVariable Long id)
+    {
+        MDC.put("action", "GET_USER_BY_ID");
+        log.debug("Buscando usuario con id={}", id);
+        try{
+            UserResponse userFinded= getUserByIdUsecase.execute(id);
+            log.debug("Usuario con id: {} encontrado: {}", id, userFinded.getEmail());
+            return userFinded;
+        } catch (Exception e){
+            log.error("Error al obtener el usuario con id: {}. Causa: {}", id, e.getMessage(), e);
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint para actualizar usuario ---
@@ -99,15 +137,24 @@ public class UserController {
             description = "Usuario actualizado correctamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
-    public UserResponse updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateUserRequest request,
-            Authentication auth) {
+    public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request, Authentication auth)
+    {
 
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String updatedBy = userDetails.getFullName();
 
-        return updateUserUsecase.execute(id, request, updatedBy);
+        MDC.put("action", "UPDATE_USER");
+        log.info("Usuario: {} está actualizando al usuario con ID: {}", updatedBy, id);
+         try {
+                UserResponse updatedUser = updateUserUsecase.execute(id, request, updatedBy);
+                log.info("Usuario: {} ha actualizado al usuario con ID: {}", updatedBy, id);
+                return updatedUser;
+            } catch (Exception e) {
+                log.error("Error al actualizar el usuario con ID: {} por parte de: {}. Causa: {}", id, updatedBy, e.getMessage());
+                throw e;
+         }finally {
+            MDC.remove("action");
+         }
     }
 
     // --- Endpoint para obtener los datos del usuario en sesion ---
@@ -122,10 +169,22 @@ public class UserController {
             description = "Datos del usuario obtenidos exitosamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
-    public UserResponse getCurrentUser(Authentication auth) {
+    public UserResponse getCurrentUser(Authentication auth)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         Long userId = userDetails.getId();
-        return getUserByIdUsecase.execute(userId);
+        MDC.put("action", "GET_CURRENT_USER");
+        log.debug("Obteniendo datos del usuario en sesión con ID: {}", userId);
+        try {
+            UserResponse userResponse= getUserByIdUsecase.execute(userId);
+            log.debug("Usuario en sesión correctamente: {} con ID: {}", userResponse.getEmail(), userResponse.getId());
+            return userResponse;
+        } catch (Exception e) {
+            log.error("Error al obtener los datos del usuario en sesión. Causa: {}", e.getMessage(), e);
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint para eliminar a un usuario del sistema ---
@@ -139,8 +198,19 @@ public class UserController {
             responseCode = "204",
             description = "Usuario eliminado exitosamente"
     )
-    public void deleteUser(@PathVariable Long id) {
-        deleteUserUseCase.execute(id);
+    public void deleteUser(@PathVariable Long id)
+    {
+        MDC.put("action", "DELETE_USER");
+        log.info("Eliminando usuario con ID: {}", id);
+        try {
+            deleteUserUseCase.execute(id);
+            log.info("Usuario con ID: {} eliminado exitosamente", id);
+        } catch (Exception e) {
+            log.error("Error al eliminar el usuario con ID: {}. Causa: {}", id, e.getMessage());
+            throw e;
+        } finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint para desactivar a un usuario del sistema ---
@@ -154,10 +224,21 @@ public class UserController {
             responseCode = "204",
             description = "Usuario desactivado exitosamente"
     )
-    public void deactivateUser(@PathVariable Long id, Authentication auth) {
+    public void deactivateUser(@PathVariable Long id, Authentication auth)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String updatedBy = userDetails.getFullName();
-        updateUserUsecase.desactivate(id, updatedBy);
+        MDC.put("action", "DEACTIVATE_USER");
+        log.info("EL usuario: {} , esta intentando desactivar al usuario con ID: {}",updatedBy, id);
+        try {
+            updateUserUsecase.desactivate(id, updatedBy);
+            log.info("Usuario con ID: {} desactivado exitosamente por: {}", id, updatedBy);
+        } catch (Exception e) {
+            log.error("Error al desactivar el usuario con ID: {} por {}. Causa: {}", id,updatedBy ,e.getMessage());
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint para activar a un usuario del sistema ---
@@ -171,10 +252,21 @@ public class UserController {
             responseCode = "204",
             description = "Usuario Actuvado exitosamente"
     )
-    public void activateUser(@PathVariable Long id, Authentication auth) {
+    public void activateUser(@PathVariable Long id, Authentication auth)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String updatedBy = userDetails.getFullName();
-        updateUserUsecase.activate(id, updatedBy);
+        MDC.put("action", "ACTIVATE_USER");
+        log.info("EL usuario: {} , esta intentando activar al usuario con ID: {}",updatedBy, id);
+        try {
+            updateUserUsecase.activate(id, updatedBy);
+            log.info("Usuario con ID: {} activado exitosamente por: {}", id, updatedBy);
+        } catch (Exception e) {
+            log.error("Error al activar el usuario con ID: {} por {}. Causa: {}", id,updatedBy,e.getMessage());
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
 
     // --- Endpoint cambiar contraseña ---
@@ -188,11 +280,20 @@ public class UserController {
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/changePassword/{id}")
-    public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest newPassword, Authentication auth) {
+    public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest newPassword, Authentication auth)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String updatedBy = userDetails.getFullName();
-        updateUserUsecase.changePassword(id, newPassword.getNewPassword(), updatedBy);
+        MDC.put("action", "CHANGE_PASSWORD");
+        log.info("El usuario: {}, esta intentando cambiar la contraseña del usuario con ID: {}", updatedBy, id);
+        try {
+            updateUserUsecase.changePassword(id, newPassword.getNewPassword(), updatedBy);
+            log.info("El usuario: {}, ha cambiado la contraseña del usuario con ID: {}", updatedBy, id);
+        } catch (Exception e) {
+            log.error("Error al cambiar la contraseña del usuario con ID: {} por {}. Causa: {}", id, updatedBy, e.getMessage());
+            throw e;
+        }finally {
+            MDC.remove("action");
+        }
     }
-
-
 }

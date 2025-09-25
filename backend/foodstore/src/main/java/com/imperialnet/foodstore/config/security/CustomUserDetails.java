@@ -1,4 +1,4 @@
-package com.imperialnet.foodstore.users.infrastructure.security;
+package com.imperialnet.foodstore.config.security;
 
 import com.imperialnet.foodstore.users.domain.model.Role;
 import com.imperialnet.foodstore.users.infrastructure.persistence.entity.UserEntity;

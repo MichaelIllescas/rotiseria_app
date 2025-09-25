@@ -1,12 +1,10 @@
-package com.imperialnet.foodstore.config;
+package com.imperialnet.foodstore.config.persistence;
 
-import com.imperialnet.foodstore.users.infrastructure.security.SpringSecurityAuditorAware;
+import com.imperialnet.foodstore.config.security.SpringSecurityAuditorAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import java.util.Optional;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")

@@ -31,6 +31,22 @@ El paquete `application` define los **casos de uso** del módulo de usuarios, si
 - Encapsular la lógica de interacción con repositorios y servicios externos.
 - Transformar entidades de dominio a DTOs para la capa web.
 
+## Logging en casos de uso
+
+Los casos de uso implementan un esquema de logging consistente con la arquitectura:
+
+- Se utiliza **MDC (Mapped Diagnostic Context)** para registrar la acción (`action=CREATE_USER`, `action=RESET_PASSWORD`, etc.).
+- No se generan logs `INFO` en esta capa (eso corresponde a los controllers).
+- Se registran:
+    - **`WARN`** → condiciones de negocio previstas pero anómalas  
+      (ej. email ya registrado, token de recuperación inválido, contraseña sin complejidad).
+    - **`ERROR`** → errores inesperados del sistema  
+      (fallos de base de datos, excepciones no controladas).
+- Todas las excepciones se relanzan para que sean procesadas por el **`GlobalExceptionHandler`**, que las convierte en respuestas HTTP adecuadas.
+
+Este enfoque asegura **trazabilidad**, **auditoría** y separación de responsabilidades entre controladores y casos de uso.
+
+
 ## Ubicación
 
 `backend/foodstore/src/main/java/com/imperialnet/foodstore/users/application/`

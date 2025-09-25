@@ -1,0 +1,64 @@
+<configuration>
+    <!-- Perfil DEV -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp/>
+                    <pattern>
+                        <pattern>
+                            {
+                            "level": "%level",
+                            "logger": "%logger",
+                            "thread": "%thread",
+                            "requestId": "%X{requestId}",
+                            "action": "%X{action}",
+                            "userId": "%X{userId}",
+                            "username": "%X{username}",
+                            "message": "%msg"
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- Perfil PROD -->
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>14</maxHistory>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp/>
+                    <pattern>
+                        <pattern>
+                            {
+                            "level": "%level",
+                            "logger": "%logger",
+                            "thread": "%thread",
+                            "requestId": "%X{requestId}",
+                            "action": "%X{action}",
+                            "userId": "%X{userId}",
+                            "username": "%X{username}",
+                            "message": "%msg"
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>

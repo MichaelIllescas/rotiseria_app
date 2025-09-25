@@ -1,5 +1,6 @@
-package com.imperialnet.foodstore.users.infrastructure.security;
+package com.imperialnet.foodstore.config.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * Spring Security configuration.
  */
+@Slf4j
 @Configuration
 public class SecurityConfig {
 
@@ -46,7 +48,7 @@ public class SecurityConfig {
 
     // Security rules
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,  CustomAccessDeniedHandler accessDeniedHandler,  CustomAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable()) // ⚠️ ojo: si tu formulario tiene CSRF token activalo
                 .authorizeHttpRequests(auth -> auth
@@ -59,16 +61,36 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")            // GET para renderizar login.html
                         .loginProcessingUrl("/login")   // POST que procesa login
-                        .defaultSuccessUrl("http://localhost:5173   ", true)   // redirige tras login
-                        .failureUrl("/login?error=true")
+                        .successHandler((request, response, authentication) -> {
+                            String username = authentication.getName();
+                            // ✅ Usamos SecurityLogger
+                            SecurityLogger.logLoginSuccess(username);
+                            response.sendRedirect("http://localhost:5173");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            String username = request.getParameter("username");
+                            String clientIp = request.getRemoteAddr();
+                            // ✅ Usamos SecurityLogger
+                            SecurityLogger.logLoginFailure(username, "from ip=" + clientIp + " | " + exception.getMessage());
+                            response.sendRedirect("/login?error=true");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            if (authentication != null) {
+                                SecurityLogger.logLogout(authentication.getName());
+                            }
+                            response.sendRedirect("/login?logout=true");
+                        })
                         .permitAll()
                 )
-                .build();
+                .exceptionHandling(ex ->  ex
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint))
+                        .build();
     }
-
 }
+
+
