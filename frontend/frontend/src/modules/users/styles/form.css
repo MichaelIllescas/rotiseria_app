@@ -1,0 +1,210 @@
+/* ==== User Registration Form ==== */
+
+/* === Card contenedor === */
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* === Header del card === */
+.card-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  font-size: 1.1rem;
+  color: var(--foreground);
+}
+
+/* === Labels === */
+label {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* === Inputs y SelectTrigger (mismo estilo base) === */
+input,
+[data-slot="select-trigger"] {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
+  background-color: var(--input-background);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 0; /* spacing ahora lo controla el wrapper (.form-grid / form > div) */
+  box-sizing: border-box;
+}
+
+input:focus,
+[data-slot="select-trigger"]:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* === Grid para Nombre / Apellido === */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem; /* separación en mobile */
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem; /* más espacio en desktop */
+  }
+}
+
+/* --- Asegurar spacing consistente para los wrappers de campo
+     - los campos dentro de .form-grid usan `gap`
+     - los wrappers directos hijos del form (email, password, role) reciben margen */
+form > div:not(.form-grid) {
+  margin-bottom: 1rem;
+}
+
+/* Si necesitas un ajuste más fino dentro del grid, asegúrate que
+   cada grid item no tenga margin inferior que genere espacio extra */
+.form-grid > div {
+  margin-bottom: 0;
+}
+
+/* === Botón submit === */
+button[type="submit"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* === SelectContent (dropdown del Select) === */
+[data-slot="select-content"] {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 9999;
+  width: var(--radix-select-trigger-width) !important; /* mismo ancho que el trigger */
+}
+
+/* === Items del Select === */
+[data-slot="select-item"] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+[data-slot="select-item"]:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+[data-slot="select-item"][data-state="checked"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* === Ajustes del Trigger del Select === */
+[data-slot="select-trigger"] {
+  display: flex;
+  align-items: center;          /* centra verticalmente */
+  justify-content: space-between; /* texto izq, flecha der */
+}
+
+/* Icono dentro del Trigger */
+[data-slot="select-trigger"] svg {
+  margin-left: auto;
+  opacity: 0.6; /* más suave */
+}
+
+/* Estilos para mensajes de error más visibles y estilizados */
+
+.error-message,
+small.error-message,
+small.text-red-600 {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  display: flex;              /* <-- usar flex para alinear icono y texto */
+  align-items: center;        /* centra verticalmente el icono con el texto */
+  gap: 0.5rem;                /* separación consistente entre icono y texto */
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: #b91c1c; /* rojo fuerte */
+  background: rgba(185, 28, 28, 0.06); /* fondo rojo suave */
+  border-left: 3px solid rgba(239, 68, 68, 0.95); /* barra izquierda */
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+/* icono opcional: si quieres mostrar un símbolo antes del texto */
+.error-message::before,
+small.error-message::before,
+small.text-red-600::before {
+  content: "⚠";
+  display: inline-flex;       /* inline-flex para poder centrar el contenido */
+  align-items: center;        /* centra el glyph dentro del pseudo-elemento */
+  justify-content: center;
+  margin: 0;                  /* el gap definido en el contenedor controla el espacio */
+  color: #ef4444;
+  font-size: 1rem;            /* ajustar tamaño del icono si es necesario */
+  line-height: 1.5;
+}
+
+/* variante pequeña (menos intrusiva) */
+.error-message--subtle {
+  background: transparent;
+  border-left: 3px solid rgba(185,28,28,0.6);
+  padding: 0;
+  margin-top: 0.25rem;
+  color: #dc2626;
+  box-shadow: none;
+}
+
+/* responsive: ajustar tamaño en pantallas pequeñas */
+@media (max-width: 480px) {
+  .error-message,
+  small.error-message,
+  small.text-red-600 {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.35rem;
+  }
+}

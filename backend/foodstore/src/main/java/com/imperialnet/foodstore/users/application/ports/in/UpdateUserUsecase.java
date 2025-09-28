@@ -1,5 +1,6 @@
 package com.imperialnet.foodstore.users.application.ports.in;
 
+import com.imperialnet.foodstore.users.infrastructure.web.dto.ChangePasswordRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UpdateUserRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
 
@@ -11,5 +12,5 @@ public interface UpdateUserUsecase {
 
     void activate (Long id, String updatedBy);
 
-    void changePassword(Long id, String newPassword, String updatedBy);
+    void changePassword(Long id, ChangePasswordRequest request, String updatedBy);
 }

@@ -174,10 +174,10 @@ public class UserController {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         Long userId = userDetails.getId();
         MDC.put("action", "GET_CURRENT_USER");
-        log.debug("Obteniendo datos del usuario en sesión con ID: {}", userId);
+        log.info("Obteniendo datos del usuario en sesión con ID: {}", userId);
         try {
             UserResponse userResponse= getUserByIdUsecase.execute(userId);
-            log.debug("Usuario en sesión correctamente: {} con ID: {}", userResponse.getEmail(), userResponse.getId());
+            log.info("Usuario en sesión correctamente: {} con ID: {}", userResponse.getEmail(), userResponse.getId());
             return userResponse;
         } catch (Exception e) {
             log.error("Error al obtener los datos del usuario en sesión. Causa: {}", e.getMessage(), e);
@@ -215,7 +215,7 @@ public class UserController {
 
     // --- Endpoint para desactivar a un usuario del sistema ---
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/deactivate/{id}")
+    @PatchMapping("/desactivate/{id}")
     @Operation(
             summary = "Desactivar usuario",
             description = "Desactiva un usuario del sistema mediante su ID. Requiere autenticación."
@@ -280,14 +280,14 @@ public class UserController {
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/changePassword/{id}")
-    public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest newPassword, Authentication auth)
+    public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request, Authentication auth)
     {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         String updatedBy = userDetails.getFullName();
         MDC.put("action", "CHANGE_PASSWORD");
         log.info("El usuario: {}, esta intentando cambiar la contraseña del usuario con ID: {}", updatedBy, id);
         try {
-            updateUserUsecase.changePassword(id, newPassword.getNewPassword(), updatedBy);
+            updateUserUsecase.changePassword(id, request, updatedBy);
             log.info("El usuario: {}, ha cambiado la contraseña del usuario con ID: {}", updatedBy, id);
         } catch (Exception e) {
             log.error("Error al cambiar la contraseña del usuario con ID: {} por {}. Causa: {}", id, updatedBy, e.getMessage());

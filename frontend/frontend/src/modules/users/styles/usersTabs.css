@@ -1,0 +1,84 @@
+/* ==== Tabs Container ==== */
+.tabs-container {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ==== Tabs Header ==== */
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--muted-foreground);
+}
+
+.tab-button:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+.tab-button.active {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+}
+
+/* ==== Tabs Content ==== */
+.tabs-content {
+  padding: 1rem 0;
+}
+
+/* Contenedor de los tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  padding: 0.25rem;
+  margin: 1rem 0 2rem 0;
+  gap: 0.25rem;
+}
+
+/* Cada tab */
+.tab {
+  flex: 1; /* 🔑 ocupa mismo espacio */
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Tab activo */
+.tab.active {
+  background-color: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Hover */
+.tab:hover:not(.active) {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+

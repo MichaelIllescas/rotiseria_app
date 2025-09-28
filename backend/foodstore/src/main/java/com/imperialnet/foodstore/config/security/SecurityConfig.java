@@ -3,6 +3,7 @@ package com.imperialnet.foodstore.config.security;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 /**
  * Spring Security configuration.
@@ -52,12 +55,16 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // ⚠️ ojo: si tu formulario tiene CSRF token activalo
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // registro y demás públicos
+                        .requestMatchers("/auth/**", "/users/me").permitAll() // registro y demás públicos
                         .requestMatchers("/login").permitAll()   // tu login personalizado
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // recursos estáticos
                         .requestMatchers("/auth/reset-password", "/auth/forgot-password").permitAll()
                         .anyRequest().authenticated()
                 )
+                // En tu SecurityConfig, asegúrate de que esté así:
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+
                 .formLogin(form -> form
                         .loginPage("/login")            // GET para renderizar login.html
                         .loginProcessingUrl("/login")   // POST que procesa login
@@ -90,6 +97,20 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                         .build();
+    }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // ← OPTIONS ya está
+        configuration.setAllowedHeaders(List.of("*")); // ← Cambiar a "*"
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L); // ← Agregar cache para preflight
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
 

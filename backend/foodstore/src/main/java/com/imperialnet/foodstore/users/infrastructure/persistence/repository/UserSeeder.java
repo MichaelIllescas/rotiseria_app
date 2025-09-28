@@ -23,10 +23,11 @@ public class UserSeeder {
                     user -> System.out.println("✅ Default user already exists: " + user.getEmail()),
                     () -> {
                         UserEntity defaultUser = UserEntity.builder()
-                                .name("Administrador")
+                                .name("Jonathan")
                                 .email(defaultEmail)
-                                .passwordHash(passwordEncoder.encode("admin123")) // contraseña segura
+                                .passwordHash(passwordEncoder.encode("admin123"))
                                 .role(Role.DUENO)
+                                .lastname("Illescas")
                                 .active(true)
                                 .build();
 

@@ -1,0 +1,455 @@
+/* ==== Contenedor General ==== */
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ==== Tarjetas de estadísticas ==== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+
+.stat-icon {
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.7;
+}
+
+.text-green {
+  color: #16a34a; /* Verde */
+}
+
+.text-red {
+  color: #dc2626; /* Rojo */
+}
+
+.card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  max-width: 100%;
+  width: 100%;       /* ✅ ocupa todo el ancho del contenedor */
+  box-sizing: border-box; /* ✅ incluye el padding en el cálculo del ancho */
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 1rem;
+}
+
+/* ==== Tabla ==== */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.table th {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font-weight: var(--font-weight-medium);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+/* ==== Badges (Roles) ==== */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.badge-dueño {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.badge-encargado {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.badge-atención {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+/* ==== Estado ==== */
+.status-active {
+  color: #16a34a;
+  font-weight: var(--font-weight-medium);
+}
+
+.status-inactive {
+  color: #dc2626;
+  font-weight: var(--font-weight-medium);
+}
+
+/* ==== Botones ==== */
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.btn-outline svg {
+  vertical-align: middle;
+}
+
+
+/* === Botón submit === */
+button[type="submit"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ==== Paginación ==== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.pagination button {
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--foreground);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* ==== Modal de edición ==== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.modal h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.modal p {
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Ajuste: botones del modal con ancho según contenido (ignora w-full) */
+.users-list .card form > div:last-of-type {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end; /* alineados a la derecha como en la captura */
+}
+
+/* Base compartida: ancho según contenido pero misma altura */
+.users-list .card form > div:last-of-type [data-slot="button"] {
+  flex: 0 1 auto;          /* no forzar expansión: ancho según contenido */
+  width: auto !important;  /* anula clases como w-full */
+  min-width: 8rem;         /* mínimo confortable para texto */
+  height: 2.25rem;         /* altura fija para igualdad visual */
+  padding: 0 1rem;         /* suficiente espacio horizontal */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* Mantener apariencia outline / primary */
+.users-list .card form > div:last-of-type [data-slot="button"]:first-child {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  margin-top: 10px;
+}
+
+.users-list .card form > div:last-of-type [data-slot="button"]:last-child {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+}
+
+/* Si hay iconos, asegurar que no aumenten la altura */
+.users-list .card form > div:last-of-type [data-slot="button"] svg {
+  vertical-align: middle;
+}
+
+/* Movil: apilar y ocupar 100% */
+@media (max-width: 420px) {
+  .users-list .card form > div:last-of-type {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .users-list .card form > div:last-of-type [data-slot="button"] {
+    width: 100% !important;
+    min-width: unset;
+    height: 2.5rem;
+  }
+}
+
+/* === Toggle estado === */
+.status-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Switch */
+.switch {
+  margin-top: 15px;
+  appearance: none;
+  width: 40px;
+  height: 20px;
+  background: var(--muted);
+  border-radius: 9999px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.3s;
+  border: 1px solid var(--border);
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--card);
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.switch:checked {
+  background: var(--primary);
+}
+
+.switch:checked::before {
+  transform: translateX(20px);
+}
+
+/* Texto estado */
+.status-active {
+  color: green;
+  font-weight: var(--font-weight-medium);
+}
+
+.status-inactive {
+  color: red;
+  font-weight: var(--font-weight-medium);
+}
+
+
+.div-edit-email {
+  margin-top: 0.9rem;
+}
+
+/* Evitar que el dropdown del Select mueva la página al abrirse.
+   Scoped a .users-list para no afectar otros selects. */
+.users-list [data-slot="select-content"] {
+  position: fixed !important;           /* sacar del flujo del documento */
+  z-index: 9999 !important;             /* encima de todo */
+  box-sizing: border-box;
+  width: auto !important;               /* ancho según contenido/limitaciones */
+  max-width: calc(100vw - 32px) !important; /* evitar overflow horizontal */
+  max-height: 60vh !important;          /* limitar alto para no forzar scroll de la página */
+  overflow: auto !important;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  padding: 0.25rem 0;
+  transform-origin: top left !important;
+  will-change: transform, opacity;
+}
+
+/* El viewport interno conserva padding y mantiene items legibles */
+.users-list [data-slot="select-content"] [data-slot="select-item"] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+/* Asegurar que la flecha/trigger no empuje layout */
+.users-list [data-slot="select-trigger"] {
+  z-index: 1;
+}
+
+/* Mejora en móvil: dropdown ocupa casi toda la pantalla y centrado */
+@media (max-width: 420px) {
+  .users-list [data-slot="select-content"] {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: 70vh !important;
+  }
+}
+
+/* Oscurecer ligeramente el botón "Cancelar" en hover */
+.users-list .card form > div:last-of-type [data-slot="button"]:first-child:hover:not(:disabled) {
+  filter: brightness(0.92);       /* sutil oscurizado */
+  border-color: color-mix(in srgb, var(--border) 80%, black 20%); /* énfasis en el borde */
+  background-color: color-mix(in srgb, transparent 80%, rgba(0,0,0,0.22) 20%); /* leve fondo */
+}
+
+/* Igual para el botón Guardar: solo color, sin elevación ni desplazamiento */
+.users-list .card form > div:last-of-type [data-slot="button"]:last-child:hover:not(:disabled) {
+  filter: none;
+  background-color: color-mix(in srgb, var(--primary) 82%, black 8%); /* sutil oscurizado del primario */
+
+}
+
+/* Evitar que la página pueda scrollear cuando el modal está abierto
+   (usa :has() — soportado en navegadores Chromium/modern; si necesitás
+   soporte más amplio, hay que agregar/remover la clase 'modal-open' al body desde JS) */
+html:has(.modal-overlay),
+body:has(.modal-overlay) {
+  overflow: hidden !important;
+  height: 100% !important;
+}

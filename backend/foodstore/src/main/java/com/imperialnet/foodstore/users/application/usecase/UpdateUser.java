@@ -6,6 +6,7 @@ import com.imperialnet.foodstore.users.domain.exception.BusinessException;
 import com.imperialnet.foodstore.users.domain.exception.UserNotFoundException;
 import com.imperialnet.foodstore.users.domain.model.User;
 import com.imperialnet.foodstore.users.infrastructure.mapper.UserMapper;
+import com.imperialnet.foodstore.users.infrastructure.web.dto.ChangePasswordRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UpdateUserRequest;
 import com.imperialnet.foodstore.users.infrastructure.web.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -98,7 +99,7 @@ public class UpdateUser implements UpdateUserUsecase {
     }
 
     @Override
-    public void changePassword(Long id, String newPassword, String updatedBy) {
+    public void changePassword(Long id, ChangePasswordRequest request, String updatedBy) {
         MDC.put("action", "CHANGE_PASSWORD");
         try {
             User user = userRepositoryPort.findById(id)
@@ -106,15 +107,20 @@ public class UpdateUser implements UpdateUserUsecase {
                         log.warn("Intento de cambiar contraseña de usuario inexistente id={}", id);
                         return new UserNotFoundException("Usuario no encontrado");
                     });
+            //verificar contraseña actual
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+                log.warn("Contraseña actual incorrecta para usuario id={}", id);
+                throw new BusinessException("La contraseña actual es incorrecta");
+            }
 
             try {
-                user.validatePasswordComplexity(newPassword);
+                user.validatePasswordComplexity(request.getNewPassword());
             } catch (IllegalArgumentException ex) {
                 log.warn("Password inválida para usuario id={}: {}", id, ex.getMessage());
                 throw ex;
             }
 
-            String encodedPassword = passwordEncoder.encode(newPassword);
+            String encodedPassword = passwordEncoder.encode(request.getNewPassword());
             user.changePasswordHash(encodedPassword, updatedBy);
 
             userRepositoryPort.save(user);
