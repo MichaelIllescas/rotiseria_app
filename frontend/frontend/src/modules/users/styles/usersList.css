@@ -76,6 +76,7 @@
   overflow-x: auto;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+  width: 100%;
 }
 
 .table {
@@ -452,4 +453,65 @@ html:has(.modal-overlay),
 body:has(.modal-overlay) {
   overflow: hidden !important;
   height: 100% !important;
+}
+
+/* Header: título a la izquierda, boton a la derecha */
+.card-header-with-reload {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 8px; /* espacio para el botón */
+}
+
+/* Botón circular pequeño para recargar */
+.reload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--card-bg, #fff);
+  color:  #1c1346;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  padding: 0;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+}
+
+/* Hover / focus */
+.reload-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(16,24,40,0.06);
+  background: rgba(0,0,0,0.03);
+}
+
+.reload-btn:focus {
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+
+/* Icono dentro del botón */
+.reload-icon {
+  display: block;
+  stroke-width: 1.5;
+}
+
+/* Clase utilitaria para mostrar estado "loading" (usa si quieres rotar icono al recargar) */
+.reload-btn.loading .reload-icon {
+  animation: reload-rotate 1s linear infinite;
+  opacity: 0.95;
+}
+
+/* Rotación suave */
+@keyframes reload-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Pequeño ajuste responsivo: si la tarjeta es muy estrecha, reducir tamaño */
+@media (max-width: 420px) {
+  .reload-btn { width: 32px; height: 32px; border-radius: 6px; }
 }

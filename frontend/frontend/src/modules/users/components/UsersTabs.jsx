@@ -86,6 +86,7 @@ export function UsersTabs() {
             users={users}
             onToggleStatus={handleToggleStatus}
             onUpdateUser={handleUpdateUser}
+            refetchUsers={refetch}
           />
         )}
 

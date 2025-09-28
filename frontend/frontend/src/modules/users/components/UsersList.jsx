@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Edit, Users, UserCheck, UserX } from "lucide-react";
+import { Edit, Users, UserCheck, UserX, RefreshCw } from "lucide-react"; // <-- añadí RefreshCw
 import {
   Table,
   TableHeader,
@@ -33,7 +33,7 @@ const ITEMS_PER_PAGE = 4;
  *   sin depender inmediatamente del prop 'users' proveniente del padre.
  * - Recibe props: users (lista), onToggleStatus (cambia activo/inactivo), onUpdateUser (callback externo).
  */
-export function UsersList({ users, onToggleStatus, onUpdateUser }) {
+export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -216,7 +216,21 @@ export function UsersList({ users, onToggleStatus, onUpdateUser }) {
 
       {/* === Tabla de usuarios === */}
       <div className="card">
-        <h2 className="card-title">Listado de Usuarios</h2>
+        {/* header con botón de recarga en la esquina superior derecha */}
+        <div className="card-header-with-reload">
+          <h2 className="card-title">Listado de Usuarios</h2>
+          <button
+            type="button"
+            className="reload-btn"
+            aria-label="Recargar listado de usuarios"
+            title="Recargar"
+            onClick={refetchUsers}
+          >
+            <RefreshCw className="reload-icon" size={16} />
+          </button>
+        </div>
+<div className="table-wrapper">
+
         <Table className="table">
           <TableHeader>
             <TableRow>
@@ -309,6 +323,7 @@ export function UsersList({ users, onToggleStatus, onUpdateUser }) {
           </div>
         )}
       </div>
+</div>
 
       {/* === Modal de edición con formulario (usa mismos componentes/clases que el form de registro) === */}
       {isEditDialogOpen && editForm && (
