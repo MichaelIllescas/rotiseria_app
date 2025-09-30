@@ -10,10 +10,11 @@ export const AppRoutes = () => {
 
      return (
     <Routes>
-           //rutas apra el user DUENO
+
+        {/* Rutas explusivas para el user DUENO */}
                   {userRole === 'DUENO' && (
             <Route path="/UserPage" element={<ProtectedRoute element={<UsersTabs />} />} />
-            
+
         )}
             
         <Route path="/" element={<ProtectedRoute element={<UsersTabs />} />} />
