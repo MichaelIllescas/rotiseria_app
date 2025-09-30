@@ -3,7 +3,7 @@
  */
 import apiClient from "../../../shared/services/apiClient";
 
-const DEFAULT_REGISTER_ENDPOINT = "/users/register"; 
+const DEFAULT_REGISTER_ENDPOINT = "/api/users/register"; 
 
 /**
  * Registrar un nuevo usuario en el backend.
@@ -27,7 +27,7 @@ const register = async (payload, { endpoint = DEFAULT_REGISTER_ENDPOINT } = {}) 
 };
 
 
-const DEFAULT_GETALL_ENDPOINT = "/users/getAll"; 
+const DEFAULT_GETALL_ENDPOINT = "/api/users/getAll"; 
 
 /**
  * Obtener el listado completo de usuarios desde el backend.
@@ -45,7 +45,7 @@ const list = async () => {
 };
 
 
-const DEFAULT_ACTIVE_ENDPOINT = "/users/activate/<userId>"; 
+const DEFAULT_ACTIVE_ENDPOINT = "/api/users/activate/<userId>"; 
 /**
  * Activar (toggle) un usuario mediante PATCH a un endpoint específico.
  * @param {string|number} userId - ID del usuario a activar.
@@ -65,7 +65,7 @@ const toggleActive = async (userId, { endpoint = DEFAULT_ACTIVE_ENDPOINT } = {})
 };
 
 
-const DEFAULT_DESACTIVE_ENDPOINT = "/users/desactivate/<userId>"; 
+const DEFAULT_DESACTIVE_ENDPOINT = "/api/users/desactivate/<userId>"; 
 /**
  * Desactivar (toggle) un usuario mediante PATCH a un endpoint específico.
  * @param {string|number} userId - ID del usuario a desactivar.
@@ -86,7 +86,7 @@ const toggleDesactive = async (userId, { endpoint = DEFAULT_DESACTIVE_ENDPOINT }
 
 
 /* === Nuevo: update user === */
-const DEFAULT_UPDATE_ENDPOINT = "/users/update/<userId>";
+const DEFAULT_UPDATE_ENDPOINT = "/api/users/update/<userId>";
 
 /**
  * Actualizar un usuario en el backend.
@@ -109,7 +109,7 @@ const update = async (userId, payload, { endpoint = DEFAULT_UPDATE_ENDPOINT } = 
 };
 
 /* === Nuevo: changePassword === */
-const DEFAULT_CHANGEPASSWORD_ENDPOINT = "/users/changePassword/<userId>";
+const DEFAULT_CHANGEPASSWORD_ENDPOINT = "/api/users/changePassword/<userId>";
 
 /**
  * Cambiar la contraseña de un usuario en el backend.
