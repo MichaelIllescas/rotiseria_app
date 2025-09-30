@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,7 @@ public class UserController {
             description = "Usuario creado exitosamente",
             content = @Content(schema = @Schema(implementation = CreateUserResponse.class))
     )
+    @PreAuthorize("hasRole('DUENO')")
     public CreateUserResponse createUser( @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       description = "Datos necesarios para crear un usuario",
                                                       required = true,
@@ -79,6 +81,7 @@ public class UserController {
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("getAll")
+    @PreAuthorize("hasRole('DUENO')")
     public List<UserResponse> getAllUsers()
     {
         MDC.put("action", "GET_ALL_USERS");
@@ -108,6 +111,7 @@ public class UserController {
             description = "Usuario obtenido exitosamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
+    @PreAuthorize("hasRole('DUENO')")
     public UserResponse getUserById(@PathVariable Long id)
     {
         MDC.put("action", "GET_USER_BY_ID");
@@ -137,6 +141,7 @@ public class UserController {
             description = "Usuario actualizado correctamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
+    @PreAuthorize("hasRole('DUENO')")
     public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request, Authentication auth)
     {
 
@@ -169,6 +174,7 @@ public class UserController {
             description = "Datos del usuario obtenidos exitosamente",
             content = @Content(schema = @Schema(implementation = UserResponse.class))
     )
+    @PreAuthorize("hasAnyRole('DUENO','ENCARGADO','ATENCION')")
     public UserResponse getCurrentUser(Authentication auth)
     {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
@@ -198,6 +204,7 @@ public class UserController {
             responseCode = "204",
             description = "Usuario eliminado exitosamente"
     )
+    @PreAuthorize("hasRole('DUENO')")
     public void deleteUser(@PathVariable Long id)
     {
         MDC.put("action", "DELETE_USER");
@@ -224,6 +231,7 @@ public class UserController {
             responseCode = "204",
             description = "Usuario desactivado exitosamente"
     )
+    @PreAuthorize("hasRole('DUENO')")
     public void deactivateUser(@PathVariable Long id, Authentication auth)
     {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
@@ -252,6 +260,7 @@ public class UserController {
             responseCode = "204",
             description = "Usuario Actuvado exitosamente"
     )
+    @PreAuthorize("hasRole('DUENO')")
     public void activateUser(@PathVariable Long id, Authentication auth)
     {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
@@ -280,6 +289,7 @@ public class UserController {
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/changePassword/{id}")
+    @PreAuthorize("hasAnyRole('DUENO','ENCARGADO','ATENCION')")
     public void changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request, Authentication auth)
     {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();

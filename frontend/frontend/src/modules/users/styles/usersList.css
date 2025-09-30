@@ -76,7 +76,7 @@
   overflow-x: auto;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  width: 100%;
+ 
 }
 
 .table {
