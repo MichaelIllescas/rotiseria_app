@@ -7,6 +7,7 @@ import {
   Settings,
   Menu,
   X,
+  User
 } from "lucide-react";
 import "./styles/sidebar.css";
 
@@ -16,6 +17,7 @@ const menuItems = [
   { name: "Productos", path: "/products", icon: Package },
   { name: "Categorías", path: "/categories", icon: Folder },
   { name: "Configuración", path: "/settings", icon: Settings },
+  { name: "Usuarios", path: "/users", icon: User   },
 ];
 
 export default function Sidebar() {

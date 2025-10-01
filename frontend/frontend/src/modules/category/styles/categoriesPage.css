@@ -1,0 +1,23 @@
+.categories-page {
+  padding-top: 2rem;
+  background-color: var(--background);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding-top: 100px;
+}
+.page-title {
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  margin: 0 auto;
+    text-align: center;
+}
+.page-description {
+  font-size: 1rem;
+  color: var(--muted-foreground);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 600px;
+}

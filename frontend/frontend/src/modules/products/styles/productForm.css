@@ -1,0 +1,358 @@
+/* === Card contenedor === */
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* === Header del card === */
+.card-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  font-size: 1.1rem;
+  color: var(--foreground);
+}
+
+/* === Labels === */
+label {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+/* --- Aplicamos estilos sólo dentro del modal de productos --- */
+.products-list .modal-overlay .card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  min-width: 60dvw;
+  margin: 0 auto;
+}
+
+.products-list .modal-overlay .card-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.products-list .modal-overlay .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  font-size: 1.15rem;
+  color: var(--foreground);
+}
+
+/* === Labels === */
+.products-list .modal-overlay label {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* === Inputs y SelectTrigger === */
+.products-list .modal-overlay input,
+.products-list .modal-overlay textarea,
+.products-list .modal-overlay [data-slot="select-trigger"],
+.products-list .modal-overlay .input-group {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
+  background-color: var(--input-background);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+.products-list .modal-overlay textarea {
+  min-height: 6rem;
+  resize: vertical;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
+.products-list .modal-overlay input:focus,
+.products-list .modal-overlay textarea:focus,
+.products-list .modal-overlay [data-slot="select-trigger"]:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* === Grid para campos lado a lado === */
+.products-list .modal-overlay .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .products-list .modal-overlay .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* --- Spacing para los campos del formulario --- */
+.products-list .modal-overlay form > div:not(.form-grid) {
+  margin-bottom: 1rem;
+}
+
+.products-list .modal-overlay .form-grid > div {
+  margin-bottom: 0;
+}
+
+/* === Estilos para mensajes de error === */
+.products-list .modal-overlay .error-message {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: #b91c1c;
+  background: rgba(185, 28, 28, 0.06);
+  border-left: 3px solid rgba(239, 68, 68, 0.95);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+.products-list .modal-overlay .error-message::before {
+  content: "⚠";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #ef4444;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* === Select (Dropdown) === */
+.products-list .modal-overlay [data-slot="select-content"] {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 9999;
+  width: var(--radix-select-trigger-width) !important;
+}
+
+.products-list .modal-overlay [data-slot="select-item"] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.products-list .modal-overlay [data-slot="select-item"]:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.products-list .modal-overlay [data-slot="select-item"][data-state="checked"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.products-list .modal-overlay [data-slot="select-trigger"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.products-list .modal-overlay [data-slot="select-trigger"] svg {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* === Imagen de producto: uploader personalizado y vista previa === */
+.products-list .modal-overlay .image-uploader {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.products-list .modal-overlay .image-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--input-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+.products-list .modal-overlay .image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.products-list .modal-overlay .image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.products-list .modal-overlay .file-input-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Botón personalizado para subir imagen */
+.products-list .modal-overlay .btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.05s;
+}
+
+.products-list .modal-overlay .btn-upload:hover {
+  background: var(--hover);
+}
+
+/* === Precio con símbolo (input group) === */
+.products-list .modal-overlay .input-group {
+  display: flex;
+  align-items: center;
+}
+
+.products-list .modal-overlay .input-group .prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-foreground);
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
+.products-list .modal-overlay .input-group input {
+  border: none;
+  padding-left: 0.75rem;
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+  box-shadow: none;
+  background: transparent;
+  outline: none;
+}
+
+/* === SKU y stock compacto lado a lado === */
+.products-list .modal-overlay .compact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .products-list .modal-overlay .compact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Tags/Badges input === */
+.products-list .modal-overlay .tags-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--input-background);
+}
+
+.products-list .modal-overlay .tags-input .tag {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* === Toggle para estado activo/inactivo === */
+.products-list .modal-overlay .toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* === Footer con acciones === */
+.products-list .modal-overlay .card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+/* === Responsive para dispositivos pequeños === */
+@media (max-width: 480px) {
+  .products-list .modal-overlay .card {
+    padding: 1rem;
+    min-width: calc(100dvw - 2rem);
+  }
+
+  .products-list .modal-overlay .card-title {
+    font-size: 1rem;
+  }
+
+  .products-list .modal-overlay .image-preview {
+    width: 72px;
+    height: 72px;
+  }
+
+  .products-list .modal-overlay .btn-upload {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .products-list .modal-overlay .error-message {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.35rem;
+  }
+}

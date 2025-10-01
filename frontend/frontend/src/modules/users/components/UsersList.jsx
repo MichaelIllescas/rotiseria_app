@@ -33,7 +33,12 @@ const ITEMS_PER_PAGE = 4;
  *   sin depender inmediatamente del prop 'users' proveniente del padre.
  * - Recibe props: users (lista), onToggleStatus (cambia activo/inactivo), onUpdateUser (callback externo).
  */
-export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers }) {
+export function UsersList({
+  users,
+  onToggleStatus,
+  onUpdateUser,
+  refetchUsers,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -179,7 +184,10 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
     } catch (err) {
       // Optional: show generic error
       console.error("Error updating user", err);
-      setEditErrors((prev) => ({ ...prev, form: err.message || "Error al actualizar el usuario" }));
+      setEditErrors((prev) => ({
+        ...prev,
+        form: err.message || "Error al actualizar el usuario",
+      }));
     } finally {
       setIsSaving(false);
     }
@@ -215,7 +223,7 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
       </div>
 
       {/* === Tabla de usuarios === */}
-      <div className="card">
+      <div className="">
         {/* header con botón de recarga en la esquina superior derecha */}
         <div className="card-header-with-reload">
           <h2 className="card-title">Listado de Usuarios</h2>
@@ -229,101 +237,102 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
             <RefreshCw className="reload-icon" size={16} />
           </button>
         </div>
-<div className="table-wrapper">
-
-        <Table className="table">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre Completo</TableHead>
-              <TableHead>Correo</TableHead>
-              <TableHead>Rol</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {currentUsers.length === 0 ? (
+        <div className="table-wrapper">
+          <Table className="table">
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted">
-                  No hay usuarios registrados
-                </TableCell>
+                <TableHead>Nombre Completo</TableHead>
+                <TableHead>Correo</TableHead>
+                <TableHead>Rol</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
-            ) : (
-              currentUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {user.name} {user.lastname}
-                  </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <span className={`badge badge-${user.role.toLowerCase()}`}>
-                      {user.role}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="status-toggle">
-                      <input
-                        type="checkbox"
-                        className="switch"
-                        checked={user.active}
-                        onChange={() => onToggleStatus(user)}
-                      />
-                      <span
-                        className={
-                          user.active ? "status-active" : "status-inactive"
-                        }
-                      >
-                        {user.active ? "Activo" : "Inactivo"}
-                      </span>
-                    </div>
-                  </TableCell>
+            </TableHeader>
 
-                  <TableCell className="text-right">
-                    <button
-                      className="btn-outline btn-sm"
-                      onClick={() => handleEditUser(user)}
-                    >
-                      <Edit size={16} className="mr-1" />
-                      Editar
-                    </button>
+            <TableBody>
+              {currentUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted">
+                    No hay usuarios registrados
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                currentUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      {user.name} {user.lastname}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`badge badge-${user.role.toLowerCase()}`}
+                      >
+                        {user.role}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="status-toggle">
+                        <input
+                          type="checkbox"
+                          className="switch"
+                          checked={user.active}
+                          onChange={() => onToggleStatus(user)}
+                        />
+                        <span
+                          className={
+                            user.active ? "status-active" : "status-inactive"
+                          }
+                        >
+                          {user.active ? "Activo" : "Inactivo"}
+                        </span>
+                      </div>
+                    </TableCell>
 
-        {/* === Paginación === */}
-        {totalPages > 1 && (
-          <div className="pagination">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-            >
-              Anterior
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
+                    <TableCell className="text-right">
+                      <button
+                        className="btn-outline btn-sm"
+                        onClick={() => handleEditUser(user)}
+                      >
+                        <Edit size={16} className="mr-1" />
+                        Editar
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+
+          {/* === Paginación === */}
+          {totalPages > 1 && (
+            <div className="pagination">
               <button
-                key={i}
-                className={currentPage === i + 1 ? "active" : ""}
-                onClick={() => setCurrentPage(i + 1)}
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               >
-                {i + 1}
+                Anterior
               </button>
-            ))}
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }
-            >
-              Siguiente
-            </button>
-          </div>
-        )}
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  className={currentPage === i + 1 ? "active" : ""}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-</div>
 
       {/* === Modal de edición con formulario (usa mismos componentes/clases que el form de registro) === */}
       {isEditDialogOpen && editForm && (
@@ -351,11 +360,15 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
                         id="edit-name"
                         type="text"
                         value={editForm.name}
-                        onChange={(e) => handleEditChange("name", e.target.value)}
+                        onChange={(e) =>
+                          handleEditChange("name", e.target.value)
+                        }
                         placeholder="Nombre"
                         required
                       />
-                      {editErrors.name && <div className="error-message">{editErrors.name}</div>}
+                      {editErrors.name && (
+                        <div className="error-message">{editErrors.name}</div>
+                      )}
                     </div>
 
                     <div>
@@ -364,11 +377,17 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
                         id="edit-lastname"
                         type="text"
                         value={editForm.lastname}
-                        onChange={(e) => handleEditChange("lastname", e.target.value)}
+                        onChange={(e) =>
+                          handleEditChange("lastname", e.target.value)
+                        }
                         placeholder="Apellido"
                         required
                       />
-                      {editErrors.lastname && <div className="error-message">{editErrors.lastname}</div>}
+                      {editErrors.lastname && (
+                        <div className="error-message">
+                          {editErrors.lastname}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -378,11 +397,15 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
                       id="edit-email"
                       type="email"
                       value={editForm.email}
-                      onChange={(e) => handleEditChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleEditChange("email", e.target.value)
+                      }
                       placeholder="ejemplo@correo.com"
                       required
                     />
-                    {editErrors.email && <div className="error-message">{editErrors.email}</div>}
+                    {editErrors.email && (
+                      <div className="error-message">{editErrors.email}</div>
+                    )}
                   </div>
 
                   {/* No password field per request - password managed elsewhere */}
@@ -404,7 +427,9 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
                     </Select>
                   </div>
 
-                  {editErrors.form && <div className="error-message">{editErrors.form}</div>}
+                  {editErrors.form && (
+                    <div className="error-message">{editErrors.form}</div>
+                  )}
 
                   <div style={{ display: "flex", gap: 8 }}>
                     <Button
@@ -424,7 +449,9 @@ export function UsersList({ users, onToggleStatus, onUpdateUser, refetchUsers })
                       size="sm"
                       disabled={isSaving}
                       className="w-full"
-                      onClick={handleSave} /* asegurar ejecución aunque Button no propague submit */
+                      onClick={
+                        handleSave
+                      } /* asegurar ejecución aunque Button no propague submit */
                     >
                       {isSaving ? "Guardando..." : "Guardar Cambios"}
                     </Button>

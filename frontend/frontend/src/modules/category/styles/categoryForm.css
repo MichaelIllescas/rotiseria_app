@@ -1,0 +1,160 @@
+/* ===================================================================== */
+/* === Category Form (Modal) - Estilos extraídos del formulario de usuario === */
+/* ===================================================================== */
+
+/* --- Aseguramos que los siguientes estilos solo apliquen al modal --- */
+.categories-list .modal-overlay .card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  min-width: 50dvw;
+  margin: 0 auto;
+}
+
+.categories-list .modal-overlay .card-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.categories-list .modal-overlay .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  font-size: 1.1rem;
+  color: var(--foreground);
+}
+
+/* === Labels === */
+.categories-list .modal-overlay label {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* === Inputs y SelectTrigger === */
+.categories-list .modal-overlay input,
+.categories-list .modal-overlay [data-slot="select-trigger"] {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
+  background-color: var(--input-background);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+.categories-list .modal-overlay input:focus,
+.categories-list .modal-overlay [data-slot="select-trigger"]:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* === Grid para campos lado a lado (si lo necesitas en el futuro) === */
+.categories-list .modal-overlay .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .categories-list .modal-overlay .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* --- Spacing para los campos del formulario --- */
+.categories-list .modal-overlay form > div:not(.form-grid) {
+  margin-bottom: 1rem;
+}
+
+.categories-list .modal-overlay .form-grid > div {
+  margin-bottom: 0;
+}
+
+/* === Estilos para mensajes de error === */
+.categories-list .modal-overlay .error-message {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: #b91c1c;
+  background: rgba(185, 28, 28, 0.06);
+  border-left: 3px solid rgba(239, 68, 68, 0.95);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+.categories-list .modal-overlay .error-message::before {
+  content: "⚠";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #ef4444;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* === Select (Dropdown) === */
+.categories-list .modal-overlay [data-slot="select-content"] {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 9999;
+  width: var(--radix-select-trigger-width) !important;
+}
+
+.categories-list .modal-overlay [data-slot="select-item"] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.categories-list .modal-overlay [data-slot="select-item"]:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.categories-list .modal-overlay [data-slot="select-item"][data-state="checked"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.categories-list .modal-overlay [data-slot="select-trigger"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.categories-list .modal-overlay [data-slot="select-trigger"] svg {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* === Responsive para errores === */
+@media (max-width: 480px) {
+  .categories-list .modal-overlay .error-message {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.35rem;
+  }
+}
