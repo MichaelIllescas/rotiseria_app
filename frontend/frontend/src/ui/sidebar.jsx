@@ -4,7 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { PanelLeftIcon } from "lucide-react";
 
-import { useIsMobile } from "./use-mobile";
+import { useIsMobile } from "./useIsMobile";
 import { cn } from "./utils";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -32,11 +32,25 @@ const SIDEBAR_WIDTH_MOBILE = "18rem"; // ancho en mobile
 const SIDEBAR_WIDTH_ICON = "3rem"; // ancho reducido en modo íconos
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"; // ctrl+b o cmd+b abre/cierra
 
-/* 📌 Contexto del Sidebar */
+/**
+ * 📌 Contexto del Sidebar
+ * Guarda y comparte el estado del sidebar en toda la app.
+ * 
+ * Valores expuestos:
+ * - `state`: "expanded" o "collapsed"
+ * - `open`: si está abierto en desktop
+ * - `setOpen`: función para actualizar `open`
+ * - `openMobile`: si está abierto en mobile
+ * - `setOpenMobile`: función para actualizar `openMobile`
+ * - `isMobile`: booleano que indica si es pantalla chica
+ * - `toggleSidebar`: helper para alternar el estado
+ */
 const SidebarContext = React.createContext(null);
 
 /**
  * ✅ Hook para consumir el contexto del Sidebar
+ * 
+ * Lanza error si se intenta usar fuera de `SidebarProvider`.
  */
 function useSidebar() {
   const context = React.useContext(SidebarContext);
@@ -48,7 +62,18 @@ function useSidebar() {
 
 /**
  * ✅ SidebarProvider
- * Envuelve la app y maneja el estado del sidebar
+ * 
+ * Envuelve la app y maneja:
+ * - Estado abierto/cerrado del sidebar.
+ * - Estado en mobile vs desktop.
+ * - Guarda el estado en cookie para persistencia.
+ * - Atajo de teclado (Ctrl/Cmd + B) para abrir/cerrar.
+ * 
+ * Props:
+ * - `defaultOpen` (bool, opcional): estado inicial (true por defecto).
+ * - `open` (bool, opcional): si se controla desde fuera.
+ * - `onOpenChange` (función, opcional): callback al cambiar estado.
+ * - `children`: elementos hijos que tendrán acceso al contexto.
  */
 function SidebarProvider({
   defaultOpen = true,
@@ -62,6 +87,7 @@ function SidebarProvider({
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
 
+  // Estado interno (controlado o no controlado)
   const [_open, _setOpen] = React.useState(defaultOpen);
   const open = openProp ?? _open;
 
@@ -73,15 +99,18 @@ function SidebarProvider({
       } else {
         _setOpen(openState);
       }
+      // Guardar en cookie
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
     },
     [setOpenProp, open]
   );
 
+  // Toggle helper (según mobile/desktop)
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((o) => !o) : setOpen((o) => !o);
   }, [isMobile, setOpen, setOpenMobile]);
 
+  // Atajo de teclado Ctrl/Cmd + B
   React.useEffect(() => {
     const handleKeyDown = (event) => {
       if (
@@ -96,6 +125,7 @@ function SidebarProvider({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar]);
 
+  // Estado derivado
   const state = open ? "expanded" : "collapsed";
 
   const contextValue = React.useMemo(
@@ -136,7 +166,13 @@ function SidebarProvider({
 
 /**
  * ✅ Sidebar
- * Contenedor principal del sidebar
+ * 
+ * Contenedor principal del sidebar.
+ * 
+ * Props:
+ * - `side`: "left" | "right" → lado en el que aparece (default: left).
+ * - `variant`: "sidebar" | "floating" | "inset" → estilo visual.
+ * - `collapsible`: "offcanvas" | "icon" | "none" → comportamiento de colapso.
  */
 function Sidebar({
   side = "left",
@@ -148,6 +184,7 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
+  // Variante sin colapsar nunca
   if (collapsible === "none") {
     return (
       <div
@@ -163,6 +200,7 @@ function Sidebar({
     );
   }
 
+  // Mobile: se muestra como Sheet
   if (isMobile) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
@@ -184,6 +222,7 @@ function Sidebar({
     );
   }
 
+  // Desktop
   return (
     <div
       className="group peer text-sidebar-foreground hidden md:block"
@@ -193,6 +232,7 @@ function Sidebar({
       data-side={side}
       data-slot="sidebar"
     >
+      {/* Espacio invisible que maneja la animación de colapso */}
       <div
         data-slot="sidebar-gap"
         className={cn(
@@ -232,7 +272,11 @@ function Sidebar({
 
 /**
  * ✅ SidebarTrigger
- * Botón que abre/cierra el sidebar
+ * 
+ * Botón que abre/cierra el sidebar.
+ * 
+ * Props:
+ * - hereda todas las props de `Button`
  */
 function SidebarTrigger({ className, onClick, ...props }) {
   const { toggleSidebar } = useSidebar();
@@ -255,11 +299,9 @@ function SidebarTrigger({ className, onClick, ...props }) {
     </Button>
   );
 }
-
-/* 🔹 Exportaciones */
 export {
   SidebarProvider,
   Sidebar,
   SidebarTrigger,
-  useSidebar,
+  useSidebar
 };

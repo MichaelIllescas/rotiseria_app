@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserCog, LogOut, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { UserCog, LogOut, ChevronDown } from "lucide-react";
 import "../styles/header.css";
 import useUpdateUser from "../hooks/useUpdateUser";
 import {useAuth} from '../../../context/AuthContext';
@@ -38,10 +38,6 @@ export function UserHeader({ currentUser, onUpdateProfile, onLogout }) {
 		newPassword: "",
 		confirmPassword: "",
 	});
-	// estados para mostrar/ocultar cada campo de contraseña
-	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-	const [showNewPassword, setShowNewPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [passwordError, setPasswordError] = useState(null);
 	const [isChangingPassword, setIsChangingPassword] = useState(false);
 
@@ -227,66 +223,31 @@ export function UserHeader({ currentUser, onUpdateProfile, onLogout }) {
 	 *   - newPassword debe coincidir con confirmPassword.
 	 * - No realiza petición al backend; en caso de éxito simplemente cierra el modal tras breve delay.
 	 */
-	const handleChangePasswordSubmit = async (e) => {
-        e.preventDefault();
-        setPasswordError(null);
+	const handleChangePasswordSubmit = (e) => {
+		e.preventDefault();
+		setPasswordError(null);
 
-        const { currentPassword, newPassword, confirmPassword } = passwordForm;
+		const { currentPassword, newPassword, confirmPassword } = passwordForm;
 
-        if (!currentPassword?.trim() || !newPassword?.trim() || !confirmPassword?.trim()) {
-            setPasswordError("Todos los campos son requeridos.");
-            return;
-        }
+		if (!currentPassword?.trim() || !newPassword?.trim() || !confirmPassword?.trim()) {
+			setPasswordError("Todos los campos son requeridos.");
+			return;
+		}
 
-        if (newPassword !== confirmPassword) {
-            setPasswordError("La nueva contraseña y su confirmación no coinciden.");
-            return;
-        }
+		if (newPassword !== confirmPassword) {
+			setPasswordError("La nueva contraseña y su confirmación no coinciden.");
+			return;
+		}
+    changePassword(currentUser?.id, { newPassword: passwordForm.newPassword })
 
-        // iniciar indicador de carga
-        setIsChangingPassword(true);
-
-        try {
-            // construir payload exactamente en el formato que requiere el backend
-            const payload = {
-                currentPassword: passwordForm.currentPassword,
-                newPassword: passwordForm.newPassword,
-            };
-
-            // enviar al hook/backend (se mantiene el id si tu hook lo requiere como primer argumento)
-            // ajusta la llamada si tu hook espera sólo el payload.
-            const result = await changePassword(currentUser?.id, payload);
-
-            // manejar formatos de respuesta comunes: si el hook/backend devuelve error sin lanzar excepción
-            const errorMessage =
-                result?.error ||
-                result?.message ||
-                (result?.ok === false && (result?.data?.message || "Error al cambiar la contraseña."));
-
-            if (errorMessage) {
-                setPasswordError(errorMessage);
-                setIsChangingPassword(false);
-                // NO cerrar el modal: permitir que el usuario corrija
-                return;
-            }
-
-            // éxito: limpiar formulario y cerrar modal tras breve delay para feedback visual
-            setTimeout(() => {
-                setIsChangingPassword(false);
-                setIsPasswordDialogOpen(false);
-                setPasswordForm({
-                    currentPassword: "",
-                    newPassword: "",
-                    confirmPassword: "",
-                });
-            }, 800);
-        } catch (err) {
-            // si changePassword lanza excepción
-            setPasswordError(err?.message || "Error al cambiar la contraseña.");
-            setIsChangingPassword(false);
-            // NO cerrar el modal
-        }
-    };
+		// Visual only: simular proceso y cerrar modal
+		setIsChangingPassword(true);
+		setTimeout(() => {
+			setIsChangingPassword(false);
+			setIsPasswordDialogOpen(false);
+			// No se realiza actualización real; quien implemente el backend debe manejarla.
+		}, 800);
+	};
 
 	return (
 		<div className="header">
@@ -444,131 +405,32 @@ export function UserHeader({ currentUser, onUpdateProfile, onLogout }) {
 						<form onSubmit={handleChangePasswordSubmit} className="profile-form">
 							<label>
 								Contraseña Actual
-								<div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-									<input
-										name="currentPassword"
-										value={passwordForm.currentPassword}
-										onChange={handlePasswordInputChange}
-										type={showCurrentPassword ? "text" : "password"}
-										style={{
-											width: "100%",
-											paddingRight: "44px", // espacio para el icono
-											boxSizing: "border-box",
-										}}
-									/>
-									<button
-										type="button"
-										onClick={() => setShowCurrentPassword((v) => !v)}
-										aria-label={showCurrentPassword ? "Ocultar contraseña actual" : "Mostrar contraseña actual"}
-										style={{
-											position: "absolute",
-											right: 8,
-											top: "50%",
-											transform: "translateY(-50%)",
-											border: "none",
-											background: "rgba(0,0,0,0.04)",
-											padding: 6,
-											borderRadius: 6,
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											cursor: "pointer",
-											outline: "none",
-											transition: "background 120ms ease, opacity 120ms ease",
-											opacity: 0.95,
-										}}
-										onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.06)")}
-										onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.04)")}
-									>
-										{showCurrentPassword ? <EyeOff size={18} color="#374151" /> : <Eye size={18} color="#374151" />}
-									</button>
-								</div>
+								<input
+									name="currentPassword"
+									value={passwordForm.currentPassword}
+									onChange={handlePasswordInputChange}
+									type="password"
+								/>
 							</label>
 
 							<label>
 								Nueva Contraseña
-								<div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-									<input
-										name="newPassword"
-										value={passwordForm.newPassword}
-										onChange={handlePasswordInputChange}
-										type={showNewPassword ? "text" : "password"}
-										style={{
-											width: "100%",
-											paddingRight: "44px",
-											boxSizing: "border-box",
-										}}
-									/>
-									<button
-										type="button"
-										onClick={() => setShowNewPassword((v) => !v)}
-										aria-label={showNewPassword ? "Ocultar nueva contraseña" : "Mostrar nueva contraseña"}
-										style={{
-											position: "absolute",
-											right: 8,
-											top: "50%",
-											transform: "translateY(-50%)",
-											border: "none",
-											background: "rgba(0,0,0,0.04)",
-											padding: 6,
-											borderRadius: 6,
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											cursor: "pointer",
-											outline: "none",
-											transition: "background 120ms ease, opacity 120ms ease",
-											opacity: 0.95,
-										}}
-										onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.06)")}
-										onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.04)")}
-									>
-										{showNewPassword ? <EyeOff size={18} color="#374151" /> : <Eye size={18} color="#374151" />}
-									</button>
-								</div>
+								<input
+									name="newPassword"
+									value={passwordForm.newPassword}
+									onChange={handlePasswordInputChange}
+									type="password"
+								/>
 							</label>
 
 							<label>
 								Confirmar Nueva Contraseña
-								<div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-									<input
-										name="confirmPassword"
-										value={passwordForm.confirmPassword}
-										onChange={handlePasswordInputChange}
-										type={showConfirmPassword ? "text" : "password"}
-										style={{
-											width: "100%",
-											paddingRight: "44px",
-											boxSizing: "border-box",
-										}}
-									/>
-									<button
-										type="button"
-										onClick={() => setShowConfirmPassword((v) => !v)}
-										aria-label={showConfirmPassword ? "Ocultar confirmación de contraseña" : "Mostrar confirmación de contraseña"}
-										style={{
-											position: "absolute",
-											right: 8,
-											top: "50%",
-											transform: "translateY(-50%)",
-											border: "none",
-											background: "rgba(0,0,0,0.04)",
-											padding: 6,
-											borderRadius: 6,
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											cursor: "pointer",
-											outline: "none",
-											transition: "background 120ms ease, opacity 120ms ease",
-											opacity: 0.95,
-										}}
-										onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.06)")}
-										onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.04)")}
-									>
-										{showConfirmPassword ? <EyeOff size={18} color="#374151" /> : <Eye size={18} color="#374151" />}
-									</button>
-								</div>
+								<input
+									name="confirmPassword"
+									value={passwordForm.confirmPassword}
+									onChange={handlePasswordInputChange}
+									type="password"
+								/>
 							</label>
 
 							{passwordError && (

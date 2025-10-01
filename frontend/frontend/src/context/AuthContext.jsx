@@ -11,7 +11,7 @@
 
   const getUserSession = async () => {
     try {
-      const { data } = await apiClient.get("/users/me", { withCredentials: true });
+      const { data } = await apiClient.get("/api/users/me", { withCredentials: true });
       setUser(data);
     } catch (err) {
       setUser(null); // si no está autenticado

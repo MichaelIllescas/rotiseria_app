@@ -6,6 +6,9 @@
   padding: 1rem 1.5rem;
   background-color: var(--card);
   border-bottom: 1px solid var(--border);
+   position: fixed;
+    width: 100%;
+    z-index: 10;
 }
 
 /* Título */
@@ -14,7 +17,7 @@
   font-weight: var(--font-weight-medium);
   color: var(--foreground);
   margin: 0;
-}
+ }
 
 /* ==== Avatar + Dropdown Trigger ==== */
 .user-button {
@@ -57,7 +60,7 @@
 /* ==== Dropdown Menu ==== */
 .dropdown {
   position: absolute;
-  right: 0;     /* 🔹 se pega al borde derecho del contenedor */
+  right: 30px;     /* 🔹 se pega al borde derecho del contenedor */
   top: 100%;    /* 🔹 aparece justo debajo del botón */
   margin-top: 0.25rem;
   width: 14rem;
@@ -258,7 +261,7 @@ small.text-red-600::before {
   }
 
 /* responsive: ajustar tamaño en pantallas pequeñas */
-@media (max-width: 480px) {
+@media (max-width: 580px) {
   .error-message,
   small.error-message,
   small.text-red-600 {
@@ -266,4 +269,12 @@ small.text-red-600::before {
     padding: 0.25rem 0.5rem;
     gap: 0.35rem;
   }
+  .header-title{
+     margin-left: 50px;
+     font-size: medium;
+  }
+
 }
+
+
+

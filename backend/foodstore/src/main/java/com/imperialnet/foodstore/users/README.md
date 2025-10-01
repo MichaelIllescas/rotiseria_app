@@ -48,15 +48,15 @@ Forma parte de la arquitectura **hexagonal**, donde la lógica de negocio se enc
 ## 🔗 Endpoints principales
 
 ### Usuarios
-- **POST `/users/register`** → Registrar un nuevo usuario.  
-- **PUT `/users/update/{id}`** → Actualizar usuario.  
-- **DELETE `/users/delete/{id}`** → Eliminar usuario.  
-- **PATCH `/users/activate/{id}`** → Activar usuario.  
-- **PATCH `/users/deactivate/{id}`** → Desactivar usuario.  
-- **PATCH `/users/changePassword/{id}`** → Cambiar contraseña.  
-- **GET `/users/getUser/{id}`** → Obtener usuario por ID.  
-- **GET `/users/getAll`** → Obtener todos los usuarios.  
-- **GET `/users/me`** → Obtener usuario en sesión.  
+- **POST `/api/users/register`** → Registrar un nuevo usuario.  
+- **PUT `/api/users/update/{id}`** → Actualizar usuario.  
+- **DELETE `/api/users/delete/{id}`** → Eliminar usuario.  
+- **PATCH `/api/users/activate/{id}`** → Activar usuario.  
+- **PATCH `/api/users/deactivate/{id}`** → Desactivar usuario.  
+- **PATCH `/api/users/changePassword/{id}`** → Cambiar contraseña.  
+- **GET `/api/users/getUser/{id}`** → Obtener usuario por ID.  
+- **GET `/api/users/getAll`** → Obtener todos los usuarios.  
+- **GET `/api/users/me`** → Obtener usuario en sesión.  
 
 ### Recuperación de contraseña
 - **POST `/auth/forgot-password`** → Iniciar proceso de recuperación (envía email con token).  

@@ -1,0 +1,111 @@
+/* === Botón hamburguesa (solo mobile) === */
+.sidebar-toggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle svg {
+  width: 24px;
+  height: 24px;
+  color: #111827;
+}
+
+/* ocultar en desktop */
+@media (min-width: 768px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+/* === Sidebar === */
+.sidebar {
+  position: fixed;
+  top: 90px;
+  left: -100%; /* oculto en mobile */
+  height: 100vh;
+  width: 16rem;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  transition: left 0.3s ease;
+  z-index: 40;
+}
+
+/* Desktop: siempre visible */
+@media (min-width: 768px) {
+  .sidebar {
+    left: 0;
+  }
+}
+
+/* Mobile abierto */
+.sidebar.open {
+  left: 0;
+}
+
+/* Header */
+.sidebar-header {
+  margin-bottom: 2rem;
+}
+
+.sidebar-header .logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: block;
+}
+
+.sidebar-header .subtitle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+padding-left: 30px;
+}
+
+/* Navegación */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-nav a svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover */
+.sidebar-nav a:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* Activo */
+.sidebar-nav a.active {
+  background: #111827;
+  color: #fff;
+}
