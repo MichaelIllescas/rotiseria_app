@@ -1,5 +1,7 @@
 package com.imperialnet.foodstore.shared.exception;
 
+import com.imperialnet.foodstore.products.domain.exception.CategoryNotFoundException;
+import com.imperialnet.foodstore.products.domain.exception.ProductNotFoundException;
 import com.imperialnet.foodstore.users.domain.exception.BusinessException;
 import com.imperialnet.foodstore.users.domain.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -95,4 +97,29 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+
+    // Categoria no encontrada
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ApiError> categoryNotFoudException(CategoryNotFoundException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "Category Not Found",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    //Producto no encontrado
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ApiError> ProductNotFoudException(ProductNotFoundException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "Product Not Found",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
 }

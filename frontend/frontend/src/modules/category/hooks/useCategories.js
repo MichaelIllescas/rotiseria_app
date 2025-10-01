@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { mockCategories } from '../data/mockData'; // Importamos los datos de prueba
-
+import { list } from '../services/categoryService';
 export function useCategories() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,11 +11,8 @@ export function useCategories() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      // Simulamos un retraso de red de 1 segundo para ver el estado de "cargando"
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
-      // "Cargamos" los datos de prueba
-      setCategories(mockCategories);
+       const data = await list();
+       setCategories(data);
       setError(null);
     } catch (err) {
       setError(err.message);

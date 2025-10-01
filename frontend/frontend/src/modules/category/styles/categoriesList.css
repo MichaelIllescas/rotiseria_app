@@ -375,6 +375,8 @@ body:has(.modal-overlay) {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: flex-end;
+  margin-bottom: 10px
 }
 
 /* Botón circular pequeño para recargar */
@@ -420,6 +422,121 @@ body:has(.modal-overlay) {
   to   { transform: rotate(360deg); }
 }
 
+/* ==== Animación para el modal de confirmación ==== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 @media (max-width: 420px) {
   .reload-btn { width: 32px; height: 32px; border-radius: 6px; }
+}
+
+/* === Overlay del modal === */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* equivale a top/right/bottom/left: 0 */
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* === Contenedor del modal === */
+.modal-container {
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* === Header === */
+.modal-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1f2937; /* gris oscuro */
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: #6b7280; /* gris medio */
+  margin: 0;
+  line-height: 1.4;
+  margin-top: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+  padding: 15px 0;
+}
+
+/* === Footer === */
+.modal-footer {
+  display: flex;
+  margin-top: 10px;
+  gap: 18px;
+  justify-content: flex-start;
+  flex-direction: row-reverse; /* botón rojo a la derecha */
+}
+
+/* === Botones === */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+
+.btn-danger:hover:not(.btn-disabled) {
+  background-color: #b91c1c;
+  color: #fff;
+  
+}
+
+/* Botón gris (cancelar) */
+.btn-secondary {
+  background-color: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+  background-color: #f3f4f6;
+}
+
+/* Botón deshabilitado */
+.btn-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* === Animaciones === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

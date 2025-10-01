@@ -1,7 +1,6 @@
 package com.imperialnet.foodstore.products.domain.model;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 /**
  * Aggregate root: Product
@@ -23,9 +22,21 @@ public class Product {
                    BigDecimal price, String imageUrl, int dailyStock, boolean active) {
         this.id = id;
         this.categoryId = categoryId;
-        this.name = Objects.requireNonNull(name, "El nombre es obligatorio");
-        this.description = description;
-        this.price = Objects.requireNonNull(price, "El precio es obligatorio");
+
+        // Validaciones de invariantes
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio y no puede estar vacío");
+        }
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio es obligatorio y debe ser mayor a cero");
+        }
+        if (dailyStock < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo");
+        }
+
+        this.name = name.trim();
+        this.description = description != null ? description.trim() : null;
+        this.price = price;
         this.imageUrl = imageUrl;
         this.dailyStock = dailyStock;
         this.active = active;

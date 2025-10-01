@@ -1,7 +1,5 @@
 package com.imperialnet.foodstore.products.domain.model;
 
-import java.util.Objects;
-
 /**
  * Entity: Category
  * Representa una categoría de productos (ej. Pizzas, Empanadas).
@@ -15,9 +13,16 @@ public class Category {
 
     // --- Constructor ---
     public Category(Long id, String name, String description, boolean active) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la categoría es obligatorio y no puede estar vacío");
+        }
+        if (description != null && description.trim().isEmpty()) {
+            throw new IllegalArgumentException("La descripción no puede estar vacía si se especifica");
+        }
+
         this.id = id;
-        this.name = Objects.requireNonNull(name, "El nombre es obligatorio");
-        this.description = description;
+        this.name = name.trim();
+        this.description = description != null ? description.trim() : null;
         this.active = active;
     }
 

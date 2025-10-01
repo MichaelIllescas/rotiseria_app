@@ -4,11 +4,11 @@
 import apiClient from "../../../shared/services/apiClient"; // Asegúrate de que esta ruta sea correcta
 
 // --- Endpoints por defecto ---
-const DEFAULT_CREATE_ENDPOINT = "/api/categories";
-const DEFAULT_GETALL_ENDPOINT = "/api/categories";
-const DEFAULT_UPDATE_ENDPOINT = "/api/categories/<categoryId>";
-const DEFAULT_DELETE_ENDPOINT = "/api/categories/<categoryId>";
-const DEFAULT_TOGGLE_STATUS_ENDPOINT = "/api/categories/<categoryId>/status";
+const DEFAULT_CREATE_ENDPOINT = "/api/categories/create";
+const DEFAULT_GETALL_ENDPOINT = "/api/categories/getAll";
+const DEFAULT_UPDATE_ENDPOINT = "/api/categories/update/<categoryId>";
+const DEFAULT_DELETE_ENDPOINT = "/api/categories/delete/<categoryId>";
+const DEFAULT_TOGGLE_STATUS_ENDPOINT = "/api/categories/toggleStatus/<categoryId>";
 
 /**
  * Crear una nueva categoría en el backend.

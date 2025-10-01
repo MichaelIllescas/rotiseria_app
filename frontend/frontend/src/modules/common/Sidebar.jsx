@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -6,7 +6,7 @@ import {
   Folder,
   Settings,
   Menu,
-  X,
+  ArrowLeft,
   User
 } from "lucide-react";
 import "./styles/sidebar.css";
@@ -22,20 +22,36 @@ const menuItems = [
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation(); // 👈 Para resaltar el activo
+  const [isDesktop, setIsDesktop] = useState(false);
+  const location = useLocation(); 
+  // Detectar si estamos en desktop
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+      // En desktop, inicializar como abierto
+      if (window.innerWidth >= 768) {
+        setIsOpen(true);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   return (
     <>
-      {/* Botón hamburguesa (solo mobile) */}
+      {/* Botón hamburguesa (siempre visible) */}
       <button
         className="sidebar-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X /> : <Menu />}
+        {isOpen ? <ArrowLeft /> : <Menu />}
       </button>
 
       {/* Sidebar */}
-      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+      <aside className={`sidebar ${isOpen ? "open" : ""} ${isDesktop ? "desktop" : ""}`}>
         <div className="sidebar-header">
           <span className="logo">🍗 FoodStore Admin</span>
           <span className="subtitle">Sistema de administración</span>
@@ -47,7 +63,7 @@ export default function Sidebar() {
               key={path}
               to={path}
               className={location.pathname === path ? "active" : ""}
-              onClick={() => setIsOpen(false)} // 👈 Cierra el menú al navegar en mobile
+              onClick={() => !isDesktop && setIsOpen(false)} // 👈 Solo cierra en mobile
             >
               <Icon />
               <span>{name}</span>

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Edit, Trash2, Plus, Package, RefreshCw, CheckCircle } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Package,
+  RefreshCw,
+  CheckCircle,
+} from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -12,6 +19,7 @@ import "../styles/categoriesList.css";
 import { Button } from "../../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { CategoryForm } from "./CategoryForm";
+import { toast } from "../../../ui/toaster";
 
 // Importaciones nombradas de los hooks personalizados
 import { useCategories } from "../hooks/useCategories";
@@ -19,7 +27,6 @@ import { useCreateCategory } from "../hooks/useCreateCategory";
 import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import { useDeleteCategory } from "../hooks/useDeleteCategory";
 import { useToggleCategoryStatus } from "../hooks/useToggleCategoryStatus";
-
 const ITEMS_PER_PAGE = 5;
 
 /**
@@ -34,7 +41,8 @@ export function CategoriesList() {
   const { createCategory, loading: creatingCategory } = useCreateCategory();
   const { updateCategory, loading: updatingCategory } = useUpdateCategory();
   const { deleteCategory, loading: deletingCategory } = useDeleteCategory();
-  const { toggleCategoryStatus, loading: togglingStatus } = useToggleCategoryStatus();
+  const { toggleCategoryStatus, loading: togglingStatus } =
+    useToggleCategoryStatus();
 
   // --- Estado local del componente para UI ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +50,8 @@ export function CategoriesList() {
   const [editingCategory, setEditingCategory] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // --- Lógica de paginación ---
   const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE);
@@ -51,7 +61,10 @@ export function CategoriesList() {
 
   // --- Cálculo de estadísticas ---
   const activeCategories = categories.filter((c) => c.active).length;
-  const totalProducts = categories.reduce((sum, cat) => sum + (cat.productCount || 0), 0);
+  const totalProducts = categories.reduce(
+    (sum, cat) => sum + (cat.productCount || 0),
+    0
+  );
 
   /**
    * Maneja el envío del formulario para crear una nueva categoría.
@@ -61,15 +74,16 @@ export function CategoriesList() {
     try {
       setIsSaving(true);
       setFormErrors({});
-      
+
       const errors = {};
       if (!formData.name?.trim()) errors.name = "Nombre requerido";
       if (Object.keys(errors).length) {
         setFormErrors(errors);
         return;
       }
-      
+
       await createCategory(formData);
+      toast.success("Categoría creada correctamente");
       refetchCategories();
       setShowCreateForm(false);
     } catch (err) {
@@ -96,19 +110,22 @@ export function CategoriesList() {
     try {
       setIsSaving(true);
       setFormErrors({});
-      
+
       const errors = {};
       if (!formData.name?.trim()) errors.name = "Nombre requerido";
       if (Object.keys(errors).length) {
         setFormErrors(errors);
         return;
       }
-      
+
       await updateCategory(editingCategory.id, formData);
+      toast.success("Categoría actualizada correctamente");
       refetchCategories();
       setEditingCategory(null);
     } catch (err) {
-      setFormErrors({ form: err.message || "Error al actualizar la categoría" });
+      setFormErrors({
+        form: err.message || "Error al actualizar la categoría",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -119,14 +136,34 @@ export function CategoriesList() {
    * @param {string|number} id - El ID de la categoría a eliminar.
    */
   const handleDeleteCategory = async (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
+    setCategoryToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  /**
+   * Confirma y ejecuta la eliminación de la categoría.
+   */
+  const confirmDeleteCategory = async () => {
+    if (categoryToDelete) {
       try {
-        await deleteCategory(id);
+        await deleteCategory(categoryToDelete);
+        toast.success("Categoría eliminada correctamente");
         refetchCategories();
       } catch (err) {
-        alert("Error al eliminar la categoría: " + err.message);
+        toast.error("Error al eliminar la categoría: " + err.message);
+      } finally {
+        setShowDeleteConfirm(false);
+        setCategoryToDelete(null);
       }
     }
+  };
+
+  /**
+   * Cancela la eliminación de la categoría.
+   */
+  const cancelDeleteCategory = () => {
+    setShowDeleteConfirm(false);
+    setCategoryToDelete(null);
   };
 
   /**
@@ -137,6 +174,11 @@ export function CategoriesList() {
     try {
       // El payload se envía como objeto, según el nuevo servicio
       await toggleCategoryStatus(category.id, { active: !category.active });
+      toast.success(
+        `Categoría ${
+          category.active ? "desactivada" : "activada"
+        } correctamente`
+      );
       refetchCategories();
     } catch (err) {
       alert("Error al cambiar el estado: " + err.message);
@@ -237,7 +279,7 @@ export function CategoriesList() {
                 currentCategories.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
-                    <TableCell>{category.description || '-'}</TableCell>
+                    <TableCell>{category.description || "-"}</TableCell>
                     <TableCell>{category.productCount || 0}</TableCell>
                     <TableCell>
                       <div className="status-toggle">
@@ -248,7 +290,13 @@ export function CategoriesList() {
                           onChange={() => handleToggleStatus(category)}
                           disabled={togglingStatus}
                         />
-                        <span className={category.active ? "status-active" : "status-inactive"}>
+                        <span
+                          className={
+                            category.active
+                              ? "status-active"
+                              : "status-inactive"
+                          }
+                        >
                           {category.active ? "Activa" : "Inactiva"}
                         </span>
                       </div>
@@ -321,11 +369,57 @@ export function CategoriesList() {
           >
             <CategoryForm
               category={editingCategory}
-              onSave={editingCategory ? handleUpdateCategory : handleCreateCategory}
+              onSave={
+                editingCategory ? handleUpdateCategory : handleCreateCategory
+              }
               onCancel={handleCloseForm}
               isSaving={isSaving}
               errors={formErrors}
             />
+          </div>
+        </div>
+      )}
+
+      {/* === Modal de confirmación de eliminación === */}
+      {showDeleteConfirm && (
+        <div
+          className="modal-overlay"
+          onMouseDown={cancelDeleteCategory}
+          role="presentation"
+        >
+          <div
+            className="modal-container"
+            onMouseDown={(e) => e.stopPropagation()}
+            aria-modal="true"
+            role="alertdialog"
+          >
+            {/* Header */}
+            <div className="modal-header">
+              <h3 className="modal-title">¿Eliminar categoría?</h3>
+              <p className="modal-subtitle">
+                Esta acción no se puede deshacer. La categoría será eliminada
+                permanentemente.
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="modal-footer">
+              <Button
+                onClick={confirmDeleteCategory}
+                disabled={deletingCategory}
+                className={`btn btn-danger ${
+                  deletingCategory ? "btn-disabled" : ""
+                }`}
+              >
+                {deletingCategory ? "Eliminando..." : "Eliminar"}
+              </Button>
+              <Button
+                onClick={cancelDeleteCategory}
+                className="btn btn-secondary"
+              >
+                Cancelar
+              </Button>
+            </div>
           </div>
         </div>
       )}

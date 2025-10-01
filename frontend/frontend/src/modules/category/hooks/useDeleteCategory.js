@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { deleteCategory } from '../services/categoryService';
+import { deleteCategory as deleteCategoryService } from '../services/categoryService';
 
 export function useDeleteCategory() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const deleteCategory = async (id) => {
+  const handleDeleteCategory = async (id) => {
     try {
       setLoading(true);
       setError(null);
-      const result = await deleteCategory(id);
+      const result = await deleteCategoryService(id); // ✅ llamamos al service real
       return result;
     } catch (err) {
       setError(err.message);
@@ -20,7 +20,7 @@ export function useDeleteCategory() {
   };
 
   return {
-    deleteCategory,
+    deleteCategory: handleDeleteCategory, // lo exponemos con este nombre
     loading,
     error,
   };
