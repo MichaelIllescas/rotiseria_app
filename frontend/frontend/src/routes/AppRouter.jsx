@@ -5,6 +5,7 @@ import { ProtectedRoute } from "../routes/ProtectedRoute"
 import { useAuth } from "../context/AuthContext"
 import  AdminPanel  from "../modules/users/pages/AdminUsersPanel"
 import ProductsPage from "../modules/products/pages/ProductsPage"
+import { BusinessPage } from "../modules/business/pages/BusinessPage"
 export const AppRoutes = () => {
 
 //extraer el roler del user del context
@@ -20,6 +21,7 @@ export const AppRoutes = () => {
             <Route path="/users" element={<ProtectedRoute element={<AdminPanel />} />} />
             <Route path="/categories" element={<ProtectedRoute element={<CategoriesPage />} />} />
             <Route path="/products" element={<ProtectedRoute element={<ProductsPage />} />} />
+            <Route path="/settings" element={<ProtectedRoute element={<BusinessPage />} />} />
           </>
         )}
             

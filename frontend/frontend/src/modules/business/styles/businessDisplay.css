@@ -1,0 +1,369 @@
+/* ===================================================================== */
+/* === Business Display - Estilos para mostrar información de la empresa === */
+/* ===================================================================== */
+
+/* === Card principal === */
+.business-display-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+   max-width: 900px;
+   margin: 0 auto;
+}
+
+.business-display-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* === Header de la empresa === */
+.business-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary/90) 100%);
+  color: var(--primary-foreground);
+  padding: 1.5rem;
+  border-bottom: none;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.business-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--primary-foreground);
+  flex: 1;
+}
+
+.title-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.9;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* === Badge de estado === */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.status-badge.active {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.inactive {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* === Botón de editar === */
+.edit-button {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--primary-foreground);
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* === Contenido de la empresa === */
+.business-content {
+  padding: 2rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.8;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: var(--foreground);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.info-value.description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  background-color: var(--muted/30);
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  border-left: 3px solid var(--primary);
+}
+
+/* === Metadatos === */
+.business-metadata {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.metadata-text {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+  text-align: center;
+  font-style: italic;
+}
+
+/* === Estados de carga y error === */
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-card {
+  border-color: #fca5a5;
+  background-color: rgba(254, 226, 226, 0.5);
+}
+
+.error-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #dc2626;
+}
+
+.error-message {
+  color: #dc2626;
+  font-weight: 500;
+  margin: 0;
+}
+
+.empty-card {
+  border: 2px dashed var(--border);
+  background-color: var(--muted/10);
+}
+
+.empty-icon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+
+.empty-container h3 {
+  color: var(--foreground);
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.empty-container p {
+  color: var(--muted-foreground);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* === Overlay de edición === */
+.business-editing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.business-editing-overlay .card {
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* === Responsive design === */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .header-actions {
+    justify-content: space-between;
+  }
+  
+  .business-title {
+    font-size: 1.25rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .business-content {
+    padding: 1.5rem;
+  }
+  
+  .business-header {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .business-title {
+    font-size: 1.125rem;
+  }
+  
+  .title-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .status-badge {
+    align-self: flex-start;
+  }
+  
+  .business-content {
+    padding: 1rem;
+  }
+  
+  .business-header {
+    padding: 1rem;
+  }
+  
+  .info-grid {
+    gap: 0.75rem;
+  }
+  
+  .business-editing-overlay {
+    padding: 0.5rem;
+  }
+}
+
+/* === Animaciones suaves === */
+.business-display-card,
+.status-badge,
+.edit-button,
+.info-value {
+  transition: all 0.2s ease-in-out;
+}
+
+.info-item:hover .info-value {
+  color: var(--primary);
+}
+
+/* === Print styles === */
+@media print {
+  .edit-button,
+  .business-editing-overlay {
+    display: none !important;
+  }
+  
+  .business-display-card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .business-header {
+    background: none !important;
+    color: #000 !important;
+    border-bottom: 2px solid #000;
+  }
+}
