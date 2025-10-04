@@ -114,7 +114,7 @@ export const BusinessPage = () => {
                   size="lg"
                 >
                   <Plus className="button-icon" />
-                  Registrar Empresa
+                  <span className='boton-register-text'>Registrar Empresa</span>
                 </Button>
               </div>
             )}

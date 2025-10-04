@@ -1,54 +1,46 @@
 /* ===================================================================== */
-/* === Business Display - Estilos para mostrar información de la empresa === */
+/* === Business Display - Estilos minimalistas para mostrar información === */
 /* ===================================================================== */
 
-/* === Card principal === */
+/* === Card principal minimalista === */
 .business-display-card {
   background-color: var(--card);
   color: var(--card-foreground);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
-   max-width: 900px;
-   margin: 0 auto;
+  transition: box-shadow 0.2s ease;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .business-display-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* === Header de la empresa === */
+/* === Header minimalista === */
 .business-header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary/90) 100%);
-  color: var(--primary-foreground);
+  background-color: var(--background);
+  color: var(--foreground);
   padding: 1.5rem;
-  border-bottom: none;
+  border-bottom: 1px solid var(--border);
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
 }
 
 .business-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 500;
   margin: 0;
-  color: var(--primary-foreground);
+  color: var(--foreground);
   flex: 1;
-}
-
-.title-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  opacity: 0.9;
+  letter-spacing: -0.025em;
 }
 
 .header-actions {
@@ -58,57 +50,74 @@
   flex-shrink: 0;
 }
 
-/* === Badge de estado === */
+/* === Badge de estado minimalista === */
 .status-badge {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 9999px;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+  line-height: 1.4;
 }
 
 .status-badge.active {
-  background-color: rgba(34, 197, 94, 0.15);
+  background-color: var(--background);
   color: #15803d;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-color: #d1fae5;
 }
 
 .status-badge.inactive {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: var(--background);
   color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-color: #fed7d7;
 }
 
 .status-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* === Botón de editar === */
+/* === Botón de editar minimalista === */
 .edit-button {
-  background-color: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--primary-foreground);
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.4;
 }
 
 .edit-button:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  background-color: var(--muted);
+  border-color: var(--muted-foreground);
 }
 
 .button-icon {
   width: 1rem;
   height: 1rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* === Contenido de la empresa === */
+/* === Contenido minimalista === */
 .business-content {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .info-grid {
@@ -129,40 +138,31 @@
 }
 
 .info-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--muted-foreground);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.info-icon {
-  width: 1rem;
-  height: 1rem;
-  opacity: 0.8;
+  margin: 0;
 }
 
 .info-value {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--foreground);
   line-height: 1.5;
   word-break: break-word;
+  margin: 0;
 }
 
 .info-value.description {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
   color: var(--muted-foreground);
-  background-color: var(--muted/30);
-  padding: 0.75rem;
-  border-radius: var(--radius);
-  border-left: 3px solid var(--primary);
+  background-color: var(--muted);
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--border);
 }
 
-/* === Metadatos === */
+/* === Metadatos minimalistas === */
 .business-metadata {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
@@ -170,14 +170,13 @@
 }
 
 .metadata-text {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--muted-foreground);
   margin: 0;
   text-align: center;
-  font-style: italic;
 }
 
-/* === Estados de carga y error === */
+/* === Estados de carga y error minimalistas === */
 .loading-container,
 .error-container,
 .empty-container {
@@ -185,16 +184,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 2rem;
   text-align: center;
   gap: 1rem;
 }
 
 .loading-spinner {
-  width: 2rem;
-  height: 2rem;
-  color: var(--primary);
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--muted-foreground);
   animation: spin 1s linear infinite;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes spin {
@@ -204,47 +207,55 @@
 
 .error-card {
   border-color: #fca5a5;
-  background-color: rgba(254, 226, 226, 0.5);
+  background-color: var(--background);
 }
 
 .error-icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   color: #dc2626;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .error-message {
   color: #dc2626;
   font-weight: 500;
   margin: 0;
+  font-size: 0.9rem;
 }
 
 .empty-card {
-  border: 2px dashed var(--border);
-  background-color: var(--muted/10);
+  border: 1px dashed var(--border);
+  background-color: var(--background);
 }
 
 .empty-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   color: var(--muted-foreground);
-  opacity: 0.6;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .empty-container h3 {
   color: var(--foreground);
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 500;
 }
 
 .empty-container p {
   color: var(--muted-foreground);
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
 }
 
-/* === Overlay de edición === */
+/* === Overlay de edición minimalista === */
 .business-editing-overlay {
   position: fixed;
   top: 0;
@@ -263,7 +274,7 @@
   max-height: 90vh;
   overflow-y: auto;
   margin: 0;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* === Responsive design === */
@@ -279,7 +290,7 @@
   }
   
   .business-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
   
   .info-grid {
@@ -288,22 +299,17 @@
   }
   
   .business-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
   
   .business-header {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .business-title {
-    font-size: 1.125rem;
-  }
-  
-  .title-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    font-size: 1rem;
   }
   
   .header-actions {
@@ -329,24 +335,12 @@
   }
   
   .info-grid {
-    gap: 0.75rem;
+    gap: 1rem;
   }
   
   .business-editing-overlay {
     padding: 0.5rem;
   }
-}
-
-/* === Animaciones suaves === */
-.business-display-card,
-.status-badge,
-.edit-button,
-.info-value {
-  transition: all 0.2s ease-in-out;
-}
-
-.info-item:hover .info-value {
-  color: var(--primary);
 }
 
 /* === Print styles === */
@@ -364,6 +358,6 @@
   .business-header {
     background: none !important;
     color: #000 !important;
-    border-bottom: 2px solid #000;
+    border-bottom: 1px solid #000;
   }
 }

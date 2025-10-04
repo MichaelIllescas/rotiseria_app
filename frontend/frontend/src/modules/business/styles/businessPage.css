@@ -60,12 +60,15 @@
 }
 
 .create-button {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary/90) 100%);
+  background-color: var(--primary);
+  padding: 0.25rem 1.5rem;
+  border-radius: 10px;
   border: none;
   color: var(--primary-foreground);
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  line-height: 2;
 }
 
 .create-button:hover {
@@ -76,6 +79,10 @@
 .button-icon {
   width: 1.25rem;
   height: 1.25rem;
+}
+.boton-register-text {
+  font-size: 1rem;
+  padding: 10px;
 }
 
 /* === Botón de crear empresa === */

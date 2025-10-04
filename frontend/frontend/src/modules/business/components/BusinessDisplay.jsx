@@ -81,7 +81,7 @@ export function BusinessDisplay({
       <Card className="business-display-card empty-card">
         <CardContent className="empty-container">
           <Building className="empty-icon" />
-          <h3>No hay empresa registrada</h3>
+          <h3>No se han registrado los datos de la empresa.</h3>
           <p>Registra los datos de tu empresa para comenzar.</p>
         </CardContent>
       </Card>

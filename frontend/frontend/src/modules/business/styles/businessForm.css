@@ -2,244 +2,193 @@
 /* === Business Form - Estilos para formulario de registro de negocios === */
 /* ===================================================================== */
 
-/* --- Aseguramos que los siguientes estilos solo apliquen al modal --- */
-.business-list .modal-overlay .card,
+/* === Card Container === */
 .business-form .card {
   background-color: var(--card);
   color: var(--card-foreground);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  min-width: 60dvw;
-  max-width: 800px;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-width: 65dvw;
+  max-width: 600px;
   margin: 0 auto;
+  transition: box-shadow 0.2s ease;
 }
 
-.business-list .modal-overlay .card-header,
+.business-form .card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* === Card Header === */
 .business-form .card-header {
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
-.business-list .modal-overlay .card-title,
 .business-form .card-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: var(--font-weight-medium);
-  font-size: 1.2rem;
+  font-weight: 500;
+  font-size: 1.25rem;
   color: var(--foreground);
+  margin: 0;
+  letter-spacing: -0.025em;
 }
 
 /* === Labels === */
-.business-list .modal-overlay label,
 .business-form label {
-  font-size: 0.9rem;
-  font-weight: var(--font-weight-medium);
-  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
   display: block;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
-/* === Inputs === */
-.business-list .modal-overlay input,
+/* === Inputs y Textarea === */
 .business-form input,
-.business-list .modal-overlay .description-textarea,
-.business-form .description-textarea {
+.business-form textarea {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.6rem 0.75rem;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
   color: var(--foreground);
-  background-color: var(--input-background);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: var(--background);
+  transition: border-color 0.2s ease;
   margin-bottom: 0;
   box-sizing: border-box;
 }
 
-.business-list .modal-overlay input:focus,
 .business-form input:focus,
-.business-list .modal-overlay .description-textarea:focus,
-.business-form .description-textarea:focus {
-  border-color: var(--ring);
+.business-form textarea:focus {
+  border-color: var(--foreground);
   outline: none;
-  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.business-form input:hover,
+.business-form textarea:hover {
+  border-color: var(--muted-foreground);
 }
 
 /* === Textarea específico === */
-.business-list .modal-overlay .description-textarea,
-.business-form .description-textarea {
+.business-form textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 100px;
   font-family: inherit;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-/* === Grid para campos lado a lado === */
-.business-list .modal-overlay .form-grid,
+/* === Placeholders === */
+.business-form input::placeholder,
+.business-form textarea::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+
+/* === Form Grid === */
 .business-form .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-@media (min-width: 768px) {
-  .business-list .modal-overlay .form-grid,
-  .business-form .form-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-}
-
-/* --- Spacing para los campos del formulario --- */
-.business-list .modal-overlay form > div:not(.form-grid):not(.button-container),
 .business-form form > div:not(.form-grid):not(.button-container) {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.business-list .modal-overlay .form-grid > div,
 .business-form .form-grid > div {
   margin-bottom: 0;
 }
 
-/* === Checkbox container === */
-.business-list .modal-overlay .checkbox-container,
-.business-form .checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.business-list .modal-overlay .checkbox-input,
-.business-form .checkbox-input {
-  width: auto;
-  margin: 0;
-  cursor: pointer;
-}
-
-.business-list .modal-overlay .checkbox-label,
-.business-form .checkbox-label {
-  margin: 0;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: var(--foreground);
-}
-
 /* === Botones === */
-.business-list .modal-overlay .button-container,
 .business-form .button-container {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
 }
 
-/* === Estilos para mensajes de error === */
-.business-list .modal-overlay .error-message,
-.business-form .error-message {
-  margin-top: 0.35rem;
+/* === Botón Cancelar === */
+.business-form .btn-cancel {
+  background-color: transparent;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 50px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  line-height: 1.2;
-  color: #b91c1c;
-  background: rgba(185, 28, 28, 0.06);
-  border-left: 3px solid rgba(239, 68, 68, 0.95);
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
-}
-
-.business-list .modal-overlay .error-message::before,
-.business-form .error-message::before {
-  content: "⚠";
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  margin: 0;
-  color: #ef4444;
-  font-size: 1rem;
-  line-height: 1.5;
+  margin-top: 10px;
 }
 
-/* === Estados de validación === */
-.business-list .modal-overlay input:invalid,
-.business-form input:invalid {
-  border-color: #f87171;
+.business-form .btn-cancel:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+  border-color: var(--muted-foreground);
 }
 
-.business-list .modal-overlay input:valid,
-.business-form input:valid {
-  border-color: var(--border);
-}
-
-/* === Placeholder styling === */
-.business-list .modal-overlay input::placeholder,
-.business-form input::placeholder,
-.business-list .modal-overlay .description-textarea::placeholder,
-.business-form .description-textarea::placeholder {
-  color: var(--muted-foreground);
-  opacity: 0.7;
-}
-
-/* === Responsive design === */
-@media (max-width: 768px) {
-  .business-list .modal-overlay .card,
-  .business-form .card {
-    min-width: 90dvw;
-    padding: 1rem;
-  }
-  
-  .business-list .modal-overlay .card-title,
-  .business-form .card-title {
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .business-list .modal-overlay .error-message,
-  .business-form .error-message {
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
-    gap: 0.35rem;
-  }
-  
-  .business-list .modal-overlay .button-container,
-  .business-form .button-container {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .business-list .modal-overlay .form-grid,
-  .business-form .form-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-}
-
-/* === Focus visible para accesibilidad === */
-.business-list .modal-overlay .checkbox-input:focus-visible,
-.business-form .checkbox-input:focus-visible {
+.business-form .btn-cancel:focus {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
-/* === Animaciones suaves === */
-.business-list .modal-overlay input,
-.business-form input,
-.business-list .modal-overlay .description-textarea,
-.business-form .description-textarea {
-  transition: all 0.2s ease-in-out;
+.business-form .btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.business-list .modal-overlay input:hover,
-.business-form input:hover,
-.business-list .modal-overlay .description-textarea:hover,
-.business-form .description-textarea:hover {
-  border-color: var(--muted-foreground);
+.business-form .btn-cancel:disabled:hover {
+  background-color: transparent;
+  color: var(--muted-foreground);
+  border-color: var(--border);
+}
+
+/* === Mensajes de Error === */
+.business-form .error-message {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+  line-height: 1.4;
+}
+
+/* === Responsive Design === */
+@media (min-width: 768px) {
+  .business-form .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .business-form .card {
+    min-width: 90dvw;
+    padding: 1.5rem;
+  }
+  
+  .business-form .card-title {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .business-form .card {
+    padding: 1rem;
+  }
+  
+  .business-form .button-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .business-form .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
