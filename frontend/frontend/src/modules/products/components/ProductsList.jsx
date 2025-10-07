@@ -44,6 +44,15 @@ export function ProductsList() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const handleImageClick = (url) => {
+    setPreviewImage(url);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewImage(null);
+  };
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const currentProducts = products.slice(
@@ -215,7 +224,7 @@ export function ProductsList() {
                 ) : (
                   currentProducts.map((product) => (
                     <TableRow key={product.id}>
-                      <TableCell>
+                      <TableCell className="image-cell-table">
                         {product.imageUrl ? (
                           <img
                             src={`${imageBaseUrl}${product.imageUrl}`}
@@ -226,6 +235,11 @@ export function ProductsList() {
                               objectFit: "cover",
                               borderRadius: "4px",
                             }}
+                            onClick={() =>
+                              handleImageClick(
+                                `${imageBaseUrl}${product.imageUrl}`
+                              )
+                            }
                           />
                         ) : (
                           <ImageIcon className="text-muted" size={24} />
@@ -333,6 +347,30 @@ export function ProductsList() {
               errors={formErrors}
               imageUrlBaseUrl={imageBaseUrl}
             />
+          </div>
+        </div>
+      )}
+      {previewImage && (
+        <div
+          className="image-preview-overlay"
+          onClick={handleClosePreview}
+          role="presentation"
+        >
+          <div
+            className="image-preview-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage}
+              alt="Vista ampliada"
+              className="image-preview-full"
+            />
+            <button
+              className="image-preview-close"
+              onClick={handleClosePreview}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

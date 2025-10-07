@@ -450,3 +450,61 @@ html:has(.product-form-overlay) {
 @media (max-width: 420px) {
   .reload-btn { width: 32px; height: 32px; border-radius: 6px; }
 }
+
+/* === Overlay de vista previa === */
+.image-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+/* === Contenedor de imagen === */
+.image-preview-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  cursor: auto;
+}
+
+/* === Imagen ampliada === */
+.image-preview-full {
+  display: block;
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+/* === Botón de cierre === */
+.image-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview-close:hover {
+  background: rgba(255, 255, 255, 1);
+}
+.image-cell-table img:hover{
+  cursor: pointer;
+}
