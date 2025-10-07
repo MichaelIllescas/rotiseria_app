@@ -1,10 +1,7 @@
 package com.imperialnet.foodstore.products.infrastructure.web.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imperialnet.foodstore.products.application.ports.in.CreateProductUseCase;
-import com.imperialnet.foodstore.products.application.ports.in.DeleteProductUseCase;
-import com.imperialnet.foodstore.products.application.ports.in.GetAllProductsUseCase;
-import com.imperialnet.foodstore.products.application.ports.in.UpdateProductUseCase;
+import com.imperialnet.foodstore.products.application.ports.in.*;
 import com.imperialnet.foodstore.products.application.ports.out.StoragePort;
 import com.imperialnet.foodstore.products.domain.model.Product;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductMapper;
@@ -45,6 +42,7 @@ public class ProductController {
     private final ProductMapper productMapper;
     private final UpdateProductUseCase updateProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
+    private final ToggleProducStatusUseCase toggleProducStatusUseCase;
 
     // --- Endpoint para crear producto ---
     @ResponseStatus(HttpStatus.CREATED)
@@ -166,6 +164,31 @@ public class ProductController {
         try {
             deleteProductUseCase.delete(id);
             log.info("← El Usuario: {}, finaliza exitosamente eliminacion de producto id: {}", user.getFullName(), id);
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    // endpoint para cambiar el estado de un producto (activo/inactivo)
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
+    @PutMapping("/toggleStatus/{id}")
+    @Operation(
+            summary = "Alternar estado de un producto(Activo/Inactivo)",
+            description = "Alterna el estado de un producto entre activo e inactivo. Disponible para roles DUENO y ENCARGADO."
+    )
+    public void toggleProductStatus(
+            @Parameter(description = "ID del producto cuyo estado se va a alternar", required = true)
+            @PathVariable Long id,
+            Authentication auth) {
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+        MDC.put("action", "TOGGLE_PRODUCT_STATUS");
+
+        log.info("→ El Usuario: {}, incia alternar estado de producto id: {}", user.getFullName(), id);
+        try {
+            // Llamar al caso de uso para alternar el estado del producto
+            toggleProducStatusUseCase.execute(id);
+            log.info("← El Usuario: {}, finaliza exitosamente alternar estado de producto id: {}", user.getFullName(), id);
         } finally {
             MDC.clear();
         }

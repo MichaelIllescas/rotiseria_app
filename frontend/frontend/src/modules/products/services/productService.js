@@ -8,7 +8,7 @@ const DEFAULT_CREATE_ENDPOINT = `${PRODUCT_BASE_URL}/create`;
 const DEFAULT_GETALL_ENDPOINT = `${PRODUCT_BASE_URL}/getAll`;
 const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/update/<productId>`;
 const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/delete/<productId>`;
-const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>/status`;
+const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/toggleStatus/<productId>`;
 
 /**
  * 🖼️ Subir imagen de producto y obtener la URL pública.
@@ -98,7 +98,7 @@ const deleteProduct = async (productId, { endpoint = DEFAULT_DELETE_ENDPOINT } =
 const toggleStatus = async (productId, payload, { endpoint = DEFAULT_TOGGLE_STATUS_ENDPOINT } = {}) => {
   try {
     const url = endpoint.replace("<productId>", productId);
-    const response = await apiClient.patch(url, payload);
+    const response = await apiClient.put(url, payload);
     return response.data;
   } catch (error) {
     const serverMessage = error.response?.data?.message || error.response?.data || error.message;

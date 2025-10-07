@@ -149,7 +149,7 @@ export function ProductsList() {
 
   const handleToggleStatus = async (product) => {
     try {
-      await toggleProductStatus(product.id, { active: !product.active });
+      await toggleProductStatus(product.id);
       refetchProducts();
     } catch (err) {
       alert("Error al cambiar el estado: " + err.message);
