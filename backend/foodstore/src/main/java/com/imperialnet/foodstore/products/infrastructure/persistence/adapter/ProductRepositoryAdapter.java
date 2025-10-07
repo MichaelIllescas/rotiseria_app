@@ -78,8 +78,13 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
     // Devuelve el primer producto cuyo nombre contenga el fragmento (asume lista no vacía)
     @Override
     public Product findByName(String name) {
-        return mapper.toDomain(jpaRepository.findByNameContaining(name).get(0));
+        List<ProductEntity> results = jpaRepository.findByNameContaining(name);
+        if (results.isEmpty()) {
+            return null; // No se encontró ningún producto con ese nombre
+        }
+        return mapper.toDomain(results.get(0));
     }
+
 
     // Actualiza un producto (delegado a save)
     @Override

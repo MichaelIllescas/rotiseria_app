@@ -57,7 +57,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // ⚠️ ojo: si tu formulario tiene CSRF token activalo
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/users/me").permitAll() // registro y demás públicos
+                        .requestMatchers("/auth/**", "/users/me", "/uploads/**").permitAll() // registro y demás públicos
                         .requestMatchers("/login").permitAll()   // tu login personalizado
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // recursos estáticos
                         .requestMatchers("/auth/reset-password", "/auth/forgot-password").permitAll()

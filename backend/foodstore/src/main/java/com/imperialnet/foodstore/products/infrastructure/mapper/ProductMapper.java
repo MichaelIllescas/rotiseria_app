@@ -13,6 +13,7 @@ public interface ProductMapper {
 
     // DTO → Dominio
     @Mapping(target = "id", ignore = true) // el id lo genera la BD
+    @Mapping(target = "active", constant = "true")
     Product toDomain(CreateProductRequest dto);
 
     @Mapping(target = "id", ignore = true)

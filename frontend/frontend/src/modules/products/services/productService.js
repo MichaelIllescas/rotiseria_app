@@ -1,23 +1,44 @@
-// src/modules/product/services/productService.js
-
 /**
  * Servicio para manejar las operaciones CRUD de productos.
  */
 import apiClient from "../../../shared/services/apiClient";
 
-// --- Endpoints por defecto ---
-const DEFAULT_CREATE_ENDPOINT = "/api/products";
-const DEFAULT_GETALL_ENDPOINT = "/api/products";
-const DEFAULT_UPDATE_ENDPOINT = "/api/products/<productId>";
-const DEFAULT_DELETE_ENDPOINT = "/api/products/<productId>";
-const DEFAULT_TOGGLE_STATUS_ENDPOINT = "/api/products/<productId>/status";
+const PRODUCT_BASE_URL = "/api/products";
+const DEFAULT_CREATE_ENDPOINT = `${PRODUCT_BASE_URL}/create`;
+const DEFAULT_GETALL_ENDPOINT = `${PRODUCT_BASE_URL}/getAll`;
+const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>`;
+const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>`;
+const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>/status`;
 
 /**
- * Crear un nuevo producto en el backend.
- * @param {Object} payload - Datos del producto ({ name, description, price, stock, categoryId, active, imageUrl }).
- * @param {Object} options - Opciones (p. ej. endpoint personalizado).
- * @returns {Promise<Object>} - Respuesta del servidor.
- * @throws {Error} - Mensaje normalizado en caso de fallo.
+ * 🖼️ Subir imagen de producto y obtener la URL pública.
+ * @param {File} file - Archivo de imagen a subir.
+ * @returns {Promise<string>} - URL pública de la imagen.
+ */
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    const { data } = await apiClient.post(`${PRODUCT_BASE_URL}/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data.imageUrl;
+  } catch (error) {
+    const msg =
+      error.response?.data?.message ||
+      error.response?.data ||
+      error.message ||
+      "Error al subir la imagen";
+    throw new Error(msg);
+  }
+};
+
+/**
+ * 🟢 Crear un nuevo producto (ya con imageUrl generado).
+ * @param {Object} payload - Datos del producto.
+ * @param {Object} options - Opciones personalizadas.
+ * @returns {Promise<Object>} - Respuesta del backend.
  */
 const create = async (payload, { endpoint = DEFAULT_CREATE_ENDPOINT } = {}) => {
   try {
@@ -31,9 +52,7 @@ const create = async (payload, { endpoint = DEFAULT_CREATE_ENDPOINT } = {}) => {
 };
 
 /**
- * Obtener el listado completo de productos desde el backend.
- * @returns {Promise<Array>} - Array de productos.
- * @throws {Error} - Re-lanza el error si falla la petición.
+ * 📋 Obtener todos los productos.
  */
 const list = async () => {
   try {
@@ -46,12 +65,7 @@ const list = async () => {
 };
 
 /**
- * Actualizar un producto en el backend.
- * @param {string|number} productId - ID del producto a actualizar.
- * @param {Object} payload - Datos a actualizar.
- * @param {Object} options - Opciones (p. ej. endpoint personalizado).
- * @returns {Promise<Object>} - Respuesta del servidor.
- * @throws {Error} - Mensaje normalizado en caso de fallo.
+ * ✏️ Actualizar producto existente.
  */
 const update = async (productId, payload, { endpoint = DEFAULT_UPDATE_ENDPOINT } = {}) => {
   try {
@@ -65,11 +79,7 @@ const update = async (productId, payload, { endpoint = DEFAULT_UPDATE_ENDPOINT }
 };
 
 /**
- * Eliminar un producto del backend.
- * @param {string|number} productId - ID del producto a eliminar.
- * @param {Object} options - Opciones (p. ej. endpoint personalizado).
- * @returns {Promise<Object>} - Respuesta del servidor.
- * @throws {Error} - Mensaje normalizado en caso de fallo.
+ * 🗑️ Eliminar producto.
  */
 const deleteProduct = async (productId, { endpoint = DEFAULT_DELETE_ENDPOINT } = {}) => {
   try {
@@ -83,12 +93,7 @@ const deleteProduct = async (productId, { endpoint = DEFAULT_DELETE_ENDPOINT } =
 };
 
 /**
- * Activar o desactivar un producto mediante PATCH.
- * @param {string|number} productId - ID del producto.
- * @param {Object} payload - Nuevo estado del producto ({ active: true/false }).
- * @param {Object} options - Opciones (p. ej. endpoint personalizado).
- * @returns {Promise<Object>} - Respuesta del servidor.
- * @throws {Error} - Mensaje normalizado en caso de fallo.
+ * 🔄 Cambiar estado (activar/desactivar).
  */
 const toggleStatus = async (productId, payload, { endpoint = DEFAULT_TOGGLE_STATUS_ENDPOINT } = {}) => {
   try {
@@ -102,9 +107,10 @@ const toggleStatus = async (productId, payload, { endpoint = DEFAULT_TOGGLE_STAT
 };
 
 export {
+  uploadImage,
   create,
   list,
   update,
   deleteProduct,
-  toggleStatus
+  toggleStatus,
 };

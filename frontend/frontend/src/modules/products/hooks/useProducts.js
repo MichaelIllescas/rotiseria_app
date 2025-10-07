@@ -10,12 +10,8 @@ export function useProducts() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-          // Simulamos un retraso de red de 1 segundo para ver el estado de "cargando"
-          await new Promise(resolve => setTimeout(resolve, 10));
-          
-          // "Cargamos" los datos de prueba
-          setProducts(mockProducts);
-      
+      const productos = await list();
+      setProducts(productos);
       setError(null);
     } catch (err) {
       setError(err.message);
