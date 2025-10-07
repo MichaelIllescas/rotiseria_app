@@ -2,6 +2,7 @@ package com.imperialnet.foodstore.products.infrastructure.web.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imperialnet.foodstore.products.application.ports.in.CreateProductUseCase;
+import com.imperialnet.foodstore.products.application.ports.in.DeleteProductUseCase;
 import com.imperialnet.foodstore.products.application.ports.in.GetAllProductsUseCase;
 import com.imperialnet.foodstore.products.application.ports.in.UpdateProductUseCase;
 import com.imperialnet.foodstore.products.application.ports.out.StoragePort;
@@ -43,6 +44,7 @@ public class ProductController {
     private final StoragePort storagePort;
     private final ProductMapper productMapper;
     private final UpdateProductUseCase updateProductUseCase;
+    private final DeleteProductUseCase deleteProductUseCase;
 
     // --- Endpoint para crear producto ---
     @ResponseStatus(HttpStatus.CREATED)
@@ -139,5 +141,33 @@ public class ProductController {
                 MDC.clear();
             }
 
+    }
+
+    // endpoint para eliminar un producto
+    @Operation (
+            summary = "Eliminar un producto",
+            description = "Elimina un producto existente del catálogo. Disponible para roles DUENO y ENCARGADO."
+    )
+    @ApiResponse (
+            responseCode = "204",
+            description = "Producto eliminado exitosamente"
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
+    @DeleteMapping("/delete/{id}")
+    public void deleteProduct(
+            @Parameter(description = "ID del producto a eliminar", required = true)
+            @PathVariable Long id,
+            Authentication auth) {
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+        MDC.put("action", "DELETE_PRODUCT");
+
+        log.info("→ El Usuario: {}, incia eliminacion de producto id: {}", user.getFullName(), id);
+        try {
+            deleteProductUseCase.delete(id);
+            log.info("← El Usuario: {}, finaliza exitosamente eliminacion de producto id: {}", user.getFullName(), id);
+        } finally {
+            MDC.clear();
+        }
     }
 }

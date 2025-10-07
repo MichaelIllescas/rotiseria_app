@@ -1,14 +1,18 @@
 package com.imperialnet.foodstore.products.infrastructure.persistence.adapter;
 
 import com.imperialnet.foodstore.products.application.ports.out.CategoryRepositoryPort;
+import com.imperialnet.foodstore.products.domain.exception.CategoryDeletionException;
 import com.imperialnet.foodstore.products.domain.model.Category;
 import com.imperialnet.foodstore.products.infrastructure.mapper.CategoryPersistenceMapper;
 import com.imperialnet.foodstore.products.infrastructure.persistence.entity.CategoryEntity;
 import com.imperialnet.foodstore.products.infrastructure.persistence.repository.CategoryRepositoryJpa;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 // Adaptador que conecta el dominio con la capa JPA para Category
 public class CategoryRepositoryAdapter implements CategoryRepositoryPort {
@@ -49,7 +53,18 @@ public class CategoryRepositoryAdapter implements CategoryRepositoryPort {
     // Elimina una categoría por id
     @Override
     public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
+        try {
+            categoryRepository.deleteById(id);
+            log.info("Categoría eliminada con id={}", id);
+        } catch (DataIntegrityViolationException ex) {
+            log.warn("No se pudo eliminar la categoría con id={} porque tiene productos asociados", id);
+            throw new CategoryDeletionException(
+                    "No se puede eliminar la categoría porque tiene productos asociados."
+            );
+        } catch (Exception ex) {
+            log.error("Error inesperado al eliminar la categoría con id={}", id, ex);
+            throw ex;
+        }
     }
 
     // Recupera todas las categorías

@@ -26,6 +26,7 @@ import { useDeleteProduct } from "../hooks/useDeleteProduct";
 import { useToggleProductStatus } from "../hooks/useToggleProductStatus";
 import { useCategories } from "../../category/hooks/useCategories"; // Necesitamos las categorías para el formulario
 import "../styles/productsList.css";
+import { ConfirmModal } from "./ConfirmModal";
 const ITEMS_PER_PAGE = 5;
 
 export function ProductsList() {
@@ -45,6 +46,7 @@ export function ProductsList() {
   const [formErrors, setFormErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const handleImageClick = (url) => {
     setPreviewImage(url);
@@ -130,14 +132,18 @@ export function ProductsList() {
     }
   };
 
-  const handleDeleteProduct = async (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-      try {
-        await deleteProduct(id);
-        refetchProducts();
-      } catch (err) {
-        alert("Error al eliminar el producto: " + err.message);
-      }
+  const handleDeleteProduct = (id) => {
+    setProductToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProduct(productToDelete);
+      refetchProducts();
+    } catch (err) {
+      alert("Error al eliminar el producto: " + err.message);
+    } finally {
+      setProductToDelete(null);
     }
   };
 
@@ -379,6 +385,15 @@ export function ProductsList() {
             </button>
           </div>
         </div>
+      )}
+
+      {productToDelete && (
+        <ConfirmModal
+          title="Confirmar eliminación"
+          message="¿Estás seguro de que deseas eliminar este producto?"
+          onConfirm={confirmDelete}
+          onCancel={() => setProductToDelete(null)}
+        />
       )}
     </>
   );

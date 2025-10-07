@@ -111,6 +111,6 @@ export {
   create,
   list,
   update,
-  deleteProduct,
+  deleteProduct as remove,
   toggleStatus,
 };
