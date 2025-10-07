@@ -107,7 +107,13 @@ export function ProductsList() {
       if (!formData.description?.trim())
         errors.description = "Descripción requerida";
       if (!formData.categoryId) errors.categoryId = "Categoría requerida";
-      if (!formData.price) errors.price = "Precio requerido";
+      if (
+        formData.price === "" ||
+        formData.price === null ||
+        formData.price === undefined
+      ) {
+        errors.price = "Precio requerido";
+      }
       if (!formData.dailyStock) errors.dailyStock = "Stock diario requerido";
       if (Object.keys(errors).length) {
         setFormErrors(errors);

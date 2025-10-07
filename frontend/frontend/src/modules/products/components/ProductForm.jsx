@@ -74,10 +74,10 @@ export function ProductForm({
       ...formData,
       price: parseFloat(formData.price) || 0,
       dailyStock: parseInt(formData.dailyStock) || 0,
+      imageUrl: product?.imageUrl || null,
     };
     onSave(dataToSave);
   };
-  console.log(errors);
 
   return (
     <div className="product-form-modal">
@@ -211,7 +211,14 @@ export function ProductForm({
               />
               {imagePreview && (
                 <div className="product-form-image-preview">
-                  <img src={`${imageUrlBaseUrl}${imagePreview}`} alt="Vista previa" />
+                  <img
+                    src={
+                      imagePreview.startsWith("blob:")
+                        ? imagePreview
+                        : `${imageUrlBaseUrl}${imagePreview}`
+                    }
+                    alt="Vista previa"
+                  />
                 </div>
               )}
             </div>

@@ -6,8 +6,8 @@ import apiClient from "../../../shared/services/apiClient";
 const PRODUCT_BASE_URL = "/api/products";
 const DEFAULT_CREATE_ENDPOINT = `${PRODUCT_BASE_URL}/create`;
 const DEFAULT_GETALL_ENDPOINT = `${PRODUCT_BASE_URL}/getAll`;
-const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>`;
-const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>`;
+const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/update/<productId>`;
+const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/delete/<productId>`;
 const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/<productId>/status`;
 
 /**

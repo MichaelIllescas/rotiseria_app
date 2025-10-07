@@ -1,5 +1,7 @@
 package com.imperialnet.foodstore.products.domain.model;
 
+import com.imperialnet.foodstore.users.domain.exception.BusinessException;
+
 import java.math.BigDecimal;
 
 /**
@@ -25,13 +27,13 @@ public class Product {
 
         // Validaciones de invariantes
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre es obligatorio y no puede estar vacío");
+            throw new BusinessException("El nombre es obligatorio y no puede estar vacío");
         }
-        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("El precio es obligatorio y debe ser mayor a cero");
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessException("El precio es obligatorio y debe ser mayor o igual a cero");
         }
         if (dailyStock < 0) {
-            throw new IllegalArgumentException("El stock no puede ser negativo");
+            throw new BusinessException("El stock no puede ser negativo");
         }
 
         this.name = name.trim();
@@ -53,17 +55,17 @@ public class Product {
 
     public void decreaseStock(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("La cantidad debe ser positiva");
+            throw new BusinessException("La cantidad debe ser positiva");
         }
         if (this.dailyStock < quantity) {
-            throw new IllegalStateException("Stock insuficiente para el producto " + this.name);
+            throw new BusinessException("Stock insuficiente para el producto " + this.name);
         }
         this.dailyStock -= quantity;
     }
 
     public void resetDailyStock(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("El stock no puede ser negativo");
+            throw new BusinessException("El stock no puede ser negativo");
         }
         this.dailyStock = quantity;
     }
