@@ -27,8 +27,6 @@ public record UpdateProductRequest(
 
         @NotNull(message = "El stock es obligatorio")
         @Min(value = 0, message = "El stock no puede ser negativo")
-        Integer dailyStock,
+        Integer dailyStock
 
-        @NotNull(message = "El estado es obligatorio")
-        Boolean active
 ) {}

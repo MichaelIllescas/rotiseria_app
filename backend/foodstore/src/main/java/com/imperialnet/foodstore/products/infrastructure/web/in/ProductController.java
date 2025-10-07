@@ -3,6 +3,7 @@ package com.imperialnet.foodstore.products.infrastructure.web.in;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imperialnet.foodstore.products.application.ports.in.CreateProductUseCase;
 import com.imperialnet.foodstore.products.application.ports.in.GetAllProductsUseCase;
+import com.imperialnet.foodstore.products.application.ports.in.UpdateProductUseCase;
 import com.imperialnet.foodstore.products.application.ports.out.StoragePort;
 import com.imperialnet.foodstore.products.domain.model.Product;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductMapper;
@@ -41,6 +42,7 @@ public class ProductController {
     private final GetAllProductsUseCase getAllProductsUseCase;
     private final StoragePort storagePort;
     private final ProductMapper productMapper;
+    private final UpdateProductUseCase updateProductUseCase;
 
     // --- Endpoint para crear producto ---
     @ResponseStatus(HttpStatus.CREATED)
@@ -54,10 +56,11 @@ public class ProductController {
         CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
         MDC.put("action", "CREATE_PRODUCT");
 
-        log.info("→ Creando producto: {}", request.name());
+        log.info("→El usuario> {} inicia la creacion de producto: {}", user.getFullName(), request.name());
         try {
             Product productRequest= productMapper.toDomain(request);
             Product created = createProductUseCase.create(productRequest);
+            log.info("←El usuario> {} finaliza exitosamente la creacion de producto: {}", user.getFullName(), created.getName());
             return productMapper.toResponse(created);
         } finally {
             MDC.clear();
@@ -67,7 +70,7 @@ public class ProductController {
     // --- Endpoint para obtener todos los productos ---
     @Operation(
             summary = "Obtener todos los productos",
-            description = "Obtiene todos los productos registrados en el catálogo. Disponible para todos los roles autenticados."
+            description = "Obtiene todos los productos registrados en el catálogo. Disponible para roles ENCARGADO Y DUENO."
     )
     @ApiResponse(
             responseCode = "200",
@@ -76,7 +79,7 @@ public class ProductController {
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/getAll")
-    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO', 'ATENCION')")
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
     public List<ProductResponse> getAllProducts() {
 
         MDC.put("action", "GET_ALL_PRODUCTS");
@@ -103,5 +106,38 @@ public class ProductController {
         } finally {
             MDC.clear();
         }
+    }
+
+    //endpoint para actualizar un producto
+    @Operation(
+            summary = "Actualizar un producto",
+            description = "Actualiza los datos de un producto existente. Disponible para roles DUENO y ENCARGADO."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Producto actualizado exitosamente",
+            content = @Content(schema = @Schema(implementation = ProductResponse.class))
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
+    @PutMapping("/update/{id}")
+    public ProductResponse updateProduct(
+            @Parameter(description = "ID del producto a actualizar", required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody CreateProductRequest request,
+            Authentication auth) {
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+        MDC.put("action", "UPDATE_PRODUCT");
+
+            log.info("→ El Usuario: {}, incia actualizacion de producto: {}", user.getFullName(), request.name());
+            try {
+                Product productRequest= productMapper.toDomain(request);
+                Product updated = updateProductUseCase.update(id, productRequest);
+                log.info("← El Usuario: {}, finaliza exitosamente actualizacion de producto: {}", user.getFullName(), updated.getName());
+                return productMapper.toResponse(updated);
+            } finally {
+                MDC.clear();
+            }
+
     }
 }
