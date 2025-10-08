@@ -13,6 +13,6 @@ public record UpdateStockRequest(
 
         @NotNull(message = "El stock no puede ser nulo.")
         @Min(value = 0, message = "El stock no puede ser negativo.")
-        Integer stock
+            Integer stock
 
 ) {}

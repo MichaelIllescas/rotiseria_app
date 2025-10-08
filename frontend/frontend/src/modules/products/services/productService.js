@@ -9,6 +9,7 @@ const DEFAULT_GETALL_ENDPOINT = `${PRODUCT_BASE_URL}/getAll`;
 const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/update/<productId>`;
 const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/delete/<productId>`;
 const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/toggleStatus/<productId>`;
+const DEFAULT_UPDATE_STOCK_ENDPOINT = `${PRODUCT_BASE_URL}/updateStock`;
 
 /**
  * 🖼️ Subir imagen de producto y obtener la URL pública.
@@ -106,6 +107,22 @@ const toggleStatus = async (productId, payload, { endpoint = DEFAULT_TOGGLE_STAT
   }
 };
 
+/**
+ * 📦 Actualizar stock de producto.
+ */
+const updateStock = async (productId, newStock) => {
+  try {
+    const response = await apiClient.put(DEFAULT_UPDATE_STOCK_ENDPOINT, {
+      productId: productId,
+      stock: newStock,
+    });
+    return response.data;
+  } catch (error) {
+    const serverMessage = error.response?.data?.message || error.response?.data || error.message;
+    throw new Error(serverMessage || "Failed to update product stock");
+  }
+};
+
 export {
   uploadImage,
   create,
@@ -113,4 +130,5 @@ export {
   update,
   deleteProduct as remove,
   toggleStatus,
+  updateStock,
 };

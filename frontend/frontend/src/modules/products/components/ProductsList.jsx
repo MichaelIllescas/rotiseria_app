@@ -7,6 +7,8 @@ import {
   RefreshCw,
   CheckCircle,
   Image as ImageIcon,
+  Check,
+  X,
 } from "lucide-react";
 import {
   Table,
@@ -27,6 +29,7 @@ import { useToggleProductStatus } from "../hooks/useToggleProductStatus";
 import { useCategories } from "../../category/hooks/useCategories"; // Necesitamos las categorías para el formulario
 import "../styles/productsList.css";
 import { ConfirmModal } from "./ConfirmModal";
+import { useUpdateProductStock } from "../hooks/useUpdateProductStock";
 const ITEMS_PER_PAGE = 5;
 
 export function ProductsList() {
@@ -36,6 +39,7 @@ export function ProductsList() {
   const { deleteProduct } = useDeleteProduct();
   const { toggleProductStatus } = useToggleProductStatus();
   const { categories } = useCategories(); // Obtener categorías para el select
+  const { updateProductStock } = useUpdateProductStock();
 
   //urlbase de las imagenes de los productos
   const imageBaseUrl = "http://localhost:8080";
@@ -47,6 +51,8 @@ export function ProductsList() {
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [editingStock, setEditingStock] = useState(null);
+  const [tempStock, setTempStock] = useState('');
 
   const handleImageClick = (url) => {
     setPreviewImage(url);
@@ -162,6 +168,41 @@ export function ProductsList() {
     setFormErrors({});
   };
 
+  const handleStockDoubleClick = (product) => {
+    setEditingStock(product.id);
+    setTempStock(product.dailyStock.toString());
+  };
+
+  const handleStockSave = async (productId) => {
+    try {
+      const newStock = parseInt(tempStock);
+      if (isNaN(newStock) || newStock < 0) {
+        alert('Por favor ingrese un número válido');
+        return;
+      }
+      
+      await updateProductStock(productId, newStock);
+      refetchProducts();
+      setEditingStock(null);
+      setTempStock('');
+    } catch (err) {
+      alert('Error al actualizar el stock: ' + err.message);
+    }
+  };
+
+  const handleStockCancel = () => {
+    setEditingStock(null);
+    setTempStock('');
+  };
+
+  const handleStockKeyPress = (e, productId) => {
+    if (e.key === 'Enter') {
+      handleStockSave(productId);
+    } else if (e.key === 'Escape') {
+      handleStockCancel();
+    }
+  };
+
   if (loading) return <div className="loading">Cargando productos...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
@@ -265,7 +306,52 @@ export function ProductsList() {
                       <TableCell>
                         ${parseFloat(product.price).toFixed(2)}
                       </TableCell>
-                      <TableCell>{product.dailyStock}</TableCell>
+                      <TableCell>
+                        <div className="stock-cell">
+                          {editingStock === product.id ? (
+                            <div className="stock-edit-container">
+                              <input
+                                type="number"
+                                value={tempStock}
+                                onChange={(e) => setTempStock(e.target.value)}
+                                onKeyDown={(e) => handleStockKeyPress(e, product.id)}
+                                className="stock-input"
+                                autoFocus
+                                min="0"
+                              />
+                              <div className="stock-edit-buttons">
+                                <button
+                                  onClick={() => handleStockSave(product.id)}
+                                  className="stock-save-btn"
+                                  title="Guardar"
+                                >
+                                  <Check size={14} />
+                                </button>
+                                <button
+                                  onClick={handleStockCancel}
+                                  className="stock-cancel-btn"
+                                  title="Cancelar"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div 
+                              className="stock-display"
+                              onDoubleClick={() => handleStockDoubleClick(product)}
+                              title="Doble clic para editar"
+                            >
+                              <span>{product.dailyStock}</span>
+                              <Edit 
+                                size={14} 
+                                className="stock-edit-icon"
+                                onClick={() => handleStockDoubleClick(product)}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div className="status-toggle">
                           <input
