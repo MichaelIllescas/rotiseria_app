@@ -26,6 +26,6 @@ export const useToggleProductStatus = () => {
   return {
     loading,
     error,
-    toggleProductStatus,
+    toggleProductStatus,  
   };
 };

@@ -9,6 +9,7 @@ import com.imperialnet.foodstore.products.infrastructure.web.dto.CreateProductMu
 import com.imperialnet.foodstore.products.infrastructure.web.dto.ProductResponse;
 import com.imperialnet.foodstore.products.infrastructure.web.dto.CreateProductRequest;
 import com.imperialnet.foodstore.config.security.CustomUserDetails;
+import com.imperialnet.foodstore.products.infrastructure.web.dto.UpdateStockRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,6 +44,8 @@ public class ProductController {
     private final UpdateProductUseCase updateProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final ToggleProducStatusUseCase toggleProducStatusUseCase;
+    private final BulkUpdateStockUseCase bulkUpdateStockUseCase;
+    private final UpdateStockUseCase updateStockUseCase;
 
     // --- Endpoint para crear producto ---
     @ResponseStatus(HttpStatus.CREATED)
@@ -193,4 +196,74 @@ public class ProductController {
             MDC.clear();
         }
     }
+
+    // Endpoint para modificar el stock de un listado de productos.
+    @PutMapping("/updateBulkStocks")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
+    @Operation(
+            summary = "Modificar stock de productos a granel",
+            description = "Modifica el stock de un listado de productos. Disponible para roles DUENO y ENCARGADO."
+    )
+    public void updateStock(
+            @Valid @RequestBody List<UpdateStockRequest> requests,
+            Authentication auth
+    ) {
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+
+        MDC.put("action", "UPDATE_PRODUCTS_BULK_STOCK");
+        MDC.put("user", user.getFullName());
+
+        log.info("→ Inicio de modificación masiva de stock por el usuario: {}", user.getFullName());
+
+        try {
+            // Convertir DTOs a objetos del comando
+            var items = requests.stream()
+                    .map(req -> new UpdateStockCommand.ProductStockItem(req.productId(), req.stock()))
+                    .toList();
+
+            var command = new UpdateStockCommand(items);
+
+            // Llamar al caso de uso masivo
+            bulkUpdateStockUseCase.bulkUpdateStock(command);
+
+            log.info("← Finaliza exitosamente la modificación masiva de stock por el usuario: {}", user.getFullName());
+
+        } catch (Exception ex) {
+            log.error("✖ Error al modificar stock de productos por el usuario: {} → {}", user.getFullName(), ex.getMessage(), ex);
+            throw ex;
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    // endpoint para actualizar stock de un proucto
+    @Operation(
+            summary = "Actualizar stock de un producto",
+            description = "Actualiza el stock diario de un producto específico. Disponible para roles DUENO y ENCARGADO."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Stock del producto actualizado exitosamente")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('DUENO', 'ENCARGADO')")
+    @PutMapping("/updateStock")
+    public void updateStock(
+            @Valid @RequestBody UpdateStockRequest request,
+            Authentication auth) {
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+        MDC.put("action", "UPDATE_PRODUCT_STOCK");
+
+        log.info("→ El Usuario: {}, incia actualizacion de stock del producto id: {}", user.getFullName(), request.productId());
+        try {
+            // Llamar al caso de uso para actualizar el stock del producto
+            updateStockUseCase.updateStock(request.productId(), request.stock());
+            log.info("← El Usuario: {}, finaliza exitosamente actualizacion de stock del producto id: {}", user.getFullName(), request.productId());
+        } finally {
+            MDC.clear();
+        }
+    }
+
+
+
 }

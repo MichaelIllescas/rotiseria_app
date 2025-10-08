@@ -2,6 +2,7 @@
 package com.imperialnet.foodstore.products.infrastructure.persistence.adapter;
 
 import com.imperialnet.foodstore.products.application.ports.out.ProductRepositoryPort;
+import com.imperialnet.foodstore.products.domain.exception.ProductNotFoundException;
 import com.imperialnet.foodstore.products.domain.model.Product;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductPersistenceMapper;
 import com.imperialnet.foodstore.products.infrastructure.persistence.entity.ProductEntity;
@@ -33,11 +34,13 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
         return mapper.toDomain(savedEntity);
     }
 
-    // Busca un producto por id (lanza excepción si no existe por usar get())
     @Override
     public Product findById(Long id) {
-        return mapper.toDomain(jpaRepository.findById(id).get());
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain)
+                .orElseThrow(() -> new ProductNotFoundException("No se encontró el producto con ID: " + id));
     }
+
 
     // Elimina un producto por id
     @Override
@@ -96,5 +99,15 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
     @Override
     public long countByCategoryId(Long categoryId) {
         return jpaRepository.countByCategoryId(categoryId);
+    }
+    @Override
+    public List<Product> saveAll(List<Product> products) {
+        List<ProductEntity> entities = products.stream()
+                .map(mapper::toEntity)
+                .toList();
+        List<ProductEntity> savedEntities = jpaRepository.saveAll(entities);
+        return savedEntities.stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

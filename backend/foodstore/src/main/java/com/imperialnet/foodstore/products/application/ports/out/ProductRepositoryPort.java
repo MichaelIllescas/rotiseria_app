@@ -15,4 +15,5 @@ public interface ProductRepositoryPort {
     Product findByName(String name);
     Product update(Product product);
     long countByCategoryId(Long categoryId);
+    List <Product> saveAll(List<Product> products);
 }
