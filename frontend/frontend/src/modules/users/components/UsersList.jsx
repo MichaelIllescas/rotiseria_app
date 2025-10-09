@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from "../../../ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
-
 import useUpdateUser from "../hooks/useUpdateUser"; // <-- nuevo hook
 
 const ITEMS_PER_PAGE = 4;
@@ -42,7 +41,6 @@ export function UsersList({
   const [currentPage, setCurrentPage] = useState(1);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-
   // local form state for modal
   const [editForm, setEditForm] = useState(null);
   const [editErrors, setEditErrors] = useState({});

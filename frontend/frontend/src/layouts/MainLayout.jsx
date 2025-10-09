@@ -1,6 +1,9 @@
 import Sidebar from "../modules/common/Sidebar";
 import { UserHeader } from "../modules/users/components/UserHeader";
+import { useAuth } from "../context/AuthContext";
+
 export const MainLayout = ({ children }) => {
+  const { logout } = useAuth();
   return (
     <div>
       {/* === Sidebar fijo en desktop / deslizable en mobile === */}
@@ -10,7 +13,7 @@ export const MainLayout = ({ children }) => {
       <div>
         {/* Header superior */}
         <header>
-          <UserHeader />
+          <UserHeader onLogout={logout} />
         </header>
 
         {/* Contenido dinámico */}

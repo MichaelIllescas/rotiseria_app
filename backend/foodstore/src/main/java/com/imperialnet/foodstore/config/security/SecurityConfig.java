@@ -61,6 +61,8 @@ public class SecurityConfig {
                         .requestMatchers("/login").permitAll()   // tu login personalizado
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // recursos estáticos
                         .requestMatchers("/auth/reset-password", "/auth/forgot-password").permitAll()
+                        // Nuevo endpoint público para categorías activas
+                        .requestMatchers(HttpMethod.GET, "/api/categories/active").permitAll()
                         .anyRequest().authenticated()
                 )
                 // En tu SecurityConfig, asegúrate de que esté así:
@@ -74,7 +76,7 @@ public class SecurityConfig {
                             String username = authentication.getName();
                             // ✅ Usamos SecurityLogger
                             SecurityLogger.logLoginSuccess(username);
-                            response.sendRedirect("http://localhost:5173");
+                            response.sendRedirect("http://localhost:5173/dashboard");
                         })
                         .failureHandler((request, response, exception) -> {
                             String username = request.getParameter("username");
@@ -115,5 +117,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
-

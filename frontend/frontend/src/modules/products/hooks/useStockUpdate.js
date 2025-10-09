@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { updateBulkStock } from '../modules/products/services/productService';
+import { updateBulkStock } from '../services/productService';
 
 export const useStockUpdate = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -28,11 +28,10 @@ import { useDeleteProduct } from "../hooks/useDeleteProduct";
 import { useToggleProductStatus } from "../hooks/useToggleProductStatus";
 import { useCategories } from "../../category/hooks/useCategories"; // Necesitamos las categorías para el formulario
 import { useUpdateProductStock } from "../hooks/useUpdateProductStock";
-import { useStockUpdate } from "../../../hooks/useStockUpdate";
-import StockUpdateModal from "../../../components/StockUpdateModal";
+import { useStockUpdate } from "../hooks/useStockUpdate";
 import "../styles/productsList.css";
 import { ConfirmModal } from "./ConfirmModal";
-
+import StockUpdateModal from "./StockUpdateModal";
 const ITEMS_PER_PAGE = 5;
 
 export function ProductsList() {

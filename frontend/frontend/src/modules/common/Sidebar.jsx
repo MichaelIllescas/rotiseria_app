@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./styles/sidebar.css";
 
-// 📌 Array con tus items de navegación
+//  Array con tus items de navegación
 const menuItems = [
   { name: "Panel de Control", path: "/dashboard", icon: LayoutDashboard },
   { name: "Productos", path: "/products", icon: Package },

@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext"
 import  AdminPanel  from "../modules/users/pages/AdminUsersPanel"
 import ProductsPage from "../modules/products/pages/ProductsPage"
 import { BusinessPage } from "../modules/business/pages/BusinessPage"
+import Dashboard from "../modules/common/Dashboard"
+import HomePage from "../public/pages/HomePage"
 export const AppRoutes = () => {
 
 //extraer el roler del user del context
@@ -22,10 +24,11 @@ export const AppRoutes = () => {
             <Route path="/categories" element={<ProtectedRoute element={<CategoriesPage />} />} />
             <Route path="/products" element={<ProtectedRoute element={<ProductsPage />} />} />
             <Route path="/settings" element={<ProtectedRoute element={<BusinessPage />} />} />
+            <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           </>
         )}
             
-        <Route path="/" element={<ProtectedRoute element={<UsersTabs />} />} />
+        <Route path="/"  element={<HomePage />} />
 
     </Routes>
 

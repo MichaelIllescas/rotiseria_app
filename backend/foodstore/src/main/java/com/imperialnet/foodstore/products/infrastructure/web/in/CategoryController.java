@@ -137,6 +137,37 @@ public class CategoryController {
         }
     }
 
+    // --- Endpoint público para obtener solo categorías activas (PUBLICO)---
+    @Operation(
+            summary = "Obtener categorías activas (público)",
+            description = "Devuelve únicamente las categorías con estado activo. Acceso público, sin autenticación."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de categorías activas obtenida exitosamente",
+            content = @Content(schema = @Schema(implementation = CategoryResponse.class))
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/active")
+    public List<CategoryResponse> getActiveCategoriesPublic() {
+        MDC.put("action", "GET_ACTIVE_CATEGORIES_PUBLIC");
+        log.info("Obteniendo categorías activas (endpoint público)");
+        try {
+            List<Category> categories = getAllCategoriesUseCase.getAll();
+            List<CategoryResponse> responses = categories.stream()
+                    .filter(Category::isActive)
+                    .map(categoryMapper::toResponse)
+                    .toList();
+            log.info("Se han obtenido: {} categorías ACTIVAS (público)", responses.size());
+            return responses;
+        } catch (Exception e) {
+            log.error("Error al obtener categorías activas (público). Causa: {}", e.getMessage(), e);
+            throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
+
     // --- Endpoint para obtener categoría por ID ---
     @Operation(
             summary = "Obtener categoría por ID",
