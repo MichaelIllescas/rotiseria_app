@@ -27,9 +27,12 @@ import { useUpdateProduct } from "../hooks/useUpdateProduct";
 import { useDeleteProduct } from "../hooks/useDeleteProduct";
 import { useToggleProductStatus } from "../hooks/useToggleProductStatus";
 import { useCategories } from "../../category/hooks/useCategories"; // Necesitamos las categorías para el formulario
+import { useUpdateProductStock } from "../hooks/useUpdateProductStock";
+import { useStockUpdate } from "../../../hooks/useStockUpdate";
+import StockUpdateModal from "../../../components/StockUpdateModal";
 import "../styles/productsList.css";
 import { ConfirmModal } from "./ConfirmModal";
-import { useUpdateProductStock } from "../hooks/useUpdateProductStock";
+
 const ITEMS_PER_PAGE = 5;
 
 export function ProductsList() {
@@ -40,6 +43,16 @@ export function ProductsList() {
   const { toggleProductStatus } = useToggleProductStatus();
   const { categories } = useCategories(); // Obtener categorías para el select
   const { updateProductStock } = useUpdateProductStock();
+  const {
+    isModalOpen: isStockModalOpen,
+    stockData,
+    isLoading: isStockLoading,
+    hasChanges: hasStockChanges,
+    openModal: openStockModal,
+    closeModal: closeStockModal,
+    updateStock,
+    submitStockUpdates
+  } = useStockUpdate();
 
   //urlbase de las imagenes de los productos
   const imageBaseUrl = "http://localhost:8080";
@@ -203,6 +216,21 @@ export function ProductsList() {
     }
   };
 
+  const handleBulkStockUpdate = () => {
+    openStockModal(products);
+  };
+
+  const handleSaveStockUpdates = async () => {
+    try {
+      const result = await submitStockUpdates();
+      alert(`Stock actualizado correctamente para ${result.updatedCount} productos`);
+      refetchProducts();
+      closeStockModal();
+    } catch (error) {
+      alert('Error al actualizar el stock: ' + error.message);
+    }
+  };
+
   if (loading) return <div className="loading">Cargando productos...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
@@ -252,6 +280,13 @@ export function ProductsList() {
               >
                 <Plus size={16} className="mr-1" /> Agregar Producto
               </Button>
+              <button
+                onClick={handleBulkStockUpdate}
+                className="update-stock-btn"
+                disabled={products.length === 0}
+              >
+                <RefreshCw size={16} /> Actualizar Stock
+              </button>
             </div>
           </div>
           <div className="table-wrapper">
@@ -481,6 +516,17 @@ export function ProductsList() {
           onCancel={() => setProductToDelete(null)}
         />
       )}
+
+      {/* === Modal de actualización de stock === */}
+      <StockUpdateModal
+        isOpen={isStockModalOpen}
+        onClose={closeStockModal}
+        stockData={stockData}
+        onStockChange={updateStock}
+        onSave={handleSaveStockUpdates}
+        isLoading={isStockLoading}
+        hasChanges={hasStockChanges}
+      />
     </>
   );
 }

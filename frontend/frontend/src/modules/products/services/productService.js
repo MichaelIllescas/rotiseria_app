@@ -10,6 +10,7 @@ const DEFAULT_UPDATE_ENDPOINT = `${PRODUCT_BASE_URL}/update/<productId>`;
 const DEFAULT_DELETE_ENDPOINT = `${PRODUCT_BASE_URL}/delete/<productId>`;
 const DEFAULT_TOGGLE_STATUS_ENDPOINT = `${PRODUCT_BASE_URL}/toggleStatus/<productId>`;
 const DEFAULT_UPDATE_STOCK_ENDPOINT = `${PRODUCT_BASE_URL}/updateStock`;
+const DEFAULT_BULK_UPDATE_STOCK_ENDPOINT = `${PRODUCT_BASE_URL}/updateBulkStocks`;
 
 /**
  * 🖼️ Subir imagen de producto y obtener la URL pública.
@@ -123,6 +124,21 @@ const updateStock = async (productId, newStock) => {
   }
 };
 
+/**
+ * 📦 Actualizar stock de múltiples productos en lote.
+ * @param {Array} stockUpdates - Array de objetos con productId y stock
+ * @returns {Promise<Object>} - Respuesta del backend
+ */
+const updateBulkStock = async (stockUpdates) => {
+  try {
+    const response = await apiClient.put(DEFAULT_BULK_UPDATE_STOCK_ENDPOINT, stockUpdates);
+    return response.data;
+  } catch (error) {
+    const serverMessage = error.response?.data?.message || error.response?.data || error.message;
+    throw new Error(serverMessage || "Failed to update bulk stock");
+  }
+};
+
 export {
   uploadImage,
   create,
@@ -131,4 +147,5 @@ export {
   deleteProduct as remove,
   toggleStatus,
   updateStock,
+  updateBulkStock,
 };
