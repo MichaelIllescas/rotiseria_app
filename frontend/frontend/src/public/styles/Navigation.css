@@ -16,6 +16,11 @@
   height: 70px;
 }
 
+.brand-logo {
+width: 100%;
+max-width: 200px;
+position: relative;
+}
 /* Logo */
 .brand-logo h1 {
   color: #f8fafc;
@@ -273,3 +278,38 @@
 .mobile-item:nth-child(3) { animation-delay: 0.3s; }
 .mobile-item:nth-child(4) { animation-delay: 0.4s; }
 .mobile-item:nth-child(5) { animation-delay: 0.5s; }
+
+
+/* Ícono del carrito */
+.cart-icon {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+  color: #c8d8ef;
+}
+
+.cart-icon:hover {
+  transform: scale(1.1);
+  color: #ebedf0;
+}
+
+/* Alineación general */
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* En móviles, mantener el ícono visible arriba */
+@media (max-width: 768px) {
+  .cart-icon {
+    position: absolute;
+    right: 4rem;
+    top: 1rem;
+    margin-top: 5px;
+  }
+}

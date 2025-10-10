@@ -42,6 +42,12 @@ export default function Sidebar() {
 
   return (
     <>
+      {/* Overlay para móviles */}
+      <div 
+        className={`sidebar-overlay ${isOpen && !isDesktop ? "show" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
+
       {/* Botón hamburguesa (siempre visible) */}
       <button
         className="sidebar-toggle"

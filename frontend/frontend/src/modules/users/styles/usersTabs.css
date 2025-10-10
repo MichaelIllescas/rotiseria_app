@@ -5,6 +5,7 @@
   border-radius: var(--radius);
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   padding: 1rem;
+  padding-top: 0;
   max-width: 900px;
   margin: 0 auto;
 }
@@ -40,9 +41,6 @@
 }
 
 /* ==== Tabs Content ==== */
-.tabs-content {
-  padding: 1rem 0;
-}
 
 /* Contenedor de los tabs */
 .tabs {

@@ -1,9 +1,24 @@
+
 .dashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+  margin: 0;
   background-color: #f8fafc;
-  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* Contenedor interno para el contenido */
+.dashboard-container {
+    max-width: 900px;
+  margin: 70px auto;
+  width: 100%;
 }
 
 .dashboard-header {
@@ -408,6 +423,7 @@
 @media (max-width: 768px) {
   .dashboard {
     padding: 1rem;
+    padding-top: 5rem; /* Espacio para el sidebar toggle */
   }
   
   .metrics-grid {
@@ -416,5 +432,12 @@
   
   .dashboard-title {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 0.5rem;
+    padding-top: 4.5rem; /* Más espacio en móviles muy pequeños */
   }
 }

@@ -4,6 +4,7 @@ import com.imperialnet.foodstore.products.infrastructure.persistence.entity.Prod
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -11,4 +12,6 @@ public interface ProductRepositoryJpa extends JpaRepository<ProductEntity, Long>
     List<ProductEntity> findByCategoryId(Long categoryId);
     List<ProductEntity> findByNameContaining(String name);
     long countByCategoryId(Long categoryId);
+
+    List<ProductEntity> findByActiveTrue();
 }

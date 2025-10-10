@@ -4,13 +4,26 @@
 
 /* === Página principal === */
 .business-page {
-  padding-top: 2rem;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  padding: 2rem;
+  padding-bottom: 200px;
+  margin: 0;
   background-color: var(--background);
-  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* Contenedor interno para el contenido */
+.business-page-container {
+  max-width: 700px;
   margin: 0 auto;
-  padding-top: 100px;
-  padding-bottom: 2rem;
-   max-width: 900px;
+  width: 100%;
 }
 
 /* === Título y descripción de la página === */
@@ -221,7 +234,8 @@
 
 @media (max-width: 768px) {
   .business-page {
-    padding-top: 80px;
+    padding: 1rem;
+    padding-top: 5rem; /* Espacio para el sidebar toggle */
   }
   
   .page-title {
@@ -266,6 +280,11 @@
 }
 
 @media (max-width: 480px) {
+  .business-page {
+    padding: 0.5rem;
+    padding-top: 4.5rem; /* Más espacio en móviles muy pequeños */
+  }
+  
   .page-content,
   .page-header {
     padding: 0 0.75rem;

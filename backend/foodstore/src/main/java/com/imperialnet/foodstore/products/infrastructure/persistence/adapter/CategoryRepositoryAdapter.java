@@ -101,4 +101,14 @@ public class CategoryRepositoryAdapter implements CategoryRepositoryPort {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public List<Category> findActiveCategories() {
+        return categoryRepository.findByActiveTrue()
+                .stream()
+                .map(categoryPersistenceMapper::toDomain)
+                .toList();
+    }
+
+
 }

@@ -110,4 +110,11 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort {
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Product> findActiveProducts() {
+        return jpaRepository.findByActiveTrue().stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

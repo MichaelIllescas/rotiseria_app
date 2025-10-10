@@ -3,7 +3,7 @@
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 11; /* por encima del sidebar */
+  z-index: 1100; /* por encima del sidebar */
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -12,11 +12,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-toggle:hover {
   background: #f9fafb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-toggle svg {
@@ -30,7 +32,7 @@
 /* === Sidebar === */
 .sidebar {
   position: fixed;
-  top: 90px;
+  top: 0;
   left: -100%; /* oculto por defecto */
   height: 100vh;
   width: 16rem;
@@ -38,9 +40,18 @@
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  padding: 4rem 1rem 1.5rem; /* Más padding-top para dejar espacio al botón */
   transition: left 0.3s ease;
   z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 85vw; /* Usar viewport width en móviles pequeños */
+    max-width: 280px;
+  }
 }
 
 /* Mobile y Desktop abierto */
@@ -50,10 +61,15 @@
 
 /* Desktop: comportamiento específico */
 @media (min-width: 768px) {
+  .sidebar {
+    padding: 4rem 1rem 1.5rem; /* Más padding-top también en desktop para evitar superposición */
+    width: 16rem; /* Ancho fijo en desktop */
+  }
+  
   .sidebar.desktop {
     position: fixed;
-    top: 90px;
-    left: -26rem; /* oculto por defecto en desktop */
+    top: 0;
+    left: -18rem; /* Ajustado para mejor transición */
     transition: left 0.3s ease;
   }
   
@@ -67,9 +83,43 @@ body:has(.modal-overlay) .sidebar {
   z-index: 0;
 }
 
+/* Overlay para móviles */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* En desktop, no mostrar overlay */
+@media (min-width: 768px) {
+  .sidebar-overlay {
+    display: none;
+  }
+}
+
 /* Header */
 .sidebar-header {
   margin-bottom: 2rem;
+}
+
+/* Ajuste específico para desktop - más separación del botón */
+@media (min-width: 768px) {
+  .sidebar-header {
+    margin-top: 0.5rem; /* Pequeño margen adicional en desktop */
+    margin-bottom: 2rem;
+  }
 }
 
 .sidebar-header .logo {
@@ -125,5 +175,5 @@ body:has(.modal-overlay) .sidebar {
 
 body:has(.overlay) .sidebar-toggle,
 body:has(.modal-overlay) .sidebar-toggle {
-  z-index: 10; 
+  z-index: 1200; /* Asegurar que esté siempre por encima */
 }

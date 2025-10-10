@@ -17,7 +17,9 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  background: linear-gradient(15deg, #171717 0%, #e2e8f0 100%);
+  border-radius: 25%;
+
 }
 
 /* Imagen de fondo */
@@ -30,8 +32,9 @@
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
 }
-
 
 
 /* Contenedor interior */
@@ -151,15 +154,15 @@
 }
 
 .menu-showcase {
-  background: white;
+  color: white;
 }
 
 .about-showcase {
-  background: #f8fafc;
+  color: #f8fafc;
 }
 
 .contact-showcase {
-  background: white;
+  color: white;
 }
 
 /* === FOOTER === */

@@ -16,4 +16,5 @@ public interface ProductRepositoryPort {
     Product update(Product product);
     long countByCategoryId(Long categoryId);
     List <Product> saveAll(List<Product> products);
+    List<Product> findActiveProducts();
 }

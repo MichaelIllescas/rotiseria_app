@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, Info, Phone, ShoppingBag, User } from 'lucide-react';
+import { Menu, X, Home, Info, Phone, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import '../styles/Navigation.css';
 
@@ -28,7 +28,7 @@ const Navigation = () => {
       <div className="nav-container">
         {/* Logo */}
         <div className="brand-logo">
-          <h1>Rotisería FoodStore</h1>
+          <h1> FoodStore</h1>
         </div>
 
         {/* Desktop Navigation */}
@@ -61,7 +61,10 @@ const Navigation = () => {
           </ul>
         </div>
 
-    
+        {/* Ícono de carrito al extremo derecho */}
+        <div className="cart-icon">
+          <ShoppingCart size={24} />
+        </div>
 
         {/* Mobile Menu Button */}
         <button className="mobile-toggle" onClick={toggleMenu}>
@@ -96,7 +99,6 @@ const Navigation = () => {
               <span>Contacto</span>
             </a>
           </li>
-      
         </ul>
       </div>
 

@@ -14,4 +14,5 @@ public interface CategoryRepositoryPort {
     Category update(Category category);
     List<Category> findByNameContaining(String name);
     Category findByName(String name);
+    List<Category> findActiveCategories();
 }

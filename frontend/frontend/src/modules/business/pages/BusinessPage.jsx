@@ -95,9 +95,10 @@ export const BusinessPage = () => {
 
   return (
     <div className="business-page">
-      <div className="page-header">
-        <div className="header-content">
-          <div className="title-section">
+      <div className="business-page-container">
+        <div className="page-header">
+          <div className="header-content">
+            <div className="title-section">
             <h1 className="page-title">
               <Building className="title-icon" />
               Gestión de Empresa
@@ -174,6 +175,7 @@ export const BusinessPage = () => {
           </div>
         </div>
       )}
+      </div> {/* Cierre del business-page-container */}
     </div>
   );
 };

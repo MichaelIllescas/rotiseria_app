@@ -46,14 +46,21 @@ export function BusinessForm({
     onSave({ ...formData, active: true });
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget && onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="business-form">
-      <Card className="card">
-        <CardHeader className="card-header">
-          <CardTitle className="card-title">
-            {business ? 'Editar Negocio' : 'Nuevo Negocio'}
-          </CardTitle>
-        </CardHeader>
+    <div className="business-form-modal" onClick={handleOverlayClick}>
+      <div className="business-form">
+        <Card className="card">
+          <CardHeader className="card-header">
+            <CardTitle className="card-title">
+              {business ? 'Editar Negocio' : 'Nuevo Negocio'}
+            </CardTitle>
+          </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-grid">
@@ -156,6 +163,7 @@ export function BusinessForm({
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

@@ -57,8 +57,9 @@ export function UsersTabs() {
   return (
     <div className="tabs-container">
       {/* Tabs header */}
-       <div style={{ padding: "2rem" }}>
+       <div >
       {/* Párrafo arriba */}
+      <h2>Gestion de usuarios</h2>
       <p className="text-muted-foreground" style={{ marginBottom: "1rem" }}>
         Gestiona los usuarios del sistema, asigna roles y controla accesos
       </p>
@@ -80,7 +81,7 @@ export function UsersTabs() {
       </div>
 
       {/* Tabs content */}
-      <div className="tabs-content">
+      <div className="">
         {activeTab === "list" && (
           <UsersList
             users={users}

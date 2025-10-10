@@ -1,13 +1,42 @@
-import React, { useEffect } from "react";
 import Navigation from "../components/Navigation";
 import "../styles/HomePage.css";
 import { SocialSidebar } from "../components/SocialSidebar";
-import { useCategories } from "../../modules/category/hooks/useCategories";
+import { useCategories } from "../hooks/useCategories";
+import { ProductTabs } from "../components/ProductTabs";
+import { useProducts } from "../hooks/useProducts";
 
 const HomePage = () => {
-  const { categories } = useCategories();
+  const { categories, loading, error } = useCategories();
+  const { products } = useProducts();
+
+  if (loading) {
+    return (
+      <div className="home-page">
+        <div className="nav-wrapper">
+          <Navigation />
+          <SocialSidebar />
+        </div>
+        <main className="page-content">
+          <p>Cargando...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="home-page">
+        <div className="nav-wrapper">
+          <Navigation />
+          <SocialSidebar />
+        </div>
+        <main className="page-content">
+          <p>Error: {error}</p>
+        </main>
+      </div>
+    );
+  }
  
-console.log(categories);
 
     return (
     <div className="home-page">
@@ -30,6 +59,7 @@ console.log(categories);
                 </p>
                 <button className="hero-button">Ver Nuestro Menú</button>
               </div>
+           
 
               {/* Listado de categorías a la derecha */}
               <ul className="hero-categories">
@@ -40,7 +70,7 @@ console.log(categories);
             </div>
           </div>
         </section>
-
+   <hr />
         {/* Menu Section */}
         <section id="menu" className="menu-showcase">
           <div className="content-wrapper">
@@ -49,6 +79,7 @@ console.log(categories);
               Descubre nuestras especialidades preparadas diariamente
             </p>
             {/* Menu content will go here */}
+            <ProductTabs categories={categories || []} products={products || []} />
           </div>
         </section>
 

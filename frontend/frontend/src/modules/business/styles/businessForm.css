@@ -2,6 +2,21 @@
 /* === Business Form - Estilos para formulario de registro de negocios === */
 /* ===================================================================== */
 
+/* === Modal Overlay (para centrar como modal) === */
+.business-form-modal {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100dvw;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
 /* === Card Container === */
 .business-form .card {
   background-color: var(--card);
@@ -9,11 +24,30 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  min-width: 65dvw;
-  max-width: 600px;
-  margin: 0 auto;
-  transition: box-shadow 0.2s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0;
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+/* Animación de entrada */
+.business-form-modal .business-form .card {
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .business-form .card:hover {
@@ -157,7 +191,6 @@
   color: #dc2626;
   line-height: 1.4;
 }
-
 /* === Responsive Design === */
 @media (min-width: 768px) {
   .business-form .form-grid {
@@ -167,26 +200,38 @@
 }
 
 @media (max-width: 768px) {
-  .business-form .card {
-    min-width: 90dvw;
-    padding: 1.5rem;
+  .business-form-modal {
+    padding: 0.5rem;
   }
-  
+
+  .business-form .card {
+    width: 95% !important;      /* ✅ Se expande casi todo el ancho */
+    max-height: 95vh;           /* mantiene altura controlada */
+    padding: 1.5rem;            /* algo de aire interno */
+  }
+
   .business-form .card-title {
     font-size: 1.125rem;
   }
 }
 
 @media (max-width: 480px) {
-  .business-form .card {
-    padding: 1rem;
+  .business-form-modal {
+    padding: 0.25rem;
   }
-  
+
+  .business-form .card {
+    width: 100% !important;     /* ✅ Ocupa todo el ancho en móviles */
+    max-height: 98vh;
+    padding: 1.25rem;
+    border-radius: 6px;
+  }
+
   .business-form .button-container {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .business-form .form-grid {
     grid-template-columns: 1fr;
     gap: 1rem;

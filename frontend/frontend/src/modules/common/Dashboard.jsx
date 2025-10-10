@@ -18,10 +18,11 @@ import './styles/Dashboard.css';
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <div className="dashboard-header">
-        <h1 className="dashboard-title">Panel de Control</h1>
-        <p className="dashboard-subtitle">Resumen general del negocio</p>
-      </div>
+      <div className="dashboard-container">
+        <div className="dashboard-header">
+          <h1 className="dashboard-title">Panel de Control</h1>
+          <p className="dashboard-subtitle">Resumen general del negocio</p>
+        </div>
 
       {/* Métricas principales */}
       <div className="metrics-grid">
@@ -276,6 +277,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      </div> {/* Cierre del dashboard-container */}
     </div>
   );
 };

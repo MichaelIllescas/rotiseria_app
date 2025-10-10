@@ -111,6 +111,35 @@ public class ProductController {
         }
     }
 
+    // --- Endpoint público para obtener solo productos activos ---
+    @Operation(
+            summary = "Obtener productos activos (público)",
+            description = "Devuelve únicamente los productos con estado activo. Acceso público, sin autenticación."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de productos activos obtenida exitosamente",
+            content = @Content(schema = @Schema(implementation = ProductResponse.class))
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/active")
+    public List<ProductResponse> getActiveProductsPublic() {
+        MDC.put("action", "GET_ACTIVE_PRODUCTS_PUBLIC");
+        log.info("Obteniendo productos activos (endpoint público)");
+        try {
+            List<Product> products = getAllProductsUseCase.getAll();
+            return products.stream()
+                    .filter(Product::isActive)
+                    .map(productMapper::toResponse)
+                    .toList();
+        } catch (Exception e) {
+            log.error("Error al obtener productos activos (público). Causa: {}", e.getMessage(), e);
+            throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
+
     //endpoint para actualizar un producto
     @Operation(
             summary = "Actualizar un producto",

@@ -1,4 +1,3 @@
-// src/modules/category/hooks/useCategories.js (VERSIÓN TEMPORAL PARA PRUEBAS)
 
 import { useState, useEffect } from 'react';
 import { listActivesCategories } from '../services/categoryService';

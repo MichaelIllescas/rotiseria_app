@@ -99,7 +99,8 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+
   color: var(--foreground);
   font-size: var(--font-size);
   font-weight: var(--font-weight-normal);

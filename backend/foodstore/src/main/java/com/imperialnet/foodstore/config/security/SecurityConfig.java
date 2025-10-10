@@ -63,6 +63,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/reset-password", "/auth/forgot-password").permitAll()
                         // Nuevo endpoint público para categorías activas
                         .requestMatchers(HttpMethod.GET, "/api/categories/active").permitAll()
+                        // Nuevo endpoint público para productos activos
+                        .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // En tu SecurityConfig, asegúrate de que esté así:
@@ -100,7 +102,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex ->  ex
                         .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
-                        .build();
+                .build();
     }
 
     @Bean

@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface CategoryRepositoryJpa extends JpaRepository<CategoryEntity, Long> {
    List<CategoryEntity>  findByNameContaining(String name);
+
+    List<CategoryEntity> findByActiveTrue();
 }
