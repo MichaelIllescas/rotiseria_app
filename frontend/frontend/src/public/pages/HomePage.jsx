@@ -4,10 +4,16 @@ import { SocialSidebar } from "../components/SocialSidebar";
 import { useCategories } from "../hooks/useCategories";
 import { ProductTabs } from "../components/ProductTabs";
 import { useProducts } from "../hooks/useProducts";
+import { ProductSearch } from "../components/ProductSearch";
+import { AboutSection } from "../components/AboutSection";
+import { ContactSection } from "../components/ContactSection";
+import { BottomNavigation } from "../components/BottomNavigation";
+import { useState } from "react";
 
 const HomePage = () => {
   const { categories, loading, error } = useCategories();
   const { products } = useProducts();
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (loading) {
     return (
@@ -36,9 +42,8 @@ const HomePage = () => {
       </div>
     );
   }
- 
 
-    return (
+  return (
     <div className="home-page">
       <div className="nav-wrapper">
         <Navigation />
@@ -49,9 +54,7 @@ const HomePage = () => {
         {/* Hero Section */}
         <section id="inicio" className="hero-banner">
           <div className="hero-wrapper">
-            {/* Contenedor principal dividido en dos columnas */}
             <div className="hero-content">
-              {/* Texto del hero */}
               <div className="hero-text">
                 <h1 className="hero-heading">Bienvenidos a FoodStore</h1>
                 <p className="hero-description">
@@ -59,9 +62,6 @@ const HomePage = () => {
                 </p>
                 <button className="hero-button">Ver Nuestro Menú</button>
               </div>
-           
-
-              {/* Listado de categorías a la derecha */}
               <ul className="hero-categories">
                 {categories.map((category) => (
                   <li key={category.id}>{category.name}</li>
@@ -70,7 +70,8 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-   <hr />
+        <hr />
+
         {/* Menu Section */}
         <section id="menu" className="menu-showcase">
           <div className="content-wrapper">
@@ -78,38 +79,46 @@ const HomePage = () => {
             <p className="section-description">
               Descubre nuestras especialidades preparadas diariamente
             </p>
-            {/* Menu content will go here */}
-            <ProductTabs categories={categories || []} products={products || []} />
+            <ProductSearch
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
+            <ProductTabs
+              categories={categories || []}
+              products={products || []}
+              searchTerm={searchTerm}
+            />
           </div>
         </section>
-
+        <hr />
         {/* About Section */}
         <section id="nosotros" className="about-showcase">
           <div className="content-wrapper">
-            <h2 className="section-heading">Sobre Nosotros</h2>
-            <p className="section-description">
-              Conoce nuestra historia y compromiso con la calidad
-            </p>
-            {/* About content will go here */}
+          
+            <AboutSection />
           </div>
         </section>
 
+        <hr />
         {/* Contact Section */}
         <section id="contacto" className="contact-showcase">
           <div className="content-wrapper">
-            <h2 className="section-heading">Contacto</h2>
-            <p className="section-description">Estamos aquí para atenderte</p>
-            {/* Contact content will go here */}
+            
+            <ContactSection />
           </div>
         </section>
+         {/* Bottom Navigation */}
       </main>
 
       {/* Footer */}
       <footer className="page-footer">
         <div className="footer-wrapper">
-          <p>&copy; 2024 Rotisería La Casa. Todos los derechos reservados.</p>
+          <p>&copy; 2024 FoodStore. Todos los derechos reservados.</p>
         </div>
       </footer>
+
+      <BottomNavigation />
+     
     </div>
   );
 };
