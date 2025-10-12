@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, Building } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Plus, Building, Edit } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { toast } from '../../../ui/toaster';
 import { BusinessDisplay } from '../components/BusinessDisplay';
@@ -8,16 +8,27 @@ import { useBusinesses } from '../hooks/useBusinesses';
 import { useCreateBusiness } from '../hooks/useCreateBusiness';
 import { useUpdateBusiness } from '../hooks/useUpdateBusiness';
 import '../styles/businessPage.css';
+import { useBusinessHours } from '../hooks/useBusinessHours';
+import { BusinessHoursViewer } from '../components/BusinessHoursViewer';
+import { BusinessHoursForm } from '../components/BusinessHoursForm';
 
 export const BusinessPage = () => {
   // Estados para manejar UI
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [editingHours, setEditingHours] = useState(false);
 
   // Hooks para manejar datos
   const { businesses, loading, error, refetchBusinesses } = useBusinesses();
   const { createBusiness, loading: creatingBusiness } = useCreateBusiness();
   const { updateBusiness } = useUpdateBusiness();
+  const { hours, fetchHours, saveHours, loading: loadingHours } = useBusinessHours();
+
+  useEffect(() => {
+    fetchHours();
+  }, []);
+
+  if (loading) return <p>Cargando horarios...</p>;
 
   // Asumimos que solo hay una empresa por aplicación
   const currentBusiness = businesses && businesses.length > 0 ? businesses[0] : null;
@@ -78,6 +89,21 @@ export const BusinessPage = () => {
   };
 
   /**
+   * Maneja la actualización de horarios
+   */
+  const handleUpdateHours = async (hoursData) => {
+    try {
+      await saveHours(hoursData);
+      toast.success("Horarios actualizados correctamente");
+      setEditingHours(false);
+      fetchHours(); // Refrescar los datos
+    } catch (err) {
+      const errorMessage = err.message || "Error al actualizar los horarios";
+      toast.error(errorMessage);
+    }
+  };
+
+  /**
    * Cancela el formulario de creación
    */
   const handleCancelCreate = () => {
@@ -86,11 +112,25 @@ export const BusinessPage = () => {
   };
 
   /**
+   * Cancela la edición de horarios
+   */
+  const handleCancelEditHours = () => {
+    setEditingHours(false);
+  };
+
+  /**
    * Abre el formulario de creación
    */
   const handleShowCreateForm = () => {
     setShowCreateForm(true);
     setFormErrors({});
+  };
+
+  /**
+   * Activa el modo de edición de horarios
+   */
+  const handleEditHours = () => {
+    setEditingHours(true);
   };
 
   return (
@@ -175,6 +215,38 @@ export const BusinessPage = () => {
           </div>
         </div>
       )}
+
+      {/* Sección de Horarios de Atención */}
+      <div className="business-hours-page card p-4 mt-3">
+        <div className="business-hours-header">
+          <h3>Horarios de Atención</h3>
+          {hours.length > 0 && !editingHours && (
+            <Button
+              onClick={handleEditHours}
+              className="edit-hours-button"
+              variant="outline"
+              size="sm"
+            >
+              <Edit size={16} />
+              Editar Horarios
+            </Button>
+          )}
+        </div>
+
+        {loadingHours ? (
+          <p>Cargando horarios...</p>
+        ) : editingHours ? (
+          <BusinessHoursForm 
+            onSubmit={handleUpdateHours}
+            onCancel={handleCancelEditHours}
+            initialData={hours}
+          />
+        ) : hours.length > 0 ? (
+          <BusinessHoursViewer hours={hours} />
+        ) : (
+          <BusinessHoursForm onSubmit={saveHours} />
+        )}
+      </div>
       </div> {/* Cierre del business-page-container */}
     </div>
   );

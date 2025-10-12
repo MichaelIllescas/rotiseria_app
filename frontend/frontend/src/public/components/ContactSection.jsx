@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "../styles/ContactSection.css";
+import { BusinessHoursViewer } from "../../modules/business/components/BusinessHoursViewer";
+import { useBusinessHours } from "../hooks/useBusinessHour";
 
 export const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,11 @@ export const ContactSection = () => {
     phone: "",
     message: ""
   });
+
+  const { businessHours, loading, error } = useBusinessHours();
+
+  if (loading) return <p>Cargando horarios...</p>;
+  if (error) return <p>Error al cargar horarios: {error}</p>;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,10 +75,9 @@ export const ContactSection = () => {
           <div className="contact-item">
             <div className="contact-icon">⏰</div>
             <div className="contact-details">
-              <h4>Horarios de Atención</h4>
-              <p><strong>Lunes a Viernes:</strong> 11:00 - 22:00</p>
-              <p><strong>Sábados:</strong> 11:00 - 23:00</p>
-              <p><strong>Domingos:</strong> 12:00 - 22:00</p>
+              <div className="hours">
+                <BusinessHoursViewer hours={businessHours} />
+              </div>
             </div>
           </div>
 

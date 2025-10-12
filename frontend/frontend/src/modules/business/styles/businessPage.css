@@ -220,7 +220,122 @@
   margin: 2rem 0;
 }
 
-/* === Responsive design === */
+/* === Estilos para la sección de horarios */
+.business-hours-page {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  margin-top: 1.5rem;
+}
+
+.business-hours-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.business-hours-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Botón de editar horarios */
+.edit-hours-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6366f1;
+  background-color: #ffffff;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  outline: none;
+}
+
+.edit-hours-button:hover {
+  background-color: #f8fafc;
+  border-color: #c7d2fe;
+  color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.edit-hours-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+}
+
+.edit-hours-button:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: #a5b4fc;
+}
+
+.edit-hours-button svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.edit-hours-button:hover svg {
+  transform: scale(1.1);
+}
+
+/* Versión alternativa con icono de reloj */
+.edit-hours-button-alt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.edit-hours-button-alt:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.edit-hours-button-alt:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .business-hours-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .edit-hours-button,
+  .edit-hours-button-alt {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 1024px) {
   .header-content {
     padding: 0 1rem;

@@ -1,6 +1,5 @@
 package com.imperialnet.foodstore.publicapi.infrastructure.web.in;
 
-import com.imperialnet.foodstore.products.domain.model.Category;
 import com.imperialnet.foodstore.products.infrastructure.mapper.CategoryMapper;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductMapper;
 import com.imperialnet.foodstore.products.infrastructure.web.dto.CategoryResponse;
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -21,17 +21,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.imperialnet.foodstore.business.application.port.in.GetBusinessHoursUseCase;
+import com.imperialnet.foodstore.business.infrastructure.mapper.BusinessHourMapper;
+import com.imperialnet.foodstore.business.infrastructure.web.dto.BusinessHourDTO;
 
 @Slf4j
-@RestController // Desactivado para evitar fallos de arranque
+@RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
+@Tag(name = "Catálogo Público", description = "Endpoints públicos del catálogo (no requieren autenticación)")
 public class PublicCatalogController {
 
     private final GetActiveProductsUseCase getAllProductsUseCase;
     private final GetActiveCategoriesUseCase getAllCategoriesUseCase;
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
+    private final GetBusinessHoursUseCase getBusinessHoursUseCase;
+    private final BusinessHourMapper businessHourMapper;
 
 
     // --- Endpoint público para obtener solo productos activos --- (PUBLICO)
@@ -94,6 +100,35 @@ public class PublicCatalogController {
         }
     }
 
+
+    // --- Endpoint público para obtener horarios de atención (PUBLICO) ---
+    @Operation(
+            summary = "Obtener horarios de atención (público)",
+            description = "Devuelve todos los horarios de atención configurados. Acceso público, sin autenticación."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de horarios de atención obtenida exitosamente",
+            content = @Content(schema = @Schema(implementation = BusinessHourDTO.class))
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/getBusinessHours")
+    public List<BusinessHourDTO> getBusinessHoursPublic() {
+        MDC.put("action", "GET_BUSINESS_HOURS_PUBLIC");
+        log.info("Obteniendo horarios de atención (endpoint público)");
+        try {
+            List<BusinessHourDTO> hours = getBusinessHoursUseCase.getAll().stream()
+                    .map(businessHourMapper::toDto)
+                    .toList();
+            log.info("Se han obtenido: {} horarios de atención (público)", hours.size());
+            return hours;
+        } catch (Exception e) {
+            log.error("Error al obtener horarios de atención (público). Causa: {}", e.getMessage(), e);
+            throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
 
 
 
