@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { toast } from '../../src/ui/toaster';
+
 
 const CartContext = createContext();
 
@@ -22,11 +24,19 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+    toast.success(`${product.name} agregado al carrito`);
   };
 
-  const removeFromCart = (id) => setCart((prev) => prev.filter(p => p.id !== id));
+  const removeFromCart =  (productId) => {
+    setCart((prev) => prev.filter((p) => p.id !== productId));
+    toast.success("Producto eliminado del carrito");
+  };
+  
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    toast.success("Carrito vaciado");
+  };
 
   const updateQuantity = (productId, newQuantity) => {
     setCart(prevCart =>
