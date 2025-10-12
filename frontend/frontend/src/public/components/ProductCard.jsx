@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye } from "lucide-react";
 import "../styles/ProductCard.css";
+import { useCart } from "../../context/CartContext";
 
-export const ProductCard = ({ product, onAddToCart }) => {
+export const ProductCard = ({ product, onAddToCart, onViewDetail }) => {
   const { name, description, price, imageUrl, dailyStock } = product;
+
+    const { addToCart } = useCart();
+
 
   // Estado para definir dinámicamente el modo de ajuste
   const [fitMode, setFitMode] = useState("cover");
@@ -23,7 +27,7 @@ export const ProductCard = ({ product, onAddToCart }) => {
 
   return (
     <div className={`product-card ${dailyStock === 0 ? "out-of-stock" : ""}`}>
-      <div className="product-image">
+      <div className="product-image" onClick={() => onViewDetail(product)}>
         <img
           src={
             imageUrl?.startsWith("http")
@@ -35,10 +39,14 @@ export const ProductCard = ({ product, onAddToCart }) => {
           onLoad={handleImageLoad}
           style={{ objectFit: fitMode }}
         />
+        <div className="image-overlay">
+          <Eye size={24} />
+          <span>Ver detalle</span>
+        </div>
       </div>
 
       <div className="product-content">
-        <h3 className="product-name">{name}</h3>
+        <h3 className="product-name" onClick={() => onViewDetail(product)}>{name}</h3>
         <p className="product-description">{description}</p>
 
         <div className="product-footer">
@@ -56,7 +64,7 @@ export const ProductCard = ({ product, onAddToCart }) => {
           <button
             className="add-to-cart-btn"
             disabled={dailyStock === 0}
-            onClick={() => onAddToCart(product)}
+            onClick={() => addToCart(product)}
           >
             <ShoppingCart size={18} />
             <span>Agregar</span>

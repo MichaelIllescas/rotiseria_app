@@ -63,7 +63,7 @@ export const BottomNavigation = () => {
     },
     {
       id: "whatsapp",
-      icon: "",
+      icon: "💬",
       label: "WhatsApp",
       action: () => window.open("https://wa.me/5491145678900?text=Hola,%20me%20interesa%20hacer%20un%20pedido", "_blank")
     }

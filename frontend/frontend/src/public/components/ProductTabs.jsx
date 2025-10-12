@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ProductCard } from "./ProductCard";
+import { ProductDetailModal } from "./ProductDetailModal";
 import { groupProductsByCategory } from "../helper/groupProductsByCategory";
 import "../styles/ProductTabs.css";
 
@@ -7,6 +8,8 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
   // Agrupamos productos según su categoría (todos los productos originales)
   const groupedCategories = groupProductsByCategory(categories, products);
   const [activeTab, setActiveTab] = useState(groupedCategories[0]?.name || "");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Detectar si hay una búsqueda activa
   const isSearching = searchTerm.trim().length > 0;
@@ -18,6 +21,21 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : groupedCategories.find((cat) => cat.name === activeTab)?.products || [];
+
+  const handleViewDetail = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleAddToCart = (product, quantity = 1) => {
+    console.log(`Agregado al carrito: ${product.name} x${quantity}`);
+    // Aquí conectarías con tu lógica de carrito
+  };
 
   return (
     <div className="product-tabs">
@@ -50,9 +68,8 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={() =>
-                  console.log(`Agregado al carrito: ${product.name}`)
-                }
+                onAddToCart={handleAddToCart}
+                onViewDetail={handleViewDetail}
               />
             ))
           ) : (
@@ -64,6 +81,15 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
           )}
         </div>
       </div>
+
+      {/* Modal de Detalle */}
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAddToCart={handleAddToCart}
+        categories={categories}
+      />
     </div>
   );
 };

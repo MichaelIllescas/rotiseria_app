@@ -8,6 +8,7 @@ import ProductsPage from "../modules/products/pages/ProductsPage"
 import { BusinessPage } from "../modules/business/pages/BusinessPage"
 import Dashboard from "../modules/common/Dashboard"
 import HomePage from "../public/pages/HomePage"
+import { CartPage } from "../public/pages/CartPage"
 export const AppRoutes = () => {
 
 //extraer el roler del user del context
@@ -29,6 +30,7 @@ export const AppRoutes = () => {
         )}
             
         <Route path="/"  element={<HomePage />} />
+         <Route path="/cart" element={<CartPage />} />
 
     </Routes>
 

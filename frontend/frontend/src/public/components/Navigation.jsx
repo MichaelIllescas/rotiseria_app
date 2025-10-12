@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Menu, X, Home, Info, Phone, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import '../styles/Navigation.css';
+import { useCart } from '../../context/CartContext';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, login, logout } = useAuth();
+  const { cart } = useCart();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -62,9 +65,12 @@ const Navigation = () => {
         </div>
 
         {/* Ícono de carrito al extremo derecho */}
-        <div className="cart-icon">
-          <ShoppingCart size={24} />
-        </div>
+        <Link to="/cart">
+          <div className="cart-icon">
+            <ShoppingCart size={24} />
+            <span>{cart.length}</span>
+          </div>
+        </Link>
 
         {/* Mobile Menu Button */}
         <button className="mobile-toggle" onClick={toggleMenu}>

@@ -95,7 +95,7 @@
 /* Estilos especiales para WhatsApp */
 .bottom-nav-item:last-child {
   background: linear-gradient(135deg, #25d366, #20ba5a);
-  color: white;
+  color: white  !important;
   border-radius: 50%;
   width: 56px;
   height: 56px;
@@ -108,6 +108,7 @@
   background: linear-gradient(135deg, #20ba5a, #1da851);
   transform: translateY(-4px);
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+
 }
 
 .bottom-nav-item:last-child .nav-icon {
