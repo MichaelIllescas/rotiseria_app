@@ -3,7 +3,7 @@ import "../styles/ContactSection.css";
 import { BusinessHoursViewer } from "../../modules/business/components/BusinessHoursViewer";
 import { useBusinessHours } from "../hooks/useBusinessHour";
 
-export const ContactSection = () => {
+export const ContactSection = ({ business = {} }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,8 +13,51 @@ export const ContactSection = () => {
 
   const { businessHours, loading, error } = useBusinessHours();
 
-  if (loading) return <p>Cargando horarios...</p>;
-  if (error) return <p>Error al cargar horarios: {error}</p>;
+  // Función para generar URL del mapa basada en la dirección
+  const generateMapUrl = (address) => {
+    if (!address) return "";
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ''}&q=${encodedAddress}`;
+  };
+
+  // Función alternativa para mapa sin API key (usando search)
+  const generateMapUrlFallback = (address) => {
+    if (!address) return "";
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.4156165924627!2d-58.44421908476186!3d-34.59884598046416!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5901e4c8fbb%3A0x7a9a8e8e8e8e8e8e!2s${encodedAddress}!5e0!3m2!1ses!2sar!4v1697834567890!5m2!1ses!2sar`;
+  };
+
+  // URLs para direcciones externas
+  const getGoogleMapsUrl = (address) => {
+    if (!address) return "#";
+    return `https://maps.google.com/maps?q=${encodeURIComponent(address)}`;
+  };
+
+  const getDirectionsUrl = (address) => {
+    if (!address) return "#";
+    return `https://www.google.com/maps/dir//${encodeURIComponent(address)}`;
+  };
+
+  // Función para formatear número de WhatsApp
+  const formatWhatsAppNumber = (phone) => {
+    if (!phone) return "";
+    // Remover espacios, guiones y paréntesis
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, "");
+    // Si no empieza con +, agregar código de país (Argentina)
+    if (!cleanPhone.startsWith("+")) {
+      return `+54${cleanPhone}`;
+    }
+    return cleanPhone;
+  };
+
+  // URL de WhatsApp
+  const getWhatsAppUrl = (phone) => {
+    const formattedPhone = formatWhatsAppNumber(phone);
+    return `https://wa.me/${formattedPhone.replace("+", "")}`;
+  };
+
+  if (loading) return <p>Cargando información...</p>;
+  if (error) return <p>Error al cargar información: {error}</p>;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,47 +89,97 @@ export const ContactSection = () => {
         <div className="contact-info">
           <h3>Información</h3>
           
-          <div className="contact-item">
-            <div className="contact-icon">📍</div>
-            <div className="contact-details">
-              <h4>Dirección</h4>
-              <p>Av. Corrientes 1234<br />Villa Crespo, CABA<br />Argentina</p>
-            </div>
-          </div>
-
-          <div className="contact-item">
-            <div className="contact-icon">📞</div>
-            <div className="contact-details">
-              <h4>Teléfono</h4>
-              <p>+54 11 4567-8900</p>
-              <p>WhatsApp: +54 9 11 4567-8900</p>
-            </div>
-          </div>
-
-          <div className="contact-item">
-            <div className="contact-icon">✉️</div>
-            <div className="contact-details">
-              <h4>Email</h4>
-              <p>info@foodstore.com.ar</p>
-              <p>pedidos@foodstore.com.ar</p>
-            </div>
-          </div>
-
-          <div className="contact-item">
-            <div className="contact-icon">⏰</div>
-            <div className="contact-details">
-              <div className="hours">
-                <BusinessHoursViewer hours={businessHours} />
+          {business.address && (
+            <div className="contact-item">
+              <div className="contact-icon">📍</div>
+              <div className="contact-details">
+                <h4>Dirección</h4>
+                <p>{business.address}</p>
               </div>
             </div>
-          </div>
+          )}
+
+          {business.phone && (
+            <div className="contact-item">
+              <div className="contact-icon">📞</div>
+              <div className="contact-details">
+                <h4>Teléfono</h4>
+                <p>{business.phone}</p>
+                <p>
+                  <a 
+                    href={getWhatsAppUrl(business.phone)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="whatsapp-link"
+                  >
+                    WhatsApp: {business.phone}
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {business.email && (
+            <div className="contact-item">
+              <div className="contact-icon">✉️</div>
+              <div className="contact-details">
+                <h4>Email</h4>
+                <p>
+                  <a href={`mailto:${business.email}`} className="email-link">
+                    {business.email}
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {businessHours && businessHours.length > 0 && (
+            <div className="contact-item">
+              <div className="contact-icon">⏰</div>
+              <div className="contact-details">
+                <h4>Horarios de Atención</h4>
+                <div className="hours">
+                  <BusinessHoursViewer hours={businessHours} />
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="social-links">
             <h4>Síguenos</h4>
             <div className="social-buttons">
-              <a href="#" className="social-btn facebook">📘 Facebook</a>
-              <a href="#" className="social-btn instagram">📷 Instagram</a>
-              <a href="#" className="social-btn whatsapp">💬 WhatsApp</a>
+              {business.facebookUrl && (
+                <a 
+                  href={business.facebookUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="social-btn facebook"
+                >
+                  📘 Facebook
+                </a>
+              )}
+              
+              {business.instagramUrl && (
+                <a 
+                  href={business.instagramUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="social-btn instagram"
+                >
+                  📷 Instagram
+                </a>
+              )}
+              
+              {business.phone && (
+                <a 
+                  href={getWhatsAppUrl(business.phone)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="social-btn whatsapp"
+                >
+                  💬 WhatsApp
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -153,45 +246,57 @@ export const ContactSection = () => {
         </div>
       </div>
 
-      {/* Mapa de Google Maps */}
-      <div className="location-info">
-        <h3>📍 Nuestra Ubicación</h3>
-        <div className="map-container">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.4156165924627!2d-58.44421908476186!3d-34.59884598046416!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5901e4c8fbb%3A0x7a9a8e8e8e8e8e8e!2sAv.%20Corrientes%201234%2C%20C1414%20CABA!5e0!3m2!1ses!2sar!4v1697834567890!5m2!1ses!2sar"
-            width="100%"
-            height="300"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Ubicación de FoodStore"
-          ></iframe>
-        </div>
-        <div className="map-info">
-          <p>📍 <strong>Av. Corrientes 1234, Villa Crespo, CABA</strong></p>
-          <p>🚇 <strong>Metro:</strong> Línea B - Estación Carlos Gardel (3 cuadras)</p>
-          <p>🚌 <strong>Colectivos:</strong> 15, 19, 41, 55, 71, 109, 168</p>
-          <div className="map-actions">
-            <a 
-              href="https://maps.google.com/maps?q=Av.+Corrientes+1234,+CABA" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="map-btn"
-            >
-              🗺️ Ver en Google Maps
-            </a>
-            <a 
-              href="https://www.google.com/maps/dir//Av.+Corrientes+1234,+CABA" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="map-btn"
-            >
-              🧭 Cómo llegar
-            </a>
+      {/* Mapa de Google Maps - Solo si hay dirección */}
+      {business.address && (
+        <div className="location-info">
+          <h3>📍 Nuestra Ubicación</h3>
+          <div className="map-container">
+            <iframe
+              src={generateMapUrlFallback(business.address)}
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={`Ubicación de ${business.name || 'Nuestro Negocio'}`}
+            ></iframe>
+          </div>
+          <div className="map-info">
+            <p>📍 <strong>{business.address}</strong></p>
+            
+            {business.nearbyTransport && (
+              <div className="transport-info">
+                {business.nearbyTransport.metro && (
+                  <p>🚇 <strong>Metro:</strong> {business.nearbyTransport.metro}</p>
+                )}
+                {business.nearbyTransport.buses && (
+                  <p>🚌 <strong>Colectivos:</strong> {business.nearbyTransport.buses}</p>
+                )}
+              </div>
+            )}
+            
+            <div className="map-actions">
+              <a 
+                href={getGoogleMapsUrl(business.address)} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="map-btn"
+              >
+                🗺️ Ver en Google Maps
+              </a>
+              <a 
+                href={getDirectionsUrl(business.address)} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="map-btn"
+              >
+                🧭 Cómo llegar
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -9,11 +9,13 @@ import { AboutSection } from "../components/AboutSection";
 import { ContactSection } from "../components/ContactSection";
 import { BottomNavigation } from "../components/BottomNavigation";
 import { useState } from "react";
+import { useBusinessData } from "../hooks/useBusinessData";
 
 const HomePage = () => {
   const { categories, loading, error } = useCategories();
   const { products } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
+  const { businessData } = useBusinessData();
 
   if (loading) {
     return (
@@ -95,7 +97,7 @@ const HomePage = () => {
         <section id="nosotros" className="about-showcase">
           <div className="content-wrapper">
           
-            <AboutSection />
+            <AboutSection  />
           </div>
         </section>
 
@@ -103,8 +105,8 @@ const HomePage = () => {
         {/* Contact Section */}
         <section id="contacto" className="contact-showcase">
           <div className="content-wrapper">
-            
-            <ContactSection />
+
+            <ContactSection business={businessData} />
           </div>
         </section>
          {/* Bottom Navigation */}

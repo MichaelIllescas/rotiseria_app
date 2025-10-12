@@ -1,5 +1,9 @@
 package com.imperialnet.foodstore.publicapi.infrastructure.web.in;
 
+import com.imperialnet.foodstore.business.application.port.in.GetCurrentBusinessUseCase;
+import com.imperialnet.foodstore.business.infrastructure.mapper.BusinessMapper;
+import com.imperialnet.foodstore.business.infrastructure.mapper.BusinessWebMapper;
+import com.imperialnet.foodstore.business.infrastructure.web.dto.BusinessResponse;
 import com.imperialnet.foodstore.products.infrastructure.mapper.CategoryMapper;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductMapper;
 import com.imperialnet.foodstore.products.infrastructure.web.dto.CategoryResponse;
@@ -38,6 +42,8 @@ public class PublicCatalogController {
     private final CategoryMapper categoryMapper;
     private final GetBusinessHoursUseCase getBusinessHoursUseCase;
     private final BusinessHourMapper businessHourMapper;
+    private final GetCurrentBusinessUseCase getCurrentBusinessUseCase;
+    private final BusinessWebMapper businessMapper;
 
 
     // --- Endpoint público para obtener solo productos activos --- (PUBLICO)
@@ -130,6 +136,37 @@ public class PublicCatalogController {
         }
     }
 
+
+
+    // --- Endpoint público para los datos de la empresa ---
+    @Operation(
+            summary = "Obtener datos la empresa (público)",
+            description = "Devuelve los datos configurados de la empresa. Acceso público, sin autenticación."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Datos de la empresa obtenida exitosamente",
+            content = @Content(schema = @Schema(implementation = BusinessResponse.class))
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/getBusinessData")
+    public BusinessResponse getBusinessDataPublic() {
+
+        MDC.put("action", "GET_BUSINESS_DATA_PUBLIC");
+        log.info("Obteniendo los datos de la empresa (endpoint público)");
+        try {
+            BusinessResponse response = businessMapper.toResponse(getCurrentBusinessUseCase.getCurrentBusiness());
+
+
+            log.info("Se han obtenido los datos de la empresa: {} (público)", response.getName());
+            return response;
+        } catch (Exception e) {
+            log.error("Error al obtener los datos de la empresa (público). Causa: {}", e.getMessage(), e);
+            throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
 
 
 
