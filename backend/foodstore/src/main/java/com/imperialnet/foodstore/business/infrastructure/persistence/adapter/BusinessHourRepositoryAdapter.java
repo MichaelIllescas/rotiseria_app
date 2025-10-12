@@ -29,10 +29,15 @@ public class BusinessHourRepositoryAdapter implements BusinessHourRepositoryPort
     }
 
     @Override
-    public void saveAll(List<BusinessHour> hours) {
+        public List<BusinessHour> saveAll(List<BusinessHour> hours) {
         jpaRepository.deleteAll(); // reemplazo completo
-        jpaRepository.saveAll(
-                hours.stream().map(mapper::toEntity).toList()
+        return jpaRepository.saveAll(
+                hours.stream()
+                        .map(mapper::toEntity)
+                        .collect(Collectors.toList())
+        ).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList()
         );
     }
 }

@@ -4,5 +4,5 @@ import com.imperialnet.foodstore.business.domain.model.BusinessHour;
 import java.util.List;
 
 public interface UpdateBusinessHoursUseCase {
-    void updateAll(List<BusinessHour> hours);
+    List<BusinessHour> updateAll(List<BusinessHour> hours);
 }
