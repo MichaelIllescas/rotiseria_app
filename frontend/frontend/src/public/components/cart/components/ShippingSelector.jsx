@@ -1,146 +1,183 @@
-import React, { useState } from 'react';
-import { Store, Truck, MapPin, Clock, AlertCircle } from 'lucide-react';
-import '../../../styles/ShippingSelector.css';
+import React, { useState, useEffect } from "react";
+import {
+  Store,
+  Truck,
+  MapPin,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
+import "../../../styles/ShippingSelector.css";
 
-export const ShippingSelector = ({ 
-  onShippingChange, 
-  selectedShipping = 'pickup',
+export const ShippingSelector = ({
+  onShippingChange,
+  selectedShipping = "pickup",
   business = {},
-  initialAddress = null
+  initialAddress = null,
+  shippingCost = 0,
 }) => {
   const [selected, setSelected] = useState(selectedShipping);
   const [address, setAddress] = useState({
-    street: initialAddress?.street || '',
-    number: initialAddress?.number || '',
-    locality: initialAddress?.locality || '',
-    reference: initialAddress?.reference || ''
+    street: initialAddress?.street || "",
+    number: initialAddress?.number || "",
+    locality: initialAddress?.locality || "",
+    reference: initialAddress?.reference || "",
   });
   const [errors, setErrors] = useState({});
-  const [hasInteracted, setHasInteracted] = useState(false); // Nuevo estado
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [infoCompleted, setInfoCompleted] = useState(false);
 
   const shippingOptions = [
     {
-      id: 'pickup',
-      title: 'Retiro en Sucursal',
-      subtitle: 'Gratis',
-      description: 'Retirá tu pedido en nuestro local',
+      id: "pickup",
+      title: "Retiro en Sucursal",
+      description: "Retirá tu pedido en nuestro local",
       icon: Store,
       price: 0,
-      estimatedTime: '15-30 min',
-      details: business.address || 'Dirección de la sucursal',
-      badge: 'Gratis',
-      badgeColor: 'success'
+      estimatedTime: "15-30 min",
+      details: business.address || "Dirección de la sucursal",
+      badge: "Gratis",
+      badgeColor: "success",
     },
     {
-      id: 'delivery',
-      title: 'Envío a Domicilio',
-      subtitle: 'Delivery',
-      description: 'Te llevamos tu pedido donde estés',
+      id: "delivery",
+      title: "Envío a Domicilio",
+      description: "Te llevamos tu pedido donde estés",
       icon: Truck,
-      price: 500,
-      estimatedTime: '30-45 min',
-      details: 'Cobertura en zona de influencia',
-      badge: 'Rápido',
-      badgeColor: 'primary'
-    }
+      price: shippingCost,
+      estimatedTime: "30-45 min",
+      details: "Cobertura en zona de influencia",
+      badge: "Rápido",
+      badgeColor: "primary",
+    },
   ];
+
+  // 🔹 Validación básica de dirección
+  const validateAddressData = (data) =>
+    data.street.trim() && data.number.trim() && data.locality.trim();
 
   const validateAddress = () => {
     const newErrors = {};
-    
-    if (!address.street.trim()) {
-      newErrors.street = 'La calle es obligatoria';
-    }
-    
-    if (!address.number.trim()) {
-      newErrors.number = 'El número es obligatorio';
-    }
-    
-    if (!address.locality.trim()) {
-      newErrors.locality = 'La localidad es obligatoria';
-    }
-
+    if (!address.street.trim()) newErrors.street = "La calle es obligatoria";
+    if (!address.number.trim()) newErrors.number = "El número es obligatorio";
+    if (!address.locality.trim())
+      newErrors.locality = "La localidad es obligatoria";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // 🔹 Notificar al padre en el montaje inicial
+  useEffect(() => {
+    const selectedOption = shippingOptions.find((opt) => opt.id === selected);
+    const isValid = selected === "pickup" ? true : validateAddressData(address);
+
+    onShippingChange &&
+      onShippingChange({
+        ...selectedOption,
+        type: selected,
+        cost: selectedOption?.price || 0,
+        address: selected === "pickup" ? null : { ...address },
+        isValid,
+      });
+
+    setInfoCompleted(isValid);
+  }, []); // Solo al montar
+
+  // 🔹 Actualizar al cambiar tipo o campos de dirección
+  // 🔹 Forzar actualización del padre cuando cambia address o tipo
+  useEffect(() => {
+    const selectedOption = shippingOptions.find((opt) => opt.id === selected);
+    const isValid = selected === "pickup" ? true : validateAddressData(address);
+
+    onShippingChange({
+      ...selectedOption,
+      type: selected,
+      cost: selectedOption?.price || 0,
+      address: selected === "pickup" ? null : { ...address }, // 👈 fuerza nueva referencia
+      isValid: !!isValid, // 👈 convierte a booleano puro
+    });
+
+    setInfoCompleted(isValid);
+  }, [address.street, address.number, address.locality, selected]);
+
+  // 🔹 Al seleccionar método
   const handleSelect = (optionId) => {
     setSelected(optionId);
-    const selectedOption = shippingOptions.find(opt => opt.id === optionId);
-    
-    // Si es pickup, limpiar errores de dirección y resetear interacción
-    if (optionId === 'pickup') {
+    const selectedOption = shippingOptions.find((opt) => opt.id === optionId);
+
+    if (optionId === "pickup") {
       setErrors({});
       setHasInteracted(false);
+      setInfoCompleted(true);
+
+      onShippingChange &&
+        onShippingChange({
+          ...selectedOption,
+          type: optionId,
+          cost: selectedOption?.price || 0,
+          address: null,
+          isValid: true,
+        });
+    } else {
+      const isValid = validateAddressData(address);
+      setInfoCompleted(isValid);
+      onShippingChange &&
+        onShippingChange({
+          ...selectedOption,
+          type: optionId,
+          cost: selectedOption?.price || 0,
+          address: { ...address },
+          isValid,
+        });
     }
-    
-    // Si cambia a delivery, resetear la interacción para no validar inmediatamente
-    if (optionId === 'delivery') {
-      setHasInteracted(false);
-      setErrors({}); // Limpiar errores previos
-    }
-    
-    // Preparar los datos para enviar al padre
-    const shippingData = {
-      ...selectedOption,
-      address: optionId === 'delivery' ? address : null,
-      isValid: optionId === 'pickup' ? true : (hasInteracted ? validateAddressData(address) : false)
-    };
-    
-    onShippingChange && onShippingChange(shippingData);
   };
 
+  // 🔹 Al cambiar un campo de dirección
   const handleAddressChange = (field, value) => {
     const newAddress = { ...address, [field]: value };
     setAddress(newAddress);
-    
-    // Marcar que el usuario ha interactuado
-    if (!hasInteracted) {
-      setHasInteracted(true);
-    }
-    
-    // Limpiar error del campo que se está editando solo si ya había interactuado
-    if (errors[field] && hasInteracted) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-    
-    // Si ya está seleccionado delivery y ha interactuado, validar y notificar cambios
-    if (selected === 'delivery' && hasInteracted) {
-      const selectedOption = shippingOptions.find(opt => opt.id === 'delivery');
-      const isValid = validateAddressData(newAddress);
-      
-      const shippingData = {
-        ...selectedOption,
-        address: newAddress,
-        isValid
-      };
-      
-      onShippingChange && onShippingChange(shippingData);
-    }
-  };
+    setHasInteracted(true);
 
-  const validateAddressData = (addressData) => {
-    return addressData.street.trim() && 
-           addressData.number.trim() && 
-           addressData.locality.trim();
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+
+    if (selected === "delivery") {
+      const isValid = validateAddressData(newAddress);
+      const selectedOption = shippingOptions.find(
+        (opt) => opt.id === "delivery"
+      );
+      setInfoCompleted(isValid);
+
+      onShippingChange &&
+        onShippingChange({
+          ...selectedOption,
+          type: "delivery",
+          cost: selectedOption?.price || 0,
+          address: { ...newAddress },
+          isValid,
+        });
+    }
   };
 
   const handleAddressBlur = () => {
-    if (selected === 'delivery') {
-      setHasInteracted(true); // Marcar interacción al hacer blur
+    if (selected === "delivery") {
+      setHasInteracted(true);
       validateAddress();
-      
-      // Notificar al padre sobre la validación
-      const selectedOption = shippingOptions.find(opt => opt.id === 'delivery');
       const isValid = validateAddressData(address);
-      
-      const shippingData = {
-        ...selectedOption,
-        address: address,
-        isValid
-      };
-      
-      onShippingChange && onShippingChange(shippingData);
+      const selectedOption = shippingOptions.find(
+        (opt) => opt.id === "delivery"
+      );
+      setInfoCompleted(isValid);
+
+      onShippingChange &&
+        onShippingChange({
+          ...selectedOption,
+          type: "delivery",
+          cost: selectedOption?.price || 0,
+          address: { ...address },
+          isValid,
+        });
     }
   };
 
@@ -151,20 +188,19 @@ export const ShippingSelector = ({
           <Truck className="title-icon" />
           Forma de Entrega
         </h3>
-        <p className="shipping-subtitle">
-          Elegí cómo querés recibir tu pedido
-        </p>
+        <p className="shipping-subtitle">Elegí cómo querés recibir tu pedido</p>
       </div>
 
+      {/* === Opciones === */}
       <div className="shipping-options">
         {shippingOptions.map((option) => {
           const IconComponent = option.icon;
           const isSelected = selected === option.id;
-          
+
           return (
             <div
               key={option.id}
-              className={`shipping-option ${isSelected ? 'selected' : ''}`}
+              className={`shipping-option ${isSelected ? "selected" : ""}`}
               onClick={() => handleSelect(option.id)}
             >
               <div className="option-header">
@@ -179,11 +215,8 @@ export const ShippingSelector = ({
               </div>
 
               <div className="option-content">
-                <div className="option-main">
-                  <h4 className="option-title">{option.title}</h4>
-                  <p className="option-description">{option.description}</p>
-                </div>
-
+                <h4 className="option-title">{option.title}</h4>
+                <p className="option-description">{option.description}</p>
                 <div className="option-details">
                   <div className="detail-item">
                     <MapPin size={14} />
@@ -194,7 +227,6 @@ export const ShippingSelector = ({
                     <span>{option.estimatedTime}</span>
                   </div>
                 </div>
-
                 <div className="option-price">
                   {option.price === 0 ? (
                     <span className="free-price">Gratis</span>
@@ -205,7 +237,7 @@ export const ShippingSelector = ({
               </div>
 
               <div className="option-radio">
-                <div className={`radio-button ${isSelected ? 'checked' : ''}`}>
+                <div className={`radio-button ${isSelected ? "checked" : ""}`}>
                   {isSelected && <div className="radio-dot"></div>}
                 </div>
               </div>
@@ -214,17 +246,15 @@ export const ShippingSelector = ({
         })}
       </div>
 
-      {/* Información de Pickup */}
-      {selected === 'pickup' && business.address && (
+      {/* === Info Retiro === */}
+      {selected === "pickup" && business.address && (
         <div className="pickup-info">
           <div className="info-card">
             <Store size={16} />
             <div className="info-content">
               <h5>Dirección de Retiro</h5>
               <p>{business.address}</p>
-              {business.phone && (
-                <p className="phone">📞 {business.phone}</p>
-              )}
+              {business.phone && <p className="phone">📞 {business.phone}</p>}
               <div className="pickup-note">
                 <AlertCircle size={14} />
                 <span>No necesitás proporcionar dirección para el retiro</span>
@@ -234,8 +264,8 @@ export const ShippingSelector = ({
         </div>
       )}
 
-      {/* Formulario de Dirección para Delivery */}
-      {selected === 'delivery' && (
+      {/* === Info Delivery === */}
+      {selected === "delivery" && (
         <div className="delivery-info">
           <div className="info-card">
             <Truck size={16} />
@@ -253,10 +283,12 @@ export const ShippingSelector = ({
                       type="text"
                       id="street"
                       value={address.street}
-                      onChange={(e) => handleAddressChange('street', e.target.value)}
+                      onChange={(e) =>
+                        handleAddressChange("street", e.target.value)
+                      }
                       onBlur={handleAddressBlur}
                       placeholder="Ej: Av. Corrientes"
-                      className={errors.street ? 'error' : ''}
+                      className={errors.street ? "error" : ""}
                     />
                     {errors.street && (
                       <span className="error-message">
@@ -272,10 +304,12 @@ export const ShippingSelector = ({
                       type="text"
                       id="number"
                       value={address.number}
-                      onChange={(e) => handleAddressChange('number', e.target.value)}
+                      onChange={(e) =>
+                        handleAddressChange("number", e.target.value)
+                      }
                       onBlur={handleAddressBlur}
                       placeholder="Ej: 1234"
-                      className={errors.number ? 'error' : ''}
+                      className={errors.number ? "error" : ""}
                     />
                     {errors.number && (
                       <span className="error-message">
@@ -292,10 +326,12 @@ export const ShippingSelector = ({
                     type="text"
                     id="locality"
                     value={address.locality}
-                    onChange={(e) => handleAddressChange('locality', e.target.value)}
+                    onChange={(e) =>
+                      handleAddressChange("locality", e.target.value)
+                    }
                     onBlur={handleAddressBlur}
                     placeholder="Ej: Buenos Aires"
-                    className={errors.locality ? 'error' : ''}
+                    className={errors.locality ? "error" : ""}
                   />
                   {errors.locality && (
                     <span className="error-message">
@@ -311,7 +347,9 @@ export const ShippingSelector = ({
                     type="text"
                     id="reference"
                     value={address.reference}
-                    onChange={(e) => handleAddressChange('reference', e.target.value)}
+                    onChange={(e) =>
+                      handleAddressChange("reference", e.target.value)
+                    }
                     placeholder="Ej: Depto 4B, Entre Juan y Pedro"
                   />
                 </div>
@@ -319,12 +357,37 @@ export const ShippingSelector = ({
 
               <div className="delivery-note">
                 <p className="small-text">
-                  El tiempo puede variar según la ubicación y condiciones del tráfico
+                  El tiempo puede variar según la ubicación y condiciones del
+                  tráfico
                 </p>
+
                 {hasInteracted && Object.keys(errors).length > 0 && (
                   <div className="validation-warning">
                     <AlertCircle size={14} />
-                    <span>Completá todos los campos obligatorios para continuar</span>
+                    <span>
+                      Completá todos los campos obligatorios para continuar
+                    </span>
+                  </div>
+                )}
+
+                {infoCompleted && (
+                  <div
+                    className="validation-success"
+                    style={{
+                      backgroundColor: "#ecfdf5",
+                      color: "#065f46",
+                      fontSize: "0.875rem",
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      borderLeft: "3px solid #10b981",
+                      marginTop: "0.5rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <CheckCircle size={14} />
+                    <span>Información de entrega completa</span>
                   </div>
                 )}
               </div>

@@ -1,6 +1,6 @@
 .shipping-selector {
   width: 100%;
-  max-width: 600px;
+  /* max-width: 600px; */
   margin: 0 auto;
 }
 
@@ -167,13 +167,14 @@
 }
 
 .option-radio {
-  position: fixed;
+  position: absolute;
   bottom: 1.5rem;
   left: 1.5rem;
   width: 30px;
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: center;
+
 }
 
 .radio-button {
@@ -205,6 +206,9 @@
 .delivery-info {
   margin-top: 1rem;
   animation: slideDown 0.3s ease;
+}
+.info-content{
+  width: 100%;
 }
 
 .info-card {
