@@ -1,9 +1,9 @@
-/* === Botón hamburguesa (siempre visible) === */
+/* === BOTÓN HAMBURGUESA === */
 .sidebar-toggle {
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 1100; /* por encima del sidebar */
+  z-index: 1200; /* Siempre encima del sidebar */
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -27,63 +27,53 @@
   color: #111827;
 }
 
-/* ❌ Eliminamos el display:none en desktop */
-
-/* === Sidebar === */
+/* === SIDEBAR === */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -100%; /* oculto por defecto */
-  height: 100vh;
+  left: -100%;
   width: 16rem;
+  height: 100vh;
   background: #fff;
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  padding: 4rem 1rem 1.5rem; /* Más padding-top para dejar espacio al botón */
+  padding: 4rem 1rem 1.5rem;
   transition: left 0.3s ease;
   z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Pantallas muy pequeñas */
-@media (max-width: 480px) {
-  .sidebar {
-    width: 85vw; /* Usar viewport width en móviles pequeños */
-    max-width: 280px;
-  }
-}
-
-/* Mobile y Desktop abierto */
+/* Sidebar visible */
 .sidebar.open {
   left: 0;
 }
 
-/* Desktop: comportamiento específico */
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 85vw;
+    max-width: 280px;
+  }
+}
+
 @media (min-width: 768px) {
   .sidebar {
-    padding: 4rem 1rem 1.5rem; /* Más padding-top también en desktop para evitar superposición */
-    width: 16rem; /* Ancho fijo en desktop */
+    width: 16rem;
+    padding-top: 4rem;
   }
-  
+
+  /* Variante desktop si se maneja por clase */
   .sidebar.desktop {
-    position: fixed;
-    top: 0;
-    left: -18rem; /* Ajustado para mejor transición */
-    transition: left 0.3s ease;
+    left: -18rem;
   }
-  
+
   .sidebar.desktop.open {
-    left: 0; /* visible cuando está abierto */
+    left: 0;
   }
 }
 
-/* Cuando hay un modal abierto, el sidebar debe estar por debajo */
-body:has(.modal-overlay) .sidebar {
-  z-index: 0;
-}
-
-/* Overlay para móviles */
+/* === OVERLAY MÓVIL === */
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -102,40 +92,29 @@ body:has(.modal-overlay) .sidebar {
   visibility: visible;
 }
 
-/* En desktop, no mostrar overlay */
 @media (min-width: 768px) {
   .sidebar-overlay {
     display: none;
   }
 }
 
-/* Header */
+/* === HEADER DEL SIDEBAR === */
 .sidebar-header {
-  margin-bottom: 2rem;
-}
-
-/* Ajuste específico para desktop - más separación del botón */
-@media (min-width: 768px) {
-  .sidebar-header {
-    margin-top: 0.5rem; /* Pequeño margen adicional en desktop */
-    margin-bottom: 2rem;
-  }
+  margin: 0.5rem 0 2rem;
+  text-align: center;
 }
 
 .sidebar-header .logo {
   font-weight: 700;
   font-size: 1.1rem;
-  display: block;
 }
 
 .sidebar-header .subtitle {
   font-size: 0.8rem;
   color: #6b7280;
-  text-align: center;
-  padding-left: 30px;
 }
 
-/* Navegación */
+/* === NAVEGACIÓN === */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -152,7 +131,7 @@ body:has(.modal-overlay) .sidebar {
   font-weight: 500;
   color: #374151;
   text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-nav a svg {
@@ -172,8 +151,12 @@ body:has(.modal-overlay) .sidebar {
   color: #fff;
 }
 
+/* === CAPAS DE SUPERPOSICIÓN === */
+body:has(.modal-overlay) .sidebar {
+  z-index: 0;
+}
 
 body:has(.overlay) .sidebar-toggle,
 body:has(.modal-overlay) .sidebar-toggle {
-  z-index: 1200; /* Asegurar que esté siempre por encima */
+  z-index: 1300;
 }

@@ -6,6 +6,7 @@ import {
   Package,
   RefreshCw,
   CheckCircle,
+  DollarSign ,
   Image as ImageIcon,
   Check,
   X,
@@ -257,7 +258,7 @@ export function ProductsList() {
               <p className="stat-label">Valor en Stock</p>
               <p className="stat-value">${totalStockValue.toFixed(2)}</p>
             </div>
-            <Package className="stat-icon" />
+            <DollarSign  className="stat-icon" />
           </div>
         </div>
 
