@@ -5,6 +5,8 @@ import { useCart } from "../../context/CartContext";
 import { CartItem } from "../components/cart/components/CartItem";
 import { CartSummary } from "../components/cart/components/CartSummary";
 import "../styles/CartPage.css";
+import { ShippingSelector } from "../components/cart/components/ShippingSelector";
+import { PaymentSelector } from "../components/cart/components/PaymentSelector";
 
 export const CartPage = () => {
   const { cart, total, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -76,6 +78,28 @@ export const CartPage = () => {
           {/* Summary Section */}
           <div className="cart-summary-section">
             <CartSummary total={total} onClear={clearCart} />
+          </div>
+
+          <div className="cart-checkout-sections">
+            {/* Shipping Section */}
+            <div className="cart-shipping-section">
+              <ShippingSelector />
+            </div>
+            {/* Payment Section */}
+            <div className="cart-payment-section">
+              <PaymentSelector
+                onPaymentChange={(paymentData) => {
+                  console.log("Método de pago:", paymentData.id);
+                  console.log("Estado esperado:", paymentData.status);
+                }}
+                selectedPayment="cash"
+                orderTotal={2500}
+                onMercadoPagoRedirect={(data) => {
+                  // Redirigir a Mercado Pago
+                  window.location.href = `/api/mercadopago/checkout?total=${data.total}`;
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

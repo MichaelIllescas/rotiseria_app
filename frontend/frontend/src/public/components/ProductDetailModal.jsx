@@ -6,6 +6,7 @@ export const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart, cate
   const [quantity, setQuantity] = useState(1);
   const [fitMode, setFitMode] = useState("cover");
 
+
   // Resetear cantidad cuando cambie el producto
   useEffect(() => {
     if (product) {

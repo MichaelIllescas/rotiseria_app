@@ -3,6 +3,7 @@ import { ProductCard } from "./ProductCard";
 import { ProductDetailModal } from "./ProductDetailModal";
 import { groupProductsByCategory } from "../helper/groupProductsByCategory";
 import "../styles/ProductTabs.css";
+import { useCart } from "../../context/CartContext";
 
 export const ProductTabs = ({ categories = [], products = [], searchTerm = "" }) => {
   // Agrupamos productos según su categoría (todos los productos originales)
@@ -10,6 +11,9 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
   const [activeTab, setActiveTab] = useState(groupedCategories[0]?.name || "");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { addToCart, updateQuantity } = useCart();
+
 
   // Detectar si hay una búsqueda activa
   const isSearching = searchTerm.trim().length > 0;
@@ -33,8 +37,8 @@ export const ProductTabs = ({ categories = [], products = [], searchTerm = "" })
   };
 
   const handleAddToCart = (product, quantity = 1) => {
-    console.log(`Agregado al carrito: ${product.name} x${quantity}`);
-    // Aquí conectarías con tu lógica de carrito
+    addToCart(product);
+    updateQuantity(product.id, quantity);
   };
 
   return (

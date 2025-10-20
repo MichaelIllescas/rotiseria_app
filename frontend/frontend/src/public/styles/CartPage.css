@@ -131,20 +131,22 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .cart-header h1 {
     font-size: 2rem;
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .cart-items-section,
   .cart-summary-section {
     padding: 1rem;
   }
-  
+
+
   .cart-summary-section {
     position: static;
+   order: 10;
   }
 }
 
@@ -152,26 +154,33 @@
   .cart-page {
     padding: 1rem 0;
   }
-  
+
   .cart-container {
     padding: 0 0.5rem;
   }
-  
+
   .cart-header {
     padding: 1.5rem;
   }
-  
+
   .cart-header h1 {
     font-size: 1.8rem;
   }
 }
 
-
-.div-continue-shopping-btn{
+.div-continue-shopping-btn {
   text-align: right;
   margin-bottom: 1rem;
-position: fixed;
+  position: fixed;
   right: 10px;
   bottom: 10px;
   z-index: 1000;
+}
+
+.cart-shipping-section, .cart-payment-section {
+  background: #fff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
