@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<!-- Forzar UTF-8 en el build para evitar errores de codificación al filtrar recursos -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.resources.encoding>UTF-8</maven.resources.encoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -122,6 +125,13 @@
     </dependencies>
 
 	<build>
+		<!-- Don't filter resources to avoid MalformedInputException when Maven reads files with special bytes -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -150,6 +160,15 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Ensure resources are read with UTF-8 during filtering -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<configuration>
+					<encoding>${maven.resources.encoding}</encoding>
 				</configuration>
 			</plugin>
 		</plugins>

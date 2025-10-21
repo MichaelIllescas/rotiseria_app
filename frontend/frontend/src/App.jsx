@@ -5,6 +5,9 @@ import { UsersList } from './modules/users/components/UsersList'
 import { UsersTabs } from './modules/users/components/UsersTabs'
 import { AppRoutes } from './routes/AppRouter'
 import { Toaster } from "./ui/toaster"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 
 export default function App() {

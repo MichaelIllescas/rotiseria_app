@@ -1,6 +1,7 @@
 import Sidebar from "../modules/common/Sidebar";
 import { UserHeader } from "../modules/users/components/UserHeader";
 import { useAuth } from "../context/AuthContext";
+import  PrivateNavbar  from "../modules/common/PrivateNavbar";
 
 export const MainLayout = ({ children }) => {
   const { logout } = useAuth();
@@ -15,7 +16,6 @@ export const MainLayout = ({ children }) => {
       }}
     >
       {/* === Sidebar fijo === */}
-      <Sidebar />
 
       {/* === Contenedor principal === */}
       <div
@@ -27,7 +27,7 @@ export const MainLayout = ({ children }) => {
       >
         {/* Header superior */}
         <header style={{  zIndex: 10 }}>
-          <UserHeader onLogout={logout} />
+          <PrivateNavbar/>
         </header>
 
         {/* Contenido dinámico */}

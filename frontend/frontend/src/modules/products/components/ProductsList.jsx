@@ -289,8 +289,8 @@ export function ProductsList() {
               </button>
             </div>
           </div>
-          <div className="table-wrapper">
-            <Table className="table">
+          <div className="table-wrapper table-responsive">
+            <Table className="table table-striped table-hover table-responsive">
               <TableHeader>
                 <TableRow>
                   <TableHead>Imagen</TableHead>
