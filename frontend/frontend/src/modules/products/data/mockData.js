@@ -1,5 +1,5 @@
 export const mockProducts = [
-  { id: 1, name: "Pollo Asado Entero", description: "Pollo entero sazonado y asado a leña.", price: 15.99, dailyStock: 25, categoryId: 1, active: true, imageUrl: "https://via.placeholder.com/150" },
+  { id: 1, name: "Pollo Asado Entero", description: "Pollo entero sazonado y asado a leña.", price: 15.99, dailyStock: 25, categoryId: 1, active: true, imageUrl: import.meta.env.VITE_PLACEHOLDER_IMAGE_URL || "https://via.placeholder.com/150" },
   { id: 2, name: "Empanada de Carne", description: "Clásica empanada horneada con carne molida.", price: 2.50, dailyStock: 50, categoryId: 2, active: true },
   { id: 3, name: "Costillas de Cerdo", description: "Costillas con BBQ glaseado.", price: 22.00, dailyStock: 15, categoryId: 3, active: true },
   { id: 4, name: "Papas Fritas", description: "Porción de papas fritas crujientes.", price: 4.50, dailyStock: 60, categoryId: 4, active: true },

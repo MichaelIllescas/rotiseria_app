@@ -65,7 +65,12 @@ export const BottomNavigation = () => {
       id: "whatsapp",
       icon: "💬",
       label: "WhatsApp",
-      action: () => window.open("https://wa.me/5491145678900?text=Hola,%20me%20interesa%20hacer%20un%20pedido", "_blank")
+      action: () => {
+        const whatsappPhone = import.meta.env.VITE_WHATSAPP_PHONE || "5491145678900";
+        const whatsappMessage = import.meta.env.VITE_WHATSAPP_MESSAGE || "Hola,%20me%20interesa%20hacer%20un%20pedido";
+        const whatsappBaseUrl = import.meta.env.VITE_WHATSAPP_BASE_URL || "https://wa.me/";
+        window.open(`${whatsappBaseUrl}${whatsappPhone}?text=${whatsappMessage}`, "_blank");
+      }
     }
   ];
 

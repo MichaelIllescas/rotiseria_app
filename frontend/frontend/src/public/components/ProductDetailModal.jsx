@@ -81,7 +81,7 @@ export const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart, cate
                 src={
                   imageUrl?.startsWith("http")
                     ? imageUrl
-                    : `http://localhost:8080${imageUrl}`
+                    : `${import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8080"}${imageUrl}`
                 }
                 alt={name}
                 onLoad={handleImageLoad}

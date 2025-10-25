@@ -32,7 +32,7 @@ export const ProductCard = ({ product, onAddToCart, onViewDetail }) => {
           src={
             imageUrl?.startsWith("http")
               ? imageUrl
-              : `${"http://localhost:8080"}${imageUrl}`
+              : `${import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8080"}${imageUrl}`
           }
           alt={name}
           loading="lazy"

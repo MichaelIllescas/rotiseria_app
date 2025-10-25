@@ -4,6 +4,7 @@ import {
   MapPin, Store, User, Phone, FileText, Package, 
   Calendar, Hash, ChevronRight
 } from 'lucide-react';
+import { formatDateForArgentina } from '../../../../shared/utils';
 import '../../../styles/OrderDetails.css';
 
 export const OrderDetails = ({ 
@@ -114,7 +115,7 @@ export const OrderDetails = ({
         </p>
         <div className="order-date">
           <Calendar size={16} />
-          <span>{orderData.createdAt || new Date().toLocaleDateString()}</span>
+          <span>{formatDateForArgentina(orderData.createdAt || new Date())}</span>
         </div>
       </div>
 
@@ -205,7 +206,7 @@ export const OrderDetails = ({
                 <div className="address-info">
                   <div className="address-line">
                     <strong>Dirección:</strong>
-                    <span>{orderData.address?.street} {orderData.address?.number}</span>
+                    <span>{orderData.address}</span>
                   </div>
                   {orderData.address?.details && (
                     <div className="address-line">

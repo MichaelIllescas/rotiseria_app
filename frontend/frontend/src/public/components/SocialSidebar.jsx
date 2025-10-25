@@ -6,7 +6,7 @@ export const SocialSidebar = () => {
   return (
     <div className="social-sidebar">
       <a
-        href="https://www.facebook.com/"
+        href={import.meta.env.VITE_FACEBOOK_URL || "https://www.facebook.com/"}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Facebook"
@@ -15,7 +15,7 @@ export const SocialSidebar = () => {
         <FaFacebookF />
       </a>
       <a
-        href="https://www.instagram.com/"
+        href={import.meta.env.VITE_INSTAGRAM_URL || "https://www.instagram.com/"}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram"
@@ -24,7 +24,7 @@ export const SocialSidebar = () => {
         <FaInstagram />
       </a>
       <a
-        href="https://wa.me/5491234567890"
+        href={`${import.meta.env.VITE_WHATSAPP_BASE_URL || "https://wa.me/"}${import.meta.env.VITE_WHATSAPP_PHONE || "5491234567890"}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp"

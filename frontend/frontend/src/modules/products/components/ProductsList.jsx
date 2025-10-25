@@ -55,7 +55,7 @@ export function ProductsList() {
   } = useStockUpdate();
 
   //urlbase de las imagenes de los productos
-  const imageBaseUrl = "http://localhost:8080";
+  const imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8080";
 
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateForm, setShowCreateForm] = useState(false);

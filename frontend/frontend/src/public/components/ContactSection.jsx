@@ -17,7 +17,9 @@ export const ContactSection = ({ business = {} }) => {
   const generateMapUrl = (address) => {
     if (!address) return "";
     const encodedAddress = encodeURIComponent(address);
-    return `https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ''}&q=${encodedAddress}`;
+    const mapEmbedUrl = import.meta.env.VITE_GOOGLE_MAPS_EMBED_URL || "https://www.google.com/maps/embed/v1/place";
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+    return `${mapEmbedUrl}?key=${apiKey}&q=${encodedAddress}`;
   };
 
   // Función alternativa para mapa sin API key (usando search)
@@ -30,12 +32,14 @@ export const ContactSection = ({ business = {} }) => {
   // URLs para direcciones externas
   const getGoogleMapsUrl = (address) => {
     if (!address) return "#";
-    return `https://maps.google.com/maps?q=${encodeURIComponent(address)}`;
+    const mapsUrl = import.meta.env.VITE_GOOGLE_MAPS_URL || "https://maps.google.com/maps";
+    return `${mapsUrl}?q=${encodeURIComponent(address)}`;
   };
 
   const getDirectionsUrl = (address) => {
     if (!address) return "#";
-    return `https://www.google.com/maps/dir//${encodeURIComponent(address)}`;
+    const directionsUrl = import.meta.env.VITE_GOOGLE_MAPS_DIRECTIONS_URL || "https://www.google.com/maps/dir";
+    return `${directionsUrl}//${encodeURIComponent(address)}`;
   };
 
   // Función para formatear número de WhatsApp
@@ -53,7 +57,8 @@ export const ContactSection = ({ business = {} }) => {
   // URL de WhatsApp
   const getWhatsAppUrl = (phone) => {
     const formattedPhone = formatWhatsAppNumber(phone);
-    return `https://wa.me/${formattedPhone.replace("+", "")}`;
+    const whatsappBaseUrl = import.meta.env.VITE_WHATSAPP_BASE_URL || "https://wa.me/";
+    return `${whatsappBaseUrl}${formattedPhone.replace("+", "")}`;
   };
 
   if (loading) return <p>Cargando información...</p>;

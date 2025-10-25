@@ -6,5 +6,5 @@ export const ProtectedRoute = ({ element }) => {
 
   if (loading) return null; // Espera a que la sesión cargue
 
-  return user ? <MainLayout>{element}</MainLayout> : window.location.href = "http://localhost:8080/login";
+  return user ? <MainLayout>{element}</MainLayout> : window.location.href = import.meta.env.VITE_LOGIN_URL || "http://localhost:8080/login";
 };

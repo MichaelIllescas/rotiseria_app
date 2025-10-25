@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { useRegisterOrder } from "../hooks/useRegisterOrder";
 import { CartItem } from "../components/cart/components/CartItem";
 import { CartSummary } from "../components/cart/components/CartSummary";
 import { PaymentMethod } from "../components/cart/components/PaymentMethod";
@@ -14,6 +15,7 @@ import { BottomNavigation } from "../components/BottomNavigation";
 
 export const CartPage = () => {
   const { cart, total, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { registerOrder, loading, error } = useRegisterOrder();
   const navigate = useNavigate();
 
 //costo de envio
@@ -43,7 +45,7 @@ const SHIPPING_COST = 3500;
   const [orderData, setOrderData] = useState(null);
 
   // Actualiza el estado global según las validaciones de los subcomponentes
-  useEffect(() => {
+  useEffect(() => { 
  
     setIsCheckoutReady(
       shippingData.isValid && customerData.isValid && cart.length > 0
@@ -71,41 +73,70 @@ const SHIPPING_COST = 3500;
   };
 
   // 🧾 Crear orden de compra
-  const createOrder = (paymentMethod, paymentStatus) => {
-    const newOrder = {
-      orderNumber: Math.floor(Math.random() * 1000000)
-        .toString()
-        .padStart(6, "0"),
-      items: cart,
-      products: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        description: item.description || 'Producto delicioso',
-        price: item.price,
-        quantity: item.quantity,
-        modifications: item.modifications || []
-      })),
-      total: total + (shippingData?.cost || 0),
-      shippingCost: shippingData?.cost || 0,
-      paymentMethod,
-      paymentStatus,
-      status: "confirmed",
-      shippingType: shippingData?.type || "pickup",
-      address: shippingData?.address,
-      estimatedTime: shippingData?.estimatedTime || "30-45 min",
-      customer: {
-        name: customerData?.name || "Cliente",
+  const createOrder = async (paymentMethod) => {
+    try {
+      // Mapear los datos al formato esperado por el backend
+      const orderRequest = {
+        customerName: customerData?.name || "Cliente",
         phone: customerData?.phone || "",
         email: customerData?.email || "",
-        document: customerData?.document || "",
-        observations: customerData?.observations || "",
-      },
-      createdAt: new Date().toISOString(),
-    };
+        deliveryType: shippingData?.type === "delivery" ? "DELIVERY" : "PICKUP",
+        address: shippingData?.type === "delivery" && shippingData?.address
+          ? `${shippingData.address.street || ""} ${shippingData.address.number || ""}, ${shippingData.address.locality || ""}`.trim()
+          : String(customerData?.address || ""),
+        paymentMethod: paymentMethod === "mercadopago" ? "MP" : "COD",
+        items: cart.map(item => ({
+          productId: item.id,
+          quantity: item.quantity
+        }))
+      };
 
-    setOrderData(newOrder);
-    setCurrentStep(3);
-    clearCart();
+      // Llamar al service del backend a través del hook
+      const response = await registerOrder(orderRequest);
+      
+      if (response) {
+        // Crear el objeto de orden local para mostrar en la UI
+        const newOrder = {
+          orderNumber: response.id?.toString() || Math.floor(Math.random() * 1000000)
+            .toString()
+            .padStart(6, "0"),
+          items: cart,
+          products: cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description || 'Producto delicioso',
+            price: item.price,
+            quantity: item.quantity,
+            modifications: item.modifications || []
+          })),
+          total: total + (shippingData?.cost || 0),
+          shippingCost: shippingData?.cost || 0,
+          paymentMethod,
+          paymentStatus: "PENDING", // Mapear al enum PaymentStatus
+          status: "confirmed",
+          shippingType: shippingData?.type || "pickup",
+          address: shippingData?.type === "delivery" && shippingData?.address
+            ? `${shippingData.address.street || ""} ${shippingData.address.number || ""}, ${shippingData.address.locality || ""}`.trim()
+            : "",
+          estimatedTime: shippingData?.estimatedTime || "30-45 min",
+          customer: {
+            name: customerData?.name || "Cliente",
+            phone: customerData?.phone || "",
+            email: customerData?.email || "",
+            document: customerData?.document || "",
+            observations: customerData?.observations || "",
+          },
+          createdAt: new Date().toISOString(),
+        };
+
+        setOrderData(newOrder);
+        setCurrentStep(3);
+        clearCart();
+      }
+    } catch (error) {
+      console.error("Error al crear la orden:", error);
+      alert("Error al crear la orden. Por favor intenta nuevamente.");
+    }
   };
 
   // 💳 Procesar método de pago
@@ -127,14 +158,14 @@ const SHIPPING_COST = 3500;
         if (data.init_point) {
           window.location.href = data.init_point;
         } else {
-          createOrder("mercadopago", "pending");
+          createOrder("mercadopago");
         }
       } catch (error) {
         console.error("Error al crear preferencia de Mercado Pago:", error);
-        createOrder("mercadopago", "pending");
+        createOrder("mercadopago");
       }
     } else {
-      createOrder("cash", "pending");
+      createOrder("cash");
     }
   };
 

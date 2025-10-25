@@ -27,7 +27,7 @@
 
     // Nueva función para manejar login
     const login = () => {
-      window.location.href = "http://localhost:8080/login";
+      window.location.href = import.meta.env.VITE_LOGIN_URL || "http://localhost:8080/login";
     };
 
     // Nueva función para manejar logout

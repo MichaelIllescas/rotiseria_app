@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*")
 @Tag(name = "Orders", description = "APIs para gestionar órdenes de pedido")
 public class OrderController {
@@ -51,7 +51,7 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PostMapping("/public/create")
+    @PostMapping("/orders/create")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponse createOrder(@Valid @RequestBody OrderRequest request) {
         MDC.put("action", "CREATE_ORDER");
@@ -103,7 +103,7 @@ public class OrderController {
             @ApiResponse(responseCode = "200", description = "Órdenes recuperadas correctamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping(produces = "application/json")
+    @GetMapping("/orders/getAll")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> getAllOrders() {
         MDC.put("action", "GET_ALL_ORDERS");

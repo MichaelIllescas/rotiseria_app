@@ -1,9 +1,13 @@
 package com.imperialnet.foodstore.publicapi.infrastructure.web.in;
 
 import com.imperialnet.foodstore.business.application.port.in.GetCurrentBusinessUseCase;
-import com.imperialnet.foodstore.business.infrastructure.mapper.BusinessMapper;
 import com.imperialnet.foodstore.business.infrastructure.mapper.BusinessWebMapper;
 import com.imperialnet.foodstore.business.infrastructure.web.dto.BusinessResponse;
+import com.imperialnet.foodstore.orders.application.ports.in.CreateOrderUseCase;
+import com.imperialnet.foodstore.orders.domain.model.Order;
+import com.imperialnet.foodstore.orders.infrastructure.web.dto.OrderRequest;
+import com.imperialnet.foodstore.orders.infrastructure.web.dto.OrderResponse;
+import com.imperialnet.foodstore.orders.infrastructure.web.mapper.OrderMapper;
 import com.imperialnet.foodstore.products.infrastructure.mapper.CategoryMapper;
 import com.imperialnet.foodstore.products.infrastructure.mapper.ProductMapper;
 import com.imperialnet.foodstore.products.infrastructure.web.dto.CategoryResponse;
@@ -14,15 +18,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import com.imperialnet.foodstore.business.application.port.in.GetBusinessHoursUseCase;
@@ -33,8 +36,8 @@ import com.imperialnet.foodstore.business.infrastructure.web.dto.BusinessHourDTO
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
-@Tag(name = "Catálogo Público", description = "Endpoints públicos del catálogo (no requieren autenticación)")
-public class PublicCatalogController {
+@Tag(name = "Enpoints Público", description = "Endpoints públicos (no requieren autenticación)")
+public class PublicController {
 
     private final GetActiveProductsUseCase getAllProductsUseCase;
     private final GetActiveCategoriesUseCase getAllCategoriesUseCase;
@@ -44,6 +47,8 @@ public class PublicCatalogController {
     private final BusinessHourMapper businessHourMapper;
     private final GetCurrentBusinessUseCase getCurrentBusinessUseCase;
     private final BusinessWebMapper businessMapper;
+    private final CreateOrderUseCase createOrderUseCase;
+    private final OrderMapper orderMapper;
 
 
     // --- Endpoint público para obtener solo productos activos --- (PUBLICO)
@@ -163,6 +168,59 @@ public class PublicCatalogController {
         } catch (Exception e) {
             log.error("Error al obtener los datos de la empresa (público). Causa: {}", e.getMessage(), e);
             throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
+
+
+    /**
+     * Endpoint para registrar una nueva orden.
+     *
+     * @param request DTO de creación de orden recibido desde el frontend.
+     * @return la orden creada con sus ítems completos.
+     */
+    @Operation(summary = "Crear orden", description = "Registra una nueva orden y devuelve la orden creada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Orden creada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @PostMapping("/createOrder")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderResponse createOrder(@Valid @RequestBody OrderRequest request) {
+        MDC.put("action", "CREATE_ORDER");
+        long start = System.nanoTime();
+        try {
+            log.debug("Received createOrder request");
+            log.debug("Request payload: {}", request);
+
+            // 1️⃣ Mapear DTO → Dominio
+            Order order = orderMapper.toDomain(request);
+            log.debug("Mapped to domain Order: {}", order);
+
+            // 2️⃣ Ejecutar caso de uso
+            Order createdOrder = createOrderUseCase.createOrder(order);
+            log.info("Order created with id (if available): {}", createdOrder != null ? createdOrder.getId() : "null");
+            log.debug("Created domain order: {}", createdOrder);
+
+            // 3️⃣ Mapear Dominio → DTO de respuesta
+            OrderResponse response = orderMapper.toResponse(createdOrder);
+            log.debug("Mapped to response DTO: {}", response);
+
+            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            log.info("CREATE_ORDER completed in {} ms", durationMs);
+
+            // 4️⃣ Devolver respuesta HTTP 201 Created
+            return response;
+        } catch (IllegalArgumentException ex) {
+            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            log.warn("Validation error while creating order after {} ms: {}", durationMs, ex.getMessage());
+            throw ex;
+        } catch (Exception ex) {
+            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            log.error("Unexpected error while creating order after {} ms", durationMs, ex);
+            throw ex;
         } finally {
             MDC.clear();
         }

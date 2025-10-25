@@ -22,7 +22,7 @@ export const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
           src={
             item.imageUrl?.startsWith("http")
               ? item.imageUrl
-              : `http://localhost:8080${item.imageUrl}`
+              : `${import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8080"}${item.imageUrl}`
           }
           alt={item.name}
         />

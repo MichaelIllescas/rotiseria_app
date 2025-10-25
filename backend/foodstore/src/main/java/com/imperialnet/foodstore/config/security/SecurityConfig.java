@@ -55,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,  CustomAccessDeniedHandler accessDeniedHandler,  CustomAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // ⚠️ ojo: si tu formulario tiene CSRF token activalo
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/users/me", "/uploads/**").permitAll() // registro y demás públicos
                         .requestMatchers("/login").permitAll()   // tu login personalizado
